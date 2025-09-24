@@ -3,5 +3,4 @@ export interface User {
     username: string; // Korisničko ime
     password: string; // Lozinka
     role: string; // Uloga korisnika
-    reservations?: number[]; // Lista ID-jeva rezervacija (opciono)
 }
