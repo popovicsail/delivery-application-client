@@ -1,0 +1,124 @@
+$primary-color: #007bff;
+
+.header {
+    background-color: #222;
+    color: white;
+    padding: 1rem;
+    border-radius: 10px;
+  }
+  
+  .nav-list {
+    list-style: none;
+    display: flex;
+    gap: 1rem;
+    padding: 0;
+  }
+  
+  .nav-list li a {
+    color: #fff;
+    text-decoration: none;
+  }
+  
+  .nav-list li a:hover {
+    text-decoration: underline;
+  }
+  
+img {
+    height: 150px;
+    width: auto;
+    
+}
+.error {
+    color: #d8000c;
+    background-color: #ffbaba;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.9rem
+}
+
+.spinner-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px;
+  }
+  
+  .spinner {
+    border: 6px solid #f3f3f3;
+    border-top: 6px solid #3498db;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 10px;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+
+.buttons {
+    margin-left: 2%;
+    margin: 2%;
+    padding: 10px;
+    width: 10%;
+    height: auto;
+    border-radius: 5px;
+}
+
+.image, .publishers  {
+    margin-left: 2%;
+    vertical-align: middle;
+    display: inline;
+}
+
+
+.formaDodaj,.form-section,.formaLogin {
+    border-radius: 5px;
+    display: flex; /* Aktivira Flexbox */
+    flex-direction: column; /* Postavlja elemente u kolonu */
+    align-items: center; /* Centriranje elemenata po horizontali */
+  
+
+        input {
+            width: 500px;
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid #00b7ff;
+            border-radius: 20px;
+        }
+
+    button {
+        width: 500px;
+        height: 50px; 
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+}
+
+.navbar {
+    background-color: $primary-color;
+    padding: 10px;
+
+    .nav-list {
+        list-style: none;
+        display: flex;
+        align-items: center;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+    }
+
+    .nav-item {
+        margin-right: 15px;
+
+        a {
+            color: white;
+            text-decoration: none;
+        }
+    }
+}
+
+
