@@ -1,6 +1,6 @@
 export interface User {
-    id?: number; // ID korisnika (opciono)
-    username: string; // Korisničko ime
-    password: string; // Lozinka
-    role: string; // Uloga korisnika
+    id?: string;
+    firstName: string;
+    lastName: string;
+    profilePictureUrl?: string;
 }
