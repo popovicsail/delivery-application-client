@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { login } from "../services/auth.services"
 
 export const LoginForm = () => {
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [feedback, setFeedback] = useState("");
@@ -26,7 +27,7 @@ export const LoginForm = () => {
     try {
       const user = await login(username, password);
       alert(`Dobrodošao, ${user.username}!`);
-      useNavigate("/home")
+      navigate("/home")
     } catch (error) {
       const err = error || {};
       alert(`Greška: ${err.message || "Nešto nije u redu."}`);
