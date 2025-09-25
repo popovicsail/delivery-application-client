@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../styles/main.scss";
 import { userService } from "../services/user.services";
 import { useNavigate } from "react-router-dom";
+import { login } from "../services/auth.services"
 
 export const LoginForm = () => {
   const [username, setUsername] = useState("");
@@ -23,7 +24,7 @@ export const LoginForm = () => {
     e.preventDefault();
 
     try {
-      const user = await userService.login(username, password);
+      const user = await login(username, password);
       alert(`Dobrodošao, ${user.username}!`);
       useNavigate("/home")
     } catch (error) {
@@ -34,7 +35,7 @@ export const LoginForm = () => {
   };
 
   return (
-    <form className="formaLogin">
+    <form className="formaLogin" onSubmit={handleSubmit}>
       <section className="form-section">
         <h2>🔐 Prijava</h2>
         <input
