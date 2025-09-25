@@ -30,15 +30,15 @@ export const UserForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    try {
-      await userService.createUser({ username, password, role });
-      alert("Uspešna registracija!");
-      navigate("/home");
-    } catch (error) {
-      const err = error || {};
-      alert(`Greška: ${err.message || "Nešto nije u redu."}`);
-      console.error("Create error:", err);
-    }
+    // try {
+    //   await userService.createUser({ username, password, role });
+    //   alert("Uspešna registracija!");
+    //   navigate("/home");
+    // } catch (error) {
+    //   const err = error || {};
+    //   alert(`Greška: ${err.message || "Nešto nije u redu."}`);
+    //   console.error("Create error:", err);
+    // }
   };
 
   return (
@@ -91,7 +91,11 @@ export const UserForm = () => {
       <section className="form-section">
         <h2>✅ Pregled i potvrda</h2>
         <button type="submit" disabled={!isValid}>
-          Registruj se
+          Dodaj korisnika
+        </button>
+
+        <button onClick={() => navigate("/admin")} type="button">
+          Otkazi
         </button>
       </section>
 

@@ -23,11 +23,12 @@ export const LoginForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    
     try {
       const user = await login(username, password);
       alert(`Dobrodošao, ${user.username}!`);
-      navigate("/home")
+      navigate("/admin")
+      hideButton();
     } catch (error) {
       const err = error || {};
       alert(`Greška: ${err.message || "Nešto nije u redu."}`);
@@ -68,4 +69,23 @@ export const LoginForm = () => {
       </div>
     </form>
   );
+
+
+
+
+  function hideButton() {
+    const buttonRegister = document.querySelector('.register');
+    const buttonLogin = document.querySelector('.logIn');
+    const buttonLogout = document.querySelector('.logOut');
+
+    if (buttonLogout) {
+      buttonLogout.style.display = 'block';
+    }
+    if (buttonRegister) {
+      buttonRegister.style.display = 'none';
+    }
+    if (buttonLogin) {
+      buttonLogin.style.display = 'none';
+    }
+  }
 };

@@ -2,10 +2,20 @@ import React from "react";
 import "../../styles/main.scss";
 import { useNavigate } from "react-router-dom";
 
+
 const UsersTable = ({ users, onDelete }) => {
   const navigate = useNavigate();
 
   return (
+    <div>
+      <button 
+      className = "createButton" 
+      onClick={() => navigate("/adminCreate")}>
+        Kreiraj novog korisnika
+        </button>
+
+
+      <h2>Korisnici koji su registrovani</h2>
     <table className="users-table">
       <thead>
         <tr>
@@ -20,14 +30,14 @@ const UsersTable = ({ users, onDelete }) => {
             <td>{user.username}</td>
             <td>{user.role}</td>
             <td>{new Date(user.registrationDate).toLocaleDateString()}</td>
-            <td>
+            <td className="delete-column">
               <button onClick={() => onDelete(user.id)}>Izbriši</button>
-              <button onClick={() => navigate(`/edit-user/${user.id}`)}>Izmeni</button>
             </td>
           </tr>
         ))}
       </tbody>
     </table>
+    </div>
   );
 };
 

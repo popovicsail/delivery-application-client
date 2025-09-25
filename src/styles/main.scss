@@ -68,11 +68,6 @@ img {
     border-radius: 5px;
 }
 
-.image, .publishers  {
-    margin-left: 2%;
-    vertical-align: middle;
-    display: inline;
-}
 
 
 .formaDodaj,.form-section,.formaLogin,.adminUserCreate {
@@ -82,7 +77,7 @@ img {
     align-items: center; /* Centriranje elemenata po horizontali */
   
 
-        input {
+        input,select {
             width: 500px;
             margin: 10px;
             padding: 10px;
@@ -121,12 +116,37 @@ img {
     }
 }
 
+.pocetna {
+  background-color: #ccc;
+  color: #080808;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  text-decoration: none;
+  margin-right: 80%;
+}
+
+.register, .logIn, .logOut {
+    background-color: #ccc;
+    color: #080808;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
 
 .users-table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
 
+  .delete-column {
+    width: 120px;
+    text-align: center;
+  }
   th, td {
     border: 1px solid #ddd;
     padding: 10px;
@@ -149,6 +169,36 @@ img {
       text-decoration: underline;
     }
   }
+
+  button {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    width: 80px;
+    height: 30px;
+
+    &:hover {
+      background-color: #e60000;
+    }
+
+  }
+}
+
+.createButton {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 20px;
+
+    &:hover {
+        background-color: #218838;
+    }
 }
 
 
