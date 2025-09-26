@@ -1,0 +1,164 @@
+@import 'main.scss';
+
+$sidebar-width: 220px;
+$bg-light: #f9f9f9;
+$bg-dark: #ffffff;
+$primary: #222;
+$text-color: #333;
+$border-color: #ddd;
+
+.account-panel {
+  display: flex;
+  flex-wrap: wrap;
+  background-color: $bg-dark;
+  border: 1px solid $border-color;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  height: 50vh;
+
+  .sidebar {
+    width: $sidebar-width;
+    background-color: $bg-light;
+    border-right: 1px solid $border-color;
+    padding: 1rem;
+
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+
+      li {
+        padding: 0.75rem 1rem;
+        margin-bottom: 0.5rem;
+        cursor: pointer;
+        border-radius: 4px;
+        color: $text-color;
+        transition: background-color 0.2s ease;
+
+        &:hover {
+          background-color: lighten($primary, 40%);
+        }
+
+        &.active {
+          background-color: $primary;
+          color: white;
+          font-weight: bold;
+        }
+      }
+    }
+  }
+
+  .content {
+    flex: 1;
+    padding: 1.5rem;
+    min-height: 300px;
+
+    section {
+      display: none;
+
+      &.active {
+        display: block;
+      }
+    }
+  }
+
+  #user-profile {
+    display: none;
+  
+    &.visible {
+      display: block;
+    }
+  }
+
+  #edit-user-form {
+    width: 50%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  
+    .form-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 80%;
+      margin: 5px 0;
+  
+      label {
+        width: 40%;
+        text-align: right;
+        margin-right: 10px;
+      }
+  
+      input,select {
+        width: 60%;
+        padding: 10px;
+        border: 1px solid #00b7ff;
+        border-radius: 20px;
+      }
+    }
+  
+    button {
+      width: 30%;
+      padding: 10px;
+      margin: 10px;
+      border-radius: 10px;
+      background-color: #00b7ff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      align-items: center;
+  
+      &:hover {
+        background-color: #0090cc;
+      }
+    }
+  }
+
+
+  .activity-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 2rem;
+  
+    th, td {
+      border: 1px solid #ccc;
+      padding: 0.75rem;
+      text-align: left;
+    }
+  
+    th {
+      background-color: #f0f0f0;
+    }
+  
+    .activity-buttons {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    
+      button {
+        padding: 0.5rem 1rem;
+        background-color: #0077cc;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    
+        &:hover {
+          background-color: #005fa3;
+        }
+      }
+    }
+  }
+  
+  .details-box {
+    border: 1px solid #ccc;
+    padding: 1rem;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+  }
+}

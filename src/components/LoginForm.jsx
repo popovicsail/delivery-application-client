@@ -77,7 +77,15 @@ export const LoginForm = () => {
     const buttonRegister = document.querySelector('.register');
     const buttonLogin = document.querySelector('.logIn');
     const buttonLogout = document.querySelector('.logOut');
+    const buttonUserControlPanel = document.querySelector('.usersControlPanel');
+    const buttonHome = document.querySelector('.pocetna');
 
+    if (buttonHome) {
+      buttonHome.style.display = 'block';
+    }
+    if (buttonUserControlPanel) {
+      buttonUserControlPanel.style.display = 'block';
+    }
     if (buttonLogout) {
       buttonLogout.style.display = 'block';
     }
