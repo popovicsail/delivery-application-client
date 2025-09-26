@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import UsersTable from "./AdminPanel.jsx";
 
-
 export default function AdminPage() {
     const [users, setUsers] = useState([]);
     const [error, setError] = useState(null);
