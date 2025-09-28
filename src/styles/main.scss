@@ -1,27 +1,68 @@
-$primary-color: #007bff;
+$primary-color: #222;
+
+body {
+  height: 100%;
+  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  background-color: #fcf5e8;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family:Arial, Helvetica, sans-serif;
+}
+
+a, th {
+  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-weight: bolder;
+}
+
+.section-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin: 0.4rem 0;
+}
 
 .header {
     background-color: #222;
     color: white;
     padding: 1rem;
     border-radius: 10px;
-  }
-  
-  .nav-list {
-    list-style: none;
     display: flex;
-    gap: 1rem;
-    padding: 0;
+    flex-direction: column;
+    align-items: center;
   }
   
-  .nav-list li a {
-    color: #fff;
-    text-decoration: none;
+.nav-list {
+  list-style: none;
+  display: flex;
+  gap: 1rem;
+  padding: 5px;
+  background-color: #363636;
+  border-radius: 10px;
+  width: fit-content;
+
+  li {
+    transition: 0.2s all;
+    padding: 13px 30px;
+    border-radius: 7px;
+    &:hover {
+      background-color: #474747;
+      
+    }
+    a {
+      color: #fff;
+      text-decoration: none;
+    }
   }
-  
-  .nav-list li a:hover {
-    text-decoration: underline;
+}
+
+#current {
+  background-color: #5a5a5a;
+  &:hover {
+    background-color: #5a5a5a;
   }
+}
   
 img {
     height: 150px;
@@ -57,6 +98,11 @@ img {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
+
+
+.hidden {
+  display: none;
+}
   
 
 .buttons {
@@ -66,6 +112,15 @@ img {
     width: 10%;
     height: auto;
     border-radius: 5px;
+}
+
+.delete-btn {
+  background-color: #e74c3c;
+  color: white;
+}
+.edit-btn {
+  background-color: #3498db;
+  color: white;
 }
 
 .image, .publishers  {
@@ -81,7 +136,6 @@ img {
     flex-direction: column; /* Postavlja elemente u kolonu */
     align-items: center; /* Centriranje elemenata po horizontali */
   
-
         input {
             width: 500px;
             margin: 10px;
@@ -98,27 +152,43 @@ img {
     }
 }
 
-.navbar {
-    background-color: $primary-color;
-    padding: 10px;
 
-    .nav-list {
-        list-style: none;
-        display: flex;
-        align-items: center;
-        margin: 0;
-        padding: 0;
-        width: 100%;
+// Tabela - generalni stilovi
+
+table {
+  border-collapse: collapse;
+  border: 2px solid $primary-color;
+
+  thead {
+    tr {
+      background-color: $primary-color;
+      color: white;
+      opacity: 0.9;
+
+      th {
+        padding: 0.6rem 1.2rem;
+      }
     }
+  }
 
-    .nav-item {
-        margin-right: 15px;
+  tr {
 
-        a {
-            color: white;
-            text-decoration: none;
+    td {
+      border: 2px solid $primary-color;
+      padding: 0.6rem 1.2rem;
+      text-align: center;
+
+      button {
+        margin: 0 5px;
+        padding: 5px 10px;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+
+        &:hover {
+          opacity: 0.8;
         }
+      }
     }
+  }
 }
-
-
