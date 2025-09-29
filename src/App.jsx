@@ -1,6 +1,6 @@
 import React from "react";
 import { Routes, Route, BrowserRouter } from "react-router-dom";
-import "./styles.scss";
+import "./styles/main.scss";
 import Header from "./components/Header.jsx";
 import Home from "./components/Home.jsx";
 import { RegisterForm } from "./components/RegisterForm.jsx";
