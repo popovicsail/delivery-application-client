@@ -141,18 +141,47 @@ img {
 
 // Tabela - generalni stilovi
 
+.naslov{
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
 table {
   border-collapse: collapse;
   border: 2px solid $primary-color;
+  width: 90%;
+  margin: 10px auto;
+  text-align: center ;
 
   thead {
     tr {
       background-color: $primary-color;
       color: white;
       opacity: 0.9;
+      border: 2px solid #222;
 
       th {
         padding: 0.6rem 1.2rem;
+      }
+    }
+  }
+
+  tbody {
+    tr {
+      border: 1px solid #ddd;
+
+      &:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+
+      &:hover {
+        background-color: #f1f1f1;
+      }
+
+      td {
+        padding: 0.6rem 1.2rem;
+        border: 1px solid #ddd;
       }
     }
   }
@@ -189,6 +218,8 @@ table {
 
   }
 }
+
+
 
 .createButton {
     background-color: #28a745;

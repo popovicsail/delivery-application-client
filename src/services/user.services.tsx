@@ -1,66 +1,19 @@
-const API_URL = "http://localhost:7290/api/users";
+import api from "../services/api.jsx";
 
-export const userService = {
-  async login(username, password) {
-    const response = await fetch(`${API_URL}/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password }),
-    });
 
-    if (!response.ok) {
-      const message = await response.text();
-      throw new Error(message);
-    }
+export async function createUser(userData) {
+  const response = await api.post("/Auth/register", userData);
+  return response;
+}
 
-    return response.json();
-  },
 
-  async getTourReservationsByUserId(userId) {
-    const response = await fetch(`${API_URL}/${userId}/tour-reservations`);
+export async function getAllUsers() {
+  const response = await api.get("/Users");
+  return Array.isArray(response.data) ? response.data : [];
+}
 
-    if (!response.ok) {
-      const message = await response.text();
-      throw { status: response.status, message };
-    }
+export async function getProfile() {
+  const response = await api.get("/Profile/me");
+  return response.data;
+}
 
-    return response.json();
-  },
-
-  async getTourRatingsByUserId(userId) {
-    const response = await fetch(`${API_URL}/${userId}/tour-ratings`);
-
-    if (!response.ok) {
-      const message = await response.text();
-      throw { status: response.status, message };
-    }
-
-    return response.json();
-  },
-
-  async updateUser(user) {
-    const response = await fetch(`${API_URL}/${user.id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(user),
-    });
-
-    if (!response.ok) {
-      const message = await response.text();
-      throw { status: response.status, message };
-    }
-  },
-
-  async createUser(user) {
-    const response = await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(user),
-    });
-
-    if (!response.ok) {
-      const message = await response.text();
-      throw { status: response.status, message };
-    }
-  },
-};

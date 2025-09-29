@@ -1,71 +1,83 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import "../styles/main.scss";
+import { getProfile } from "../services/user.services.tsx";
+import { logout } from "../services/auth.services.tsx";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
   const location = useLocation();
   const current = location.pathname;
+
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const token = sessionStorage.getItem("token");
+    if (!token) return;
+
+    setIsAuthenticated(true);
+
+    getProfile()
+      .then((profile) => {
+        const roles = profile.roles || [];
+        if (roles.includes("Administrator")) {
+          setIsAdmin(true);
+        }
+      })
+      .catch((err) => {
+        console.error("Greška pri učitavanju profila:", err);
+        setIsAuthenticated(false);
+        setIsAdmin(false);
+      });
+  }, []);
+
+  const LogoutButton = () => {
+    const navigate = useNavigate();
+  
+    const handleLogout = () => {
+      logout();
+      navigate("/login");
+    };
+    
+    return <Link onClick={handleLogout} to="/login">Odjavite se</Link>;
+  };
 
   return (
     <header className="header">
       <h1>Dobrodošli — Gozba na Klik</h1>
       <nav>
         <ul className="nav-list">
-<<<<<<< HEAD
-          <li className="pocetna" style={{ display: "none" }}>
-            <Link to="/">Početna</Link></li>
-            
-          <li className="usersControlPanel" style={{ display: "none" }}>
-            <Link to="/controlPanel">Profil</Link>
+          <li id={current === "/home" ? "current" : ""}>
+            <Link to="/home">Početna</Link>
           </li>
 
-          <li className="register" style={{ display: "block" }}>
-            <Link to="/register">Registruj se</Link>
-            </li>
+          {!isAuthenticated && (
+            <>
+              <li id={current === "/register" ? "current" : ""}>
+                <Link to="/register">Registruj se</Link>
+              </li>
+              <li id={current === "/login" ? "current" : ""}>
+                <Link to="/login">Prijavite se</Link>
+              </li>
+            </>
+          )}
 
-          <li className="logIn"   style={{ display: "block" }}>
-            <Link to="/login">Prijavite se</Link>
+          {isAuthenticated && isAdmin && (
+            <li id={current === "/admin" ? "current" : ""}>
+              <Link to="/admin">Admin Panel</Link>
             </li>
+          )}
 
-          <li 
-          className="logOut" 
-          style={{ display: "none" }}
-          onClick={showButton}> 
-          <Link to="/login">Izlogujte se</Link>
-          </li>
-=======
-          <li id={current === "/home" ? "current" : ""}><Link to="/home">Početna</Link></li>
-          <li id={current === "/register" ? "current" : ""}><Link  to="/register">Registruj se</Link></li>
-          <li id={current === "/login" ? "current" : ""}><Link to="/login">Prijavite se</Link></li>
->>>>>>> main
+          {isAuthenticated && (
+            <li>
+              <LogoutButton />
+            </li>
+          )}
         </ul>
       </nav>
     </header>
   );
 };
-
-function showButton() {
-  const buttonRegister = document.querySelector('.register');
-  const buttonLogin = document.querySelector('.logIn');
-  const buttonLogout = document.querySelector('.logOut');
-  const buttonUserControlPanel = document.querySelector('.usersControlPanel');
-  const buttonHome = document.querySelector('.pocetna');
-
-  if (buttonHome) {
-    buttonHome.style.display = 'none';
-  }
-  if (buttonUserControlPanel) {
-    buttonUserControlPanel.style.display = 'none';
-  }
-  if (buttonLogout) {
-    buttonLogout.style.display = 'none';
-  }
-  if (buttonRegister) {
-    buttonRegister.style.display = 'block';
-  }
-  if (buttonLogin) {
-    buttonLogin.style.display = 'block';
-  }
-}
 
 export default Header;

@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
 import UsersTable from "./AdminPanel.jsx";
+import * as userService from "../../services/user.services.tsx";
 
 
-export default function AdminPage() {
-    const [users, setUsers] = useState([
-        { id: 1, username: "user1", role: "admin", registrationDate: "2023-01-01" },
-        { id: 2, username: "user2", role: "user", registrationDate: "2023-02-15" },
-        { id: 3, username: "user3", role: "user", registrationDate: "2023-03-10" },
-    ]);
+export default function AdminPage() {;
     const [error, setError] = useState(null);
+    const [users, setUsers] = useState([]);
+
+    async function fetchUsers() {
+        const response = await userService.getAllUsers();
+        setUsers(response);
+    }
 
     const onDelete = (userId) => {
         setUsers(users.filter(user => user.id !== userId));

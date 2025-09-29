@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import "../styles/main.scss";
-import { userService } from "../services/user.services";
 import { useNavigate } from "react-router-dom";
 import { login } from "../services/auth.services"
 
