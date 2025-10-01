@@ -8,6 +8,8 @@ export const UsersTable = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+ 
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -19,7 +21,6 @@ export const UsersTable = () => {
         setLoading(false);
       }
     };
-
     fetchUsers();
   }, []);
 
@@ -45,6 +46,7 @@ export const UsersTable = () => {
               <th>Korisničko ime</th>
               <th>Email</th>
               <th>Ime i prezime</th>
+              <th>Role</th>
               <th>Akcija</th>
             </tr>
           </thead>
@@ -54,6 +56,7 @@ export const UsersTable = () => {
                 <td>{user.userName}</td>
                 <td>{user.email}</td>
                 <td>{`${user.firstName} ${user.lastName}`}</td>
+                <td>{user.roles}</td>
                 <td className="delete-column">
                   <button onClick={() => handleDelete(user.id)}>Izbriši</button>
                 </td>

@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "../styles/main.scss";
 import { getProfile } from "../services/user.services.tsx";
 import { logout } from "../services/auth.services.tsx";
-import { useNavigate } from "react-router-dom";
 
 const Header = () => {
   const location = useLocation();
@@ -34,12 +33,12 @@ const Header = () => {
 
   const LogoutButton = () => {
     const navigate = useNavigate();
-  
+
     const handleLogout = () => {
       logout();
       navigate("/login");
     };
-    
+
     return <Link onClick={handleLogout} to="/login">Odjavite se</Link>;
   };
 
@@ -63,16 +62,20 @@ const Header = () => {
             </>
           )}
 
-          {isAuthenticated && isAdmin && (
-            <li id={current === "/admin" ? "current" : ""}>
-              <Link to="/admin">Admin Panel</Link>
-            </li>
-          )}
-
           {isAuthenticated && (
-            <li>
-              <LogoutButton />
-            </li>
+            <>
+              {isAdmin && (
+                <li id={current === "/admin" ? "current" : ""}>
+                  <Link to="/admin">Admin Panel</Link>
+                </li>
+              )}
+              <li id={current === "/controlPanel" ? "current" : ""}>
+                <Link to="/controlPanel">Kontrolna tabla</Link>
+              </li>
+              <li>
+                <LogoutButton />
+              </li>
+            </>
           )}
         </ul>
       </nav>

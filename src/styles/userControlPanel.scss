@@ -15,7 +15,7 @@ $border-color: #ddd;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-  height: 50vh;
+  height: 100vh;
 
   .sidebar {
     width: $sidebar-width;
@@ -94,30 +94,87 @@ $border-color: #ddd;
         margin-right: 10px;
       }
   
-      input,select {
+      input,
+      select {
         width: 60%;
         padding: 10px;
-        border: 1px solid #00b7ff;
+        border: 1px solid $primary;
         border-radius: 20px;
       }
     }
+  .upload-section {
+    width: 100%;
+    margin-left: 400px;
+      .form-row-file {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        margin-top: 10px;
+      
+        label,
+        input {
+          margin-bottom: 5px;
+        }
+      
+        p {
+          margin-top: 8px;
+          text-align: center;
+          width: 100%;
+          font-size: 14px;
+          color: #555;
+          display: block;
+        }
+      }
+  }
+    
   
     button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
       width: 30%;
       padding: 10px;
       margin: 10px;
       border-radius: 10px;
-      background-color: #00b7ff;
+      background-color: $primary;
       color: white;
       border: none;
       cursor: pointer;
-      align-items: center;
   
       &:hover {
         background-color: #0090cc;
       }
     }
   }
+  
+  // Responsive prilagođavanje za mobilne uređaje
+  @media (max-width: 768px) {
+    #edit-user-form {
+      width: 90%;
+  
+      .form-row {
+        flex-direction: column;
+        align-items: flex-start;
+  
+        label {
+          text-align: left;
+          width: 100%;
+          margin-bottom: 5px;
+        }
+  
+        input,
+        select {
+          width: 100%;
+        }
+      }
+  
+      button {
+        width: 100%;
+      }
+    }
+  }
+  
 
 
   .activity-table {
@@ -154,11 +211,46 @@ $border-color: #ddd;
       }
     }
   }
-  
-  .details-box {
-    border: 1px solid #ccc;
-    padding: 1rem;
-    background-color: #f9f9f9;
-    border-radius: 5px;
+
+  .alergenForm{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 100%;
+    .alergen1, .alergen2 {
+      width: 50%;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .dugme {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      margin-top: 20px;
+    }
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      background-color: #f3f3f3;
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    
+      input[type="checkbox"] {
+        accent-color: black; // Za moderni browser styling
+        width: 16px;
+        height: 16px;
+      }
+    
+      &:has(input[type="checkbox"]:checked) {
+        background-color: black;
+        color: white;
+        font-weight: bold;
+      }
+    }    
   }
+  
 }

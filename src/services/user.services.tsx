@@ -17,3 +17,13 @@ export async function getProfile() {
   return response.data;
 }
 
+export async function createCourier(courierData) {
+  const response = await api.post("/Admin/register-courier", courierData);
+  return response.data;
+}
+
+export async function createOwner(ownerData) {
+  const response = await api.post("/Admin/register-owner", ownerData);
+  return response.data;
+}
+

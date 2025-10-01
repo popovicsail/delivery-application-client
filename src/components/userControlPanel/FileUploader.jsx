@@ -11,12 +11,13 @@ function FileUploader() {
 
   return (
     <div className="form-row">
-      <label htmlFor="upload">Dodaj sliku:</label>
-      <input id="upload" type="file" onChange={handleFileChange} />
-
-      {selectedFile && (
-        <p>Izabrani fajl: {selectedFile.name}</p>
-      )}
+      <div className="form-row-file">
+        <p>Dodaj sliku:</p>
+        <input id="upload" type="file" onChange={handleFileChange} />
+        {selectedFile && (
+          <p>Izabrani fajl: {selectedFile.name}</p>
+        )}
+      </div>
     </div>
   );
 }

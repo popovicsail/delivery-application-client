@@ -122,7 +122,7 @@ img {
     flex-direction: column; /* Postavlja elemente u kolonu */
     align-items: center; /* Centriranje elemenata po horizontali */
   
-        input {
+        input,select {
             width: 500px;
             margin: 10px;
             padding: 10px;
@@ -136,6 +136,7 @@ img {
         border: 1px solid #ccc;
         border-radius: 5px;
     }
+
 }
 
 
