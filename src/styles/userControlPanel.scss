@@ -252,5 +252,66 @@ $border-color: #ddd;
       }
     }    
   }
+
+  .address-list {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 1rem;
+  
+    .address-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f3f3f3;
+      padding: 10px 15px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+  
+      .address-actions {
+        display: flex;
+        gap: 10px;
+  
+        button {
+          background-color: #222;
+          color: white;
+          border: none;
+          padding: 6px 12px;
+          border-radius: 6px;
+          cursor: pointer;
+  
+          &:hover {
+            background-color: #0090cc;
+          }
+        }
+      }
+    }
+  }
+  
+  .address-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  
+    input {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+  
+    button {
+      align-self: center;
+      padding: 10px 20px;
+      background-color: #222;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+  
+      &:hover {
+        background-color: #0090cc;
+      }
+    }
+  }
+  
   
 }

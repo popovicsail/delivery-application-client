@@ -9,6 +9,23 @@ const UsersControlPanel = () => {
   const [activeTab, setActiveTab] = useState("profil-view");
   const [profile, setProfile] = useState(null);
   const [user, setUser] = useState(null);
+  const [newAddress, setNewAddress] = useState({ street: "", city: "" });
+
+  const handleAddAddress = async (e) => {
+    e.preventDefault();
+    // Poziv ka backendu: POST /api/Addresses
+    console.log("Dodavanje adrese:", newAddress);
+  };
+  
+  const handleEditAddress = (addr) => {
+    // Otvori formu za izmenu (modal ili inline)
+    console.log("Izmena adrese:", addr);
+  };
+  
+  const handleDeleteAddress = async (id) => {
+    // Poziv ka backendu: DELETE /api/Addresses/{id}
+    console.log("Brisanje adrese:", id);
+  };
 
   const [alergens1, setAlergens1] = useState({
     gluten: false,
@@ -88,6 +105,7 @@ const UsersControlPanel = () => {
           <li className={activeTab === "profil-view" ? "active" : ""} onClick={() => setActiveTab("profil-view")}>Profil</li>
           <li className={activeTab === "izmeni-podatke-form" ? "active" : ""} onClick={() => setActiveTab("izmeni-podatke-form")}>Izmeni podatke</li>
           <li className={activeTab === "alergen-view" ? "active" : ""} onClick={() => setActiveTab("alergen-view")}>Alergeni</li>
+          <li className={activeTab === "adrese-view" ? "active" : ""} onClick={() => setActiveTab("adrese-view")}>Adrese</li>
         </ul>
       </aside>
 
@@ -176,6 +194,50 @@ const UsersControlPanel = () => {
               <div className="dugme">
                 <button type="submit">Sačuvaj alergene</button>
               </div>
+            </form>
+          </div>
+        </section>
+
+
+        <section
+          id="adrese-view"
+          className={activeTab === "adrese-view" ? "active" : ""}
+        >
+          <div className="form-section">
+            <h3>📍 Moje adrese</h3>
+
+            {!profile?.addresses || profile.addresses.length === 0 ? (
+              <p>Nemate definisane adrese.</p>
+            ) : (
+              <ul className="address-list">
+                {profile.addresses.map((addr, index) => (
+                  <li key={index} className="address-item">
+                    <span>{addr.street}, {addr.city}</span>
+                    <div className="address-actions">
+                      <button onClick={() => handleEditAddress(addr)}>Izmeni</button>
+                      <button onClick={() => handleDeleteAddress(addr.id)}>Obriši</button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            <form className="address-form" onSubmit={handleAddAddress}>
+              <input
+                type="text"
+                placeholder="Ulica i broj"
+                value={newAddress.street}
+                onChange={(e) => setNewAddress({ ...newAddress, street: e.target.value })}
+                required
+              />
+              <input
+                type="text"
+                placeholder="Grad"
+                value={newAddress.city}
+                onChange={(e) => setNewAddress({ ...newAddress, city: e.target.value })}
+                required
+              />
+              <button type="submit">Dodaj adresu</button>
             </form>
           </div>
         </section>
