@@ -22,7 +22,7 @@ const RestaurantForm = () => {
       const response = await updateRestaurant(id, data);
       setError('');
       alert('Uspesno ste izmenili restoran');
-      navigate('/restaurantsAdmin');
+      navigate(-1);
     } catch (error) {
       if (error.response) {
         if (error.response.status === 400) {
