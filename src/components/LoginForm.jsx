@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
 import "../styles/main.scss";
-import { userService } from "../services/user.services";
 import { useNavigate } from "react-router-dom";
 import { login } from "../services/auth.services"
+import { getProfile } from "../services/user.services"
 
 export const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [feedback, setFeedback] = useState("");
   const [isValid, setIsValid] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const valid = username.trim().length > 2 && password.length >= 8;
@@ -24,14 +26,26 @@ export const LoginForm = () => {
     e.preventDefault();
 
     try {
-      const user = await login(username, password);
-      alert(`Dobrodošao, ${user.username}!`);
-      useNavigate("/home")
+      await login(username, password);
+      const user = await getProfile();
+
+      setUsername(user.userName)
+      setLoggedIn(true);
+      alert(`Dobrodošao, ${username}!`);
+      navigate("/home");
     } catch (error) {
       const err = error || {};
-      alert(`Greška: ${err.message || "Nešto nije u redu."}`);
-      console.error("Login error:", err);
-    }
+      if (err.response) {
+        if (err.response.status === 401) {
+          alert("Neispravno korisničko ime ili lozinka.");
+        }
+        else {
+          alert(`Greška: ${err.message || "Nešto nije u redu."}`);
+          console.error("Login error:", err);
+        }
+      }
+      
+    } 
   };
 
   return (
@@ -43,7 +57,7 @@ export const LoginForm = () => {
           name="username"
           placeholder="Korisničko ime"
           value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          onChange={(e) => (setUsername(e.target.value))}
           required
         />
         <input
@@ -51,7 +65,7 @@ export const LoginForm = () => {
           name="password"
           placeholder="Lozinka"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e) => (setPassword(e.target.value))}
           required
         />
       </section>
