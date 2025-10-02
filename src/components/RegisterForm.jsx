@@ -1,7 +1,6 @@
 import React from "react";
 import "../styles/main.scss";
 import { useState, useEffect } from "react";
-import { userService } from "../services/user.services.tsx";
 import { useNavigate } from "react-router-dom";
 
 export const RegisterForm = () => {
