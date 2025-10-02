@@ -4,6 +4,7 @@ import "./styles/main.scss";
 import Header from "./components/Header.jsx";
 import Home from "./components/Home.jsx";
 import RestaurantsAdmin from "./pages/RestaurantsAdmin.jsx";
+import RestaurantsOwner from "./pages/RestaurantsOwner.jsx";
 import RestaurantForm from "./pages/RestaurantForm.jsx";
 import CreateRestaurant from "./pages/CreateRestaurant.jsx";
 import { RegisterForm } from "./components/RegisterForm.jsx";
@@ -20,6 +21,7 @@ const App = () => {
           <Route path="/register" element = {<RegisterForm />} />
           <Route path="/login" element = {<LoginForm />} />
           <Route path="/restaurantsAdmin" element = {<RestaurantsAdmin />}/>
+          <Route path="/restaurantsOwner" element = {<RestaurantsOwner />}/>
           <Route path="/restaurantForm/:id" element = {<RestaurantForm />}/>
           <Route path="/createRestaurant" element = {<CreateRestaurant />}/>
           <Route path="/dishes" element ={<DishesPage />} />

@@ -12,11 +12,10 @@ const Header = () => {
   const getRoles = async () => {
     if (token) {
       try {
-        const user = await getProfile();
-        setRoles(user.roles);
+        setRoles(sessionStorage.getItem("role") ? sessionStorage.getItem("role").split(",") : []);
       } catch (error) {
         console.error("Error fetching profile:", error);
-        setRole(null);
+        setRoles(null);
       }
     }
   };
@@ -41,7 +40,8 @@ const Header = () => {
           <li className={roles != 0 ? "hidden" : ""} id={current === "/login" ? "current" : ""}><Link to="/login">Prijavite se</Link></li>
           <li className={roles.includes("Administrator") ? "" : "hidden"} id={current === "/restaurantsAdmin" ? "current" : ""}><Link to="/restaurantsAdmin">Restorani</Link></li>
           <li className={roles.includes("Administrator") ? "" : "hidden"} id={current === "/createRestaurant" ? "current" : ""}><Link to="/createRestaurant">Kreiraj</Link></li>
-          <li className={roles == 0 ? "hidden" : ""}><Link to="/home" onClick={handleLogout}>Logout</Link></li>
+          <li className={roles.includes("Owner") ? "" : "hidden"} id={current === "/restaurantsOwner" ? "current" : ""}><Link to="/restaurantsOwner">Moji Restorani</Link></li>
+          <li className={roles != 0 ? "" : "hidden"}><Link to="/home" onClick={handleLogout}>Logout</Link></li>
         </ul>
       </nav>
     </header>

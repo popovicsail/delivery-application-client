@@ -10,6 +10,7 @@ const RestaurantForm = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const roles = sessionStorage.getItem("roles");
   const { register, handleSubmit, formState, reset } = useForm({
     defaultValues: {},
   });

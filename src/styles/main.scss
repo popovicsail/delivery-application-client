@@ -28,10 +28,6 @@ a, th {
     color: white;
     padding: 1rem;
     border-radius: 10px;
-  }
-  
-  .nav-list {
-    list-style: none;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -200,6 +196,9 @@ table {
   }
 }
 
+
+
+
 // RestaurantsAdmin specific styles
 
 #restaurants-admin-container {
@@ -272,6 +271,135 @@ table {
       &:hover {
         opacity: 0.8;
       }
+    }
+  }
+}
+
+
+// RestaurantsOwner specific styles
+
+#restaurants-owner-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  h3 {
+    margin: 2vh 0;
+  }
+}
+
+#cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 4rem;
+  width: 100%;
+}
+
+.restaurant-card {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  max-width: 23%;
+  height: 60vh;
+  min-height: 36rem;
+  background: #d4c1aa;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  padding: 1.2rem;
+  transition: 0.3s all;
+  &:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.158);
+  }
+  h4 {
+    color: #70593b;
+  }
+  P {
+    color: #5c5c5c;
+    font-size: large;
+    margin-left: 0.4rem;
+    margin-right: 0.4rem;
+  }
+  img {
+    border-radius: 8px;
+    width: 69%;
+    height: auto;
+    box-shadow: 2px 5px 8px #0000002f;
+  }
+  section {
+    justify-content: space-around;
+    section {
+      box-shadow: 5px 5px 15px #0000000e;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      width: fit-content;
+      padding: 0.7rem 0;
+      h4, p {
+        margin: 0.7rem 0.3rem;
+      }
+      p {
+        text-decoration: underline;
+      }
+    }
+  }
+  .restaurant-name {
+    text-align: center;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #3a2e1f;
+    margin: 0.6rem 0;
+  }
+  .r-card-contact-row {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    p {
+      color: #70593b !important;
+      font-weight: 600;
+      margin: 0;
+    }
+    .address {
+      min-width: 0;
+      word-break: break-word;
+    }
+    .phone {
+      white-space: nowrap;
+      margin-right: 0.6rem;
+    }
+  }
+  .card-desc {
+    overflow: hidden;
+    margin: 0 0.4rem;
+    margin-top: 1vh;
+    text-align: left;
+    flex-grow: 1;
+    box-shadow: 5px 5px 8px #0000000e;
+
+    white-space: pre-line;
+  }
+}
+
+.section-row.button-group {
+  justify-content: space-evenly;
+  align-items: flex-end;
+  margin-bottom: 2vh;
+  margin-top: 0;
+  padding-top: 2vh;
+  button {
+    width: 100px;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    border: none;
+    background-color: #6a4e23;
+    border-radius: 6px;
+    color: rgb(255, 243, 221);
+    box-shadow: 2px 7px 6px #00000029;
+    transition: 0.2s all;
+    &:hover {
+      background-color: #8b6935;
+      cursor: pointer;
     }
   }
 }
