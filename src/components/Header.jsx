@@ -12,10 +12,12 @@ const Header = () => {
   const getRoles = async () => {
     if (token) {
       try {
-        setRoles(sessionStorage.getItem("role") ? sessionStorage.getItem("role").split(",") : []);
+        const profile = JSON.parse(sessionStorage.getItem("myProfile"));
+        setRoles(profile.user.roles ? profile.user.roles : []);
+        console.log("User roles:", profile.user.roles);
       } catch (error) {
         console.error("Error fetching profile:", error);
-        setRoles(null);
+        setRoles([]);
       }
     }
   };
@@ -26,6 +28,7 @@ const Header = () => {
 
   const handleLogout = () => {
     sessionStorage.removeItem("token");
+    sessionStorage.removeItem("myProfile");
     setRoles([]);
     alert("Uspešno ste se odjavili.");
   }

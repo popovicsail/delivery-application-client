@@ -10,6 +10,7 @@ export const LoginForm = () => {
   const [feedback, setFeedback] = useState("");
   const [isValid, setIsValid] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,12 +27,13 @@ export const LoginForm = () => {
     e.preventDefault();
 
     try {
+      setLoading(true);
       await login(username, password);
       const user = await getProfile();
-      sessionStorage.setItem("roles", user.roles);
       sessionStorage.setItem("myProfile", JSON.stringify({user}));
       setUsername(user.userName)
       setLoggedIn(true);
+      setLoading(false);
       alert(`Dobrodošao, ${username}!`);
       navigate("/home");
     } catch (error) {
@@ -45,14 +47,17 @@ export const LoginForm = () => {
           console.error("Login error:", err);
         }
       }
-      
     } 
+    finally {
+        setLoading(false);
+    }
   };
 
   return (
     <form className="formaLogin" onSubmit={handleSubmit}>
       <section className="form-section">
         <h2>🔐 Prijava</h2>
+        {loading && <div id="loadingSpinner" className="spinner"></div>}
         <input
           type="text"
           name="username"
