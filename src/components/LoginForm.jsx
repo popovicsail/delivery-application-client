@@ -29,6 +29,7 @@ export const LoginForm = () => {
       await login(username, password);
       const user = await getProfile();
       sessionStorage.setItem("roles", user.roles);
+      sessionStorage.setItem("myProfile", JSON.stringify({user}));
       setUsername(user.userName)
       setLoggedIn(true);
       alert(`Dobrodošao, ${username}!`);
