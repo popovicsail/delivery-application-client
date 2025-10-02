@@ -10,7 +10,7 @@ export interface Dish {
   name: string;
   description?: string;
   price: number;
-  imageUrl?: string;
+  pictureURL?: string;
   type: string;
   extras?: Extra[];
 }
@@ -38,5 +38,11 @@ export const dishService = {
 
   delete: async (id: number): Promise<void> => {
     await api.delete(`/dishes/${id}`);
+  },
+
+  //Dish group
+  createGroup: async (extra: Extra): Promise<Extra> => {
+    const response = await api.post<Extra>("/dishOptionGroups", extra);
+    return response.data;
   },
 };

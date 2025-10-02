@@ -6,26 +6,26 @@ const DishGroupForm = ({ dishId, onClose }) => {
   const { register, control, handleSubmit, reset, formState: { errors } } = useForm({
     defaultValues: {
       type: "independent",
-      groupName: "",
-      items: [{ name: "", price: "" }],
+      name: "",
+      dishOptions: [{ name: "", price: "" }],
     },
   });
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "items",
+    name: "dishOptions",
   });
 
   const saveGroup = async (data, addNew = false) => {
     try {
       const payload = { ...data, dishId };
-      //await dishGroupService.create(payload);
+      await dishService.createGroup(payload);
 
       if (addNew) {
         reset({
           type: "independent",
-          groupName: "",
-          items: [{ name: "", price: "" }],
+          name: "",
+          dishOptions: [{ name: "", price: "" }],
         });
       } else {
         onClose();
@@ -71,7 +71,7 @@ const DishGroupForm = ({ dishId, onClose }) => {
           <div style={{ display: "flex", flexDirection: "column" }}>
             <label style={{ marginBottom: "5px" }}>Naziv grupe: </label>
             <input 
-            {...register("groupName", { required: "Naziv grupe je obavezan" })} 
+            {...register("name", { required: "Naziv grupe je obavezan" })} 
             placeholder="Naziv grupe"
             style={{
             padding: "10px",
@@ -81,7 +81,7 @@ const DishGroupForm = ({ dishId, onClose }) => {
             resize: "vertical",
           }}
             />
-            {errors.groupName && (<p style={{ color: "red", marginTop: "5px" }}> {errors.groupName.message}</p>
+            {errors.name && (<p style={{ color: "red", marginTop: "5px" }}> {errors.name.message}</p>
             )} 
           </div>
 
@@ -92,7 +92,7 @@ const DishGroupForm = ({ dishId, onClose }) => {
               <div>
                 <input 
                 placeholder="Naziv" 
-                {...register(`items.${index}.name`, { required: "Naziv stavke je obavezan" })} 
+                {...register(`dishOptions.${index}.name`, { required: "Naziv stavke je obavezan" })} 
                 style={{
                   padding: "10px",
                   borderRadius: "6px",
@@ -100,9 +100,9 @@ const DishGroupForm = ({ dishId, onClose }) => {
                   fontSize: "16px",
                 }}
               />
-              {errors.items?.[index]?.name && (
+              {errors.dishOptions?.[index]?.name && (
                 <p style={{ color: "red", marginTop: "5px" }}>
-                  {errors.items[index].name.message}
+                  {errors.dishOptions[index].name.message}
                 </p>
               )}
               </div>
@@ -110,7 +110,7 @@ const DishGroupForm = ({ dishId, onClose }) => {
                 <input 
                 type="number" 
                 placeholder="Cena" 
-                {...register(`items.${index}.price`, { required: "Cena je obavezna" })} 
+                {...register(`dishOptions.${index}.price`, { required: "Cena je obavezna" })} 
                 style={{
                   padding: "10px",
                   borderRadius: "6px",
@@ -118,9 +118,9 @@ const DishGroupForm = ({ dishId, onClose }) => {
                   fontSize: "16px",
                 }}
               />
-              {errors.items?.[index]?.price && (
+              {errors.dishOptions?.[index]?.price && (
                 <p style={{ color: "red", marginTop: "5px" }}>
-                  {errors.items[index].price.message}
+                  {errors.dishOptions[index].price.message}
                 </p>
               )}
               </div>

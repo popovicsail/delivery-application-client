@@ -3,73 +3,34 @@ import DishForm from "./DishForm";
 import DishGroupForm from "./DishGroupForm";
 import { dishService } from "../../services/dishes.services";
 
-const jela = [
-  {
-    id: "1",
-    name: "Pizza Margherita",
-    description: "Klasična pizza sa sirom i paradajz sosom.",
-    price: 750,
-    type: "Italijanska"
-  },
-  {
-    id: "2",
-    name: "Pasta Carbonara",
-    description: "Pasta sa slaninom, jajetom i parmezanom.",
-    price: 890,
-    type: "Italijanska"
-  },
-  {
-    id: "3",
-    name: "Sushi",
-    description: "Razni nigiri i maki rolnice.",
-    price: 1200,
-    type: "Japanska"
-  },
-  {
-    id: "4",
-    name: "Ramen",
-    description: "Tradicionalna supa sa rezancima i povrćem.",
-    price: 950,
-    type: "Japanska"
-  },
-  {
-    id: "5",
-    name: "Cheeseburger",
-    description: "Burger sa sirom i pomfritom.",
-    price: 650,
-    type: "Američka"
-  },
-]; // zameniti sa endpointom
-
 const DishesPage = () => {
-  const [dishes, setDishes] = useState(jela);
+  const [dishes, setDishes] = useState([]);
+  const [newDishId, setNewDishId] = useState([]);
   const [selectedDish, setSelectedDish] = useState(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isDishGroupOpen, setIsDishGroupOpen] = useState(false);
 
-  sessionStorage.setItem("token", JSON.stringify({name: "test", role: "vlasnik"}));
-  const token = sessionStorage.getItem("token"); 
-  const role = token ? JSON.parse(token).role : null;
+  const myProfile = sessionStorage.getItem("myProfile"); 
+  console.log("profile", JSON.parse(myProfile))
+  const isRoleAdmin = JSON.parse(myProfile).user.roles.includes("Administrator") || JSON.parse(myProfile).user.roles.includes("Owner")
 
-  // useEffect(() => {
-  //   const fetchDishes = async () => {
-  //     try {
-  //       const data = await dishService.getAll();
-  //       setDishes(data);
-  //     } catch (err) {
-  //       console.error("Greška pri učitavanju jela:", err);
-  //     }
-  //   };
-  //   fetchDishes();
-  // }, []);
+  useEffect(() => {
+    const fetchDishes = async () => {
+      try {
+        const data = await dishService.getAll();
+        setDishes(data);
+      } catch (err) {
+        console.error("Greška pri učitavanju jela:", err);
+      }
+    };
+    fetchDishes();
+  }, []);
 
   const grouped = dishes.reduce((a, dish) => {
     if (!a[dish.type]) a[dish.type] = [];
     a[dish.type].push(dish);
     return a;
   }, {});
-
-  console.log("grouped", grouped)
 
   const handleSave = async (dish) => {
     try {
@@ -90,9 +51,14 @@ const DishesPage = () => {
     }
   };
 
+  const getDishData = async (id) =>{
+    const data = await dishService.getById(id);
+    console.log("data", data)
+  }
+
   const deleteDish = async (id) => {
     try {
-      //await dishService.delete(id);
+      await dishService.delete(id);
       setDishes((prev) => prev.filter((d) => d.id !== id));
     } catch (err) {
       console.error("Greška pri brisanju jela:", err);
@@ -103,9 +69,9 @@ const DishesPage = () => {
     <div style={{ padding: "20px" }}>
       <h1 style={{ fontSize: "28px", marginBottom: "20px" }}>Jelovnik:</h1>
       
-      {role === "vlasnik" && (
+      {isRoleAdmin && (
         <button 
-          onClick={() => { setSelectedDish(null); setIsFormOpen(true); }}
+          onClick={() => { setSelectedDish(null); setIsFormOpen(true);}}
           style={{
             marginBottom: "20px",
             padding: "8px 14px",
@@ -130,10 +96,10 @@ const DishesPage = () => {
                 <h2 style={{ margin: "0 0 5px" }}>{dish.name}</h2>
                 <p style={{ fontSize: "14px" }}>{dish.description}</p>
                 <p style={{ marginTop: "8px", fontWeight: "bold" }}>{dish.price} RSD</p>
-                {role === "vlasnik" && (
+                {isRoleAdmin && (
                   <div style={{display: "flex", justifyContent: "space-around"}}>
                     <button 
-                      onClick={() => { setSelectedDish(dish); setIsFormOpen(true); }}
+                      onClick={() => { setSelectedDish(dish); setIsFormOpen(true); getDishData("77777777-7777-7777-7777-777777777777")}}
                       style={{
                         padding: "8px 14px",
                         borderRadius: "6px",

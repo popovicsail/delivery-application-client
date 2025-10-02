@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 
 const DishForm = ({ jelo, onClose, onSave }) => {
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
+    const menuId = "55555555-5555-5555-5555-555555555555";
 
   useEffect(() => {
     if (jelo) {
@@ -12,7 +13,9 @@ const DishForm = ({ jelo, onClose, onSave }) => {
         name: "",
         description: "",
         price: "",
-        type: "" });
+        pictureURL: "",
+        type: "",
+        menuId: menuId });
     }
   }, [jelo, reset]);
 
@@ -131,7 +134,7 @@ const DishForm = ({ jelo, onClose, onSave }) => {
         <input 
           type="text" 
           placeholder="Unesite URL slike" 
-          {...register("image")} 
+          {...register("pictureURL")} 
           style={{
             padding: "10px",
             borderRadius: "6px",
@@ -139,9 +142,9 @@ const DishForm = ({ jelo, onClose, onSave }) => {
             fontSize: "16px",
           }}
         />
-        {jelo?.image && (
+        {jelo?.pictureURL && (
           <img 
-            src={jelo.image} alt="Preview" style={{ maxWidth: "150px", marginTop: "10px" }} 
+            src={jelo.pictureURL} alt="Preview" style={{ maxWidth: "150px", marginTop: "10px" }} 
           />
         )}
       </div>
