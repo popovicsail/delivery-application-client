@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import FileUploader from "./FileUploader";
 import { useNavigate } from "react-router-dom";
 import { getProfile } from "../../services/user.services.tsx";
+import * as userService from "../../services/user.services.tsx";
 import "../../styles/userControlPanel.scss";
 
 const UsersControlPanel = () => {
@@ -9,45 +10,34 @@ const UsersControlPanel = () => {
   const [activeTab, setActiveTab] = useState("profil-view");
   const [profile, setProfile] = useState(null);
   const [user, setUser] = useState(null);
-  const [newAddress, setNewAddress] = useState({ street: "", city: "" });
+  const [newAddress, setNewAddress] = useState({ streetAndNumber: "", city: "" ,postalCode: ""});
+  const [editingAddress, setEditingAddress] = useState(null);
+  const [currentAddress, setCurrentAddress] = useState(null);
+  const [alergens, setAlergens] = useState([]);
 
-  const handleAddAddress = async (e) => {
-    e.preventDefault();
-    // Poziv ka backendu: POST /api/Addresses
-    console.log("Dodavanje adrese:", newAddress);
-  };
+
   
-  const handleEditAddress = (addr) => {
-    // Otvori formu za izmenu (modal ili inline)
-    console.log("Izmena adrese:", addr);
-  };
-  
-  const handleDeleteAddress = async (id) => {
-    // Poziv ka backendu: DELETE /api/Addresses/{id}
-    console.log("Brisanje adrese:", id);
-  };
-
-  const [alergens1, setAlergens1] = useState({
-    gluten: false,
-    lactose: false,
-    nuts: false,
-    soy: false,
-    eggs: false,
-    fish: false,
-  });
-
-  const [alergens2, setAlergens2] = useState({
-    shellfish: false,
-    sesame: false,
-    celery: false,
-    mustard: false,
-    sulfurDioxide: false,
-    lupin: false,
-  });
 
   useEffect(() => {
     const token = sessionStorage.getItem("token");
     if (!token) return;
+
+    userService.getMyAddresses()
+      .then((data) => {
+        console.log("Učitane adrese:", data);
+        setCurrentAddress({ addresses: data });
+      })
+      .catch((err) => {
+        console.error("Greška pri učitavanju adresa:", err);
+        setCurrentAddress({ addresses: [] });
+      });
+
+    userService.getAllergens()
+      .then((data) => {
+        const enriched = data.map(a => ({ ...a, selected: false }));
+        setAlergens(enriched);
+      })
+      .catch((err) => console.error("Greška pri učitavanju alergena:", err));
 
     getProfile()
       .then((data) => {
@@ -60,10 +50,6 @@ const UsersControlPanel = () => {
           email: data.email || "",
           file: null
         });
-
-        // Ako backend vraća alergene:
-        // setAlergens1(data.alergens1 || defaultAlergens1);
-        // setAlergens2(data.alergens2 || defaultAlergens2);
       })
       .catch((err) => {
         console.error("Greška pri učitavanju profila:", err);
@@ -72,6 +58,7 @@ const UsersControlPanel = () => {
       });
   }, [navigate]);
 
+  
   const handleFileSelect = (file) => {
     setUser((prev) => ({ ...prev, file }));
   };
@@ -81,22 +68,121 @@ const UsersControlPanel = () => {
     setUser((prev) => ({ ...prev, [id]: value }));
   };
 
+  const toggleAlergen = (id) => {
+    setAlergens(prev =>
+      prev.map(a =>
+        a.id === id ? { ...a, selected: !a.selected } : a
+      )
+    );
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
     const payload = {
-      ...user,
-      alergens: [
-        ...Object.entries(alergens1),
-        ...Object.entries(alergens2)
-      ]
-        .filter(([_, selected]) => selected)
-        .map(([name]) => name)
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
     };
 
     console.log("Podaci za slanje:", payload);
-    // Poziv ka backendu za ažuriranje profila
+    userService.updateProfile(payload)
+      .then(() => alert("Podaci su uspešno ažurirani."))
+      .catch((err) => {
+        console.error("Greška pri ažuriranju profila:", err);
+        alert("Došlo je do greške prilikom ažuriranja profila.");
+      });
   };
+
+  const handleSubmitAlergens = (e) => {
+    e.preventDefault();
+  
+    const payload = {
+      AllergenIds: alergens.filter(a => a.selected).map(a => a.id)
+    };
+  
+    userService.putMyAllergens(payload)
+      .then(() => alert("Alergeni su uspešno ažurirani."))
+      .catch((err) => {
+        console.error("Greška pri ažuriranju alergena:", err);
+        alert("Došlo je do greške prilikom ažuriranja alergena.");
+      });
+  
+    console.log("Podaci za slanje:", payload);
+  };
+
+
+  const handleAddAddress = async (e) => {
+    e.preventDefault();
+    console.log("Dodavanje adrese:", newAddress);
+    userService.addAddress(newAddress)
+      .then((addedAddress) => {
+        setCurrentAddress((prev) => ({
+          ...prev,
+          addresses: [...(prev.addresses || []), addedAddress]
+        }));
+        setNewAddress({ StreetAndNumber: "", City: "" ,PostalCode: ""});
+        alert("Adresa je uspešno dodata.");
+      })
+      .catch((err) => {
+        console.error("Greška pri dodavanju adrese:", err);
+        alert("Došlo je do greške prilikom dodavanja adrese.");
+      });
+  };
+
+  const handleEditAddress = (addr) => {
+    setEditingAddress(addr);
+    setNewAddress({
+      streetAndNumber: addr.streetAndNumber,
+      city: addr.city,
+      postalCode: addr.postalCode
+    });
+  };
+
+  const handleUpdateAddress = async (e) => {
+    e.preventDefault();
+    if (!editingAddress) return;
+  
+    const payload = {
+      StreetAndNumber: newAddress.streetAndNumber,
+      City: newAddress.city,
+      PostalCode: newAddress.postalCode
+    };
+  
+    try {
+      const updated = await userService.updateAddress(editingAddress.id, payload);
+      setCurrentAddress((prev) => ({
+        ...prev,
+        addresses: prev.addresses.map((a) =>
+          a.id === editingAddress.id ? updated : a
+        )
+      }));
+      setEditingAddress(null);
+      setNewAddress({ StreetAndNumber: "", City: "", PostalCode: "" });
+      alert("Adresa je uspešno izmenjena.");
+    } catch (err) {
+      console.error("Greška pri izmeni adrese:", err);
+      alert("Došlo je do greške prilikom izmene adrese.");
+    }
+  };
+  
+
+  const handleDeleteAddress = async (id) => {
+    if (!window.confirm("Da li ste sigurni da želite da obrišete ovu adresu?")) return;
+  
+    try {
+      await userService.deleteAddress(id);
+      setCurrentAddress((prev) => ({
+        ...prev,
+        addresses: prev.addresses.filter((a) => a.id !== id)
+      }));
+      alert("Adresa je uspešno obrisana.");
+    } catch (err) {
+      console.error("Greška pri brisanju adrese:", err);
+      alert("Došlo je do greške prilikom brisanja adrese.");
+    }
+  };
+  
 
   return (
     <div className="account-panel">
@@ -146,10 +232,6 @@ const UsersControlPanel = () => {
                 <label htmlFor="email">Email:</label>
                 <input type="email" id="email" value={user.email} onChange={handleInputChange} required />
               </div>
-              <div className="form-row">
-                <label htmlFor="password">Lozinka:</label>
-                <input type="password" id="password" value={user.password} onChange={handleInputChange} required />
-              </div>
               <div className="upload-section">
                 <FileUploader onFileSelect={handleFileSelect} />
               </div>
@@ -159,35 +241,20 @@ const UsersControlPanel = () => {
         </section>
 
         {/* Alergeni */}
-        <section id="alergen-view" className={activeTab === "alergen-view" ? "active" : ""}>
+       {/* Alergeni */}
+       <section id="alergen-view" className={activeTab === "alergen-view" ? "active" : ""}>
           <div className="form-section">
             <h3>🧬 Alergeni</h3>
-            <form className="alergenForm" onSubmit={handleSubmit}>
+            <form className="alergenForm" onSubmit={handleSubmitAlergens}>
               <div className="alergen1">
-                {Object.entries(alergens1).map(([key, value]) => (
-                  <label key={key} className={`checkbox-label ${value ? "selected" : ""}`}>
+                {alergens.map((a) => (
+                  <label key={a.id} className={`checkbox-label ${a.selected ? "selected" : ""}`}>
                     <input
                       type="checkbox"
-                      checked={value}
-                      onChange={() =>
-                        setAlergens1((prev) => ({ ...prev, [key]: !prev[key] }))
-                      }
+                      checked={a.selected}
+                      onChange={() => toggleAlergen(a.id)}
                     />
-                    {key.charAt(0).toUpperCase() + key.slice(1)}
-                  </label>
-                ))}
-              </div>
-              <div className="alergen2">
-                {Object.entries(alergens2).map(([key, value]) => (
-                  <label key={key} className={`checkbox-label ${value ? "selected" : ""}`}>
-                    <input
-                      type="checkbox"
-                      checked={value}
-                      onChange={() =>
-                        setAlergens2((prev) => ({ ...prev, [key]: !prev[key] }))
-                      }
-                    />
-                    {key.charAt(0).toUpperCase() + key.slice(1)}
+                    {a.name} <span className="allergen-type">({a.type})</span>
                   </label>
                 ))}
               </div>
@@ -206,28 +273,30 @@ const UsersControlPanel = () => {
           <div className="form-section">
             <h3>📍 Moje adrese</h3>
 
-            {!profile?.addresses || profile.addresses.length === 0 ? (
-              <p>Nemate definisane adrese.</p>
-            ) : (
-              <ul className="address-list">
-                {profile.addresses.map((addr, index) => (
-                  <li key={index} className="address-item">
-                    <span>{addr.street}, {addr.city}</span>
-                    <div className="address-actions">
-                      <button onClick={() => handleEditAddress(addr)}>Izmeni</button>
-                      <button onClick={() => handleDeleteAddress(addr.id)}>Obriši</button>
-                    </div>
-                  </li>
-                ))}
-              </ul>
+            {!currentAddress?.addresses || currentAddress.addresses.length === 0 ? (
+                  <p>Nemate definisane adrese.</p>
+                ) : (
+                  <ul className="address-list">
+                    {currentAddress.addresses.map((addr, index) => (
+                      <li key={index} className="address-item">
+                        <div className="address-text">
+                          <span>{addr.streetAndNumber}, {addr.city} {addr.postalCode}</span>
+                        </div>
+                        <div className="address-actions">
+                          <button onClick={() => handleEditAddress(addr)}>Izmeni</button>
+                          <button onClick={() => handleDeleteAddress(addr.id)}>Obriši</button>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
             )}
 
-            <form className="address-form" onSubmit={handleAddAddress}>
+            <form className="address-form" onSubmit={editingAddress ? handleUpdateAddress : handleAddAddress}>
               <input
                 type="text"
                 placeholder="Ulica i broj"
-                value={newAddress.street}
-                onChange={(e) => setNewAddress({ ...newAddress, street: e.target.value })}
+                value={newAddress.streetAndNumber}
+                onChange={(e) => setNewAddress({ ...newAddress, streetAndNumber: e.target.value })}
                 required
               />
               <input
@@ -237,7 +306,24 @@ const UsersControlPanel = () => {
                 onChange={(e) => setNewAddress({ ...newAddress, city: e.target.value })}
                 required
               />
-              <button type="submit">Dodaj adresu</button>
+              <input
+                type="text"
+                placeholder="Poštanski broj"
+                value={newAddress.postalCode}
+                onChange={(e) => setNewAddress({ ...newAddress, postalCode: e.target.value })}
+                required
+              />
+              <button type="submit">
+                {editingAddress ? "Sačuvaj izmene" : "Dodaj adresu"}
+              </button>
+              {editingAddress && (
+                <button type="button" onClick={() => {
+                  setEditingAddress(null);
+                  setNewAddress({ StreetAndNumber: "", City: "", PostalCode: "" });
+                }}>
+                  Otkaži
+                </button>
+              )}
             </form>
           </div>
         </section>
