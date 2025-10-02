@@ -8,6 +8,7 @@ import RestaurantForm from "./pages/RestaurantForm.jsx";
 import CreateRestaurant from "./pages/CreateRestaurant.jsx";
 import { RegisterForm } from "./components/RegisterForm.jsx";
 import { LoginForm } from "./components/LoginForm.jsx";
+import DishesPage from "./pages/Dishes/DishesPage.jsx";
 
 const App = () => {
   return(
@@ -21,6 +22,7 @@ const App = () => {
           <Route path="/restaurantsAdmin" element = {<RestaurantsAdmin />}/>
           <Route path="/restaurantForm/:id" element = {<RestaurantForm />}/>
           <Route path="/createRestaurant" element = {<CreateRestaurant />}/>
+          <Route path="/dishes" element ={<DishesPage />} />
         </Routes>
     </BrowserRouter>
     </div>
