@@ -3,10 +3,11 @@ import { Routes, Route, BrowserRouter } from "react-router-dom";
 import "./styles/main.scss";
 import Header from "./components/Header.jsx";
 import Home from "./components/Home.jsx";
+import RestaurantsAdmin from "./pages/RestaurantsAdmin.jsx";
+import RestaurantForm from "./pages/RestaurantForm.jsx";
+import CreateRestaurant from "./pages/CreateRestaurant.jsx";
 import { RegisterForm } from "./components/RegisterForm.jsx";
 import { LoginForm } from "./components/LoginForm.jsx";
-import AdminPage from "./components/adminPage/AdminPanelRender.jsx";
-import { UserForm } from "./components/adminPage/AdminUserCeationForm.jsx";
 
 const App = () => {
   return(
@@ -17,8 +18,9 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/register" element = {<RegisterForm />} />
           <Route path="/login" element = {<LoginForm />} />
-          <Route path="/admin" element = {<AdminPage />} />
-          <Route path="/adminCreate" element ={<UserForm />} />
+          <Route path="/restaurantsAdmin" element = {<RestaurantsAdmin />}/>
+          <Route path="/restaurantForm/:id" element = {<RestaurantForm />}/>
+          <Route path="/createRestaurant" element = {<CreateRestaurant />}/>
         </Routes>
     </BrowserRouter>
     </div>

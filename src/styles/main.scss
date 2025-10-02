@@ -84,15 +84,19 @@ img {
     margin-top: 50px;
   }
   
-  .spinner {
-    border: 6px solid #f3f3f3;
-    border-top: 6px solid #3498db;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    animation: spin 1s linear infinite;
-    margin-bottom: 10px;
-  }
+ .spinner {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  margin: 10px auto;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  top: 40%;
+  left: 50%;
+  color: #155ce0;
+}
   
   @keyframes spin {
     0% { transform: rotate(0deg); }
@@ -154,7 +158,6 @@ img {
 
 
 // Tabela - generalni stilovi
-
 table {
   border-collapse: collapse;
   border: 2px solid $primary-color;
@@ -188,6 +191,82 @@ table {
         &:hover {
           opacity: 0.8;
         }
+      }
+    }
+  }
+}
+
+// RestaurantsAdmin specific styles
+
+#restaurants-admin-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  h3 {
+    margin: 4vh 0;
+    text-decoration: underline;
+  }
+  table {
+    width: fit-content;
+  }
+}
+
+
+// RestaurantForm specific styles
+
+.restaurants-form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  h3 {
+    text-align: center;
+    margin: 0.6rem 0;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin: 4rem;
+    padding: 1rem;
+    border: 2px solid rgb(99, 99, 99);
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.288);
+    background-color: #dae0d7;
+    
+    input, select, textarea {
+      box-sizing: border-box;
+      padding: 0.6rem 1.2rem;
+      border: 1px solid #adaaaa;
+      border-radius: 3px;
+      width: 300px;
+      align-self: center;
+      &:focus {
+        border: 2px solid #4f8aa1;
+        outline: none;
+        box-shadow: 0 0 5px #4f8aa1;
+        padding: calc(0.6rem - 1px) calc(1.2rem - 1px);
+      }
+    }
+    
+    label {
+      margin-left: 0.4rem;
+      align-self: flex-start;
+    }
+
+    button {
+      width: fit-content;
+      padding: 0.6rem 1.2rem;
+      background-color: #4f8aa1;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+
+      &:hover {
+        opacity: 0.8;
       }
     }
   }
