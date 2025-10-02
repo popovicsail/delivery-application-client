@@ -80,6 +80,7 @@ const DishForm = ({ jelo, onClose, onSave }) => {
         <textarea
           {...register("description", { required: "Opis jela je obavezan" })}
           rows={4}
+          placeholder="Opis jela..." 
           style={{
             padding: "10px",
             borderRadius: "6px",
@@ -95,6 +96,7 @@ const DishForm = ({ jelo, onClose, onSave }) => {
         <label style={{ marginBottom: "5px" }}>Cena:</label>
         <input
           type="number"
+          placeholder="123" 
           {...register("price", {required: "Cena je obavezna", min: { value: 1, message: "Cena mora biti veća od 0" },
           })}
           style={{
@@ -111,6 +113,7 @@ const DishForm = ({ jelo, onClose, onSave }) => {
         <label style={{ marginBottom: "5px" }}>Tip kuhinje:</label>
         <input
           type="text"
+          placeholder="Italijanska" 
           {...register("type", { required: "Tip kuhinje je obavezan" })}
           style={{
             padding: "10px",
@@ -122,19 +125,26 @@ const DishForm = ({ jelo, onClose, onSave }) => {
         {errors.type && <p style={{ color: "red", marginTop: "5px" }}>{errors.type.message}</p>}
       </div>
 
-      <div>
-        <label>Fotografija jela:</label>
+      {/* Zameniti kasnije kada se promeni back da se koristi type file a ne text */}
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        <label style={{ marginBottom: "5px" }}>URL fotografije jela:</label>
         <input 
-          type="file" 
-          accept="image/*" 
+          type="text" 
+          placeholder="Unesite URL slike" 
           {...register("image")} 
+          style={{
+            padding: "10px",
+            borderRadius: "6px",
+            border: "1px solid #ccc",
+            fontSize: "16px",
+          }}
         />
         {jelo?.image && (
-          <img src={jelo.image} alt="Preview" style={{ maxWidth: "150px", marginTop: "10px" }} />
+          <img 
+            src={jelo.image} alt="Preview" style={{ maxWidth: "150px", marginTop: "10px" }} 
+          />
         )}
       </div>
-
-      
 
       <div style={{ display: "flex", justifyContent: "flex-end", gap: "15px", marginTop: "10px" }}>
         <button

@@ -8,6 +8,7 @@ import { LoginForm } from "./components/LoginForm.jsx";
 import AdminPage from "./components/adminPage/AdminPanelRender.jsx";
 import { UserForm } from "./components/adminPage/AdminUserCeationForm.jsx";
 import DishesPage from "./pages/Dishes/DishesPage.jsx";
+import DishGroupForm from "./pages/Dishes/DishGroupForm.jsx";
 
 const App = () => {
   return(
@@ -21,6 +22,7 @@ const App = () => {
           <Route path="/admin" element = {<AdminPage />} />
           <Route path="/adminCreate" element ={<UserForm />} />
           <Route path="/dishes" element ={<DishesPage />} />
+          <Route path="/dishesForm" element ={<DishGroupForm />} />
         </Routes>
     </BrowserRouter>
     </div>
