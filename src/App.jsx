@@ -7,6 +7,7 @@ import { RegisterForm } from "./components/RegisterForm.jsx";
 import { LoginForm } from "./components/LoginForm.jsx";
 import AdminPage from "./components/adminPage/AdminPanelRender.jsx";
 import { UserForm } from "./components/adminPage/AdminUserCeationForm.jsx";
+import DishesPage from "./pages/Dishes/DishesPage.jsx";
 
 const App = () => {
   return(
@@ -19,6 +20,7 @@ const App = () => {
           <Route path="/login" element = {<LoginForm />} />
           <Route path="/admin" element = {<AdminPage />} />
           <Route path="/adminCreate" element ={<UserForm />} />
+          <Route path="/dishes" element ={<DishesPage />} />
         </Routes>
     </BrowserRouter>
     </div>
