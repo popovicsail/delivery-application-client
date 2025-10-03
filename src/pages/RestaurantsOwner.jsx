@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
-import { getMyRestaurants, deleteRestaurant } from "../services/restaurant.services.tsx"
+import { getMyRestaurants, deleteRestaurant, getImage } from "../services/restaurant.services.tsx"
 import "../styles/main.scss";
 
 const RestaurantsOwner = () => {
@@ -84,10 +84,10 @@ const RestaurantsOwner = () => {
         {restaurants.map((restaurant) => (
           <div key={restaurant.id} className="restaurant-card">
             <section className="section-row">
-              <img src={restaurant.imageUrl || "https://fastly.picsum.photos/id/635/450/300.jpg?hmac=uihVhPLLXIWpSq1VatqfJ0Q1CuPP-2CQG54M43Da6do"} alt={restaurant.name} />
+              <img src={restaurant.image || "https://fastly.picsum.photos/id/635/450/300.jpg?hmac=uihVhPLLXIWpSq1VatqfJ0Q1CuPP-2CQG54M43Da6do"} alt={restaurant.name}/>
               <section>
                 <h4>Radnim danima</h4>
-                <p>{restaurant.baseWorkSched.weekendStart.slice(0, 5) + " - " + restaurant.baseWorkSched.weekendEnd.slice(0, 5)}h</p>
+                <p>{restaurant.baseWorkSched.workDayStart.slice(0, 5) + " - " + restaurant.baseWorkSched.workDayEnd.slice(0, 5)}h</p>
                 <h4>{getWeekendTitle(restaurant.baseWorkSched)}</h4>
                 <p>{getWeekendTime(restaurant.baseWorkSched)}</p>
               </section>

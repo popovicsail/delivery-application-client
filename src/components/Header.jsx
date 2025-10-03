@@ -14,7 +14,6 @@ const Header = () => {
       try {
         const profile = JSON.parse(sessionStorage.getItem("myProfile"));
         setRoles(profile.user.roles ? profile.user.roles : []);
-        console.log("User roles:", profile.user.roles);
       } catch (error) {
         console.error("Error fetching profile:", error);
         setRoles([]);
