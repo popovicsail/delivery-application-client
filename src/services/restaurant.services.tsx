@@ -35,3 +35,19 @@ export const createRestaurant = async (data: any) => {
     
     return response.data;
 }
+
+export const uploadImage = async (id: number, image: any) => {
+  const response = await api.post(`restaurants/${id}/image`, image, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  });
+  return response.data;
+}
+
+export const getImage = async (id: number) => {
+  const response = await api.get(`restaurants/${id}/image`, {
+    responseType: 'blob'
+  });
+  return response.data;
+}

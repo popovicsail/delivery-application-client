@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { getOneRestaurant, updateRestaurant } from "../services/restaurant.services.tsx"
 import "../styles/main.scss";
 
@@ -10,16 +10,56 @@ const RestaurantForm = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const roles = sessionStorage.getItem("roles");
-  const { register, handleSubmit, formState, reset } = useForm({
-    defaultValues: {},
-  });
+  const profile = JSON.parse(sessionStorage.getItem("myProfile"));
+  const roles = profile ? profile.user.roles : [];
+  const { register, handleSubmit, formState, reset, control, watch } = useForm({
+    defaultValues: {
+    name: '',
+    description: '',
+    phoneNumber: '',
+    address: { streetAndNumber: '', city: '', postalCode: '' },
+    baseWorkSched: roles.includes("Owner") ? { saturday: false, sunday: false, weekendStart: '', weekendEnd: '', workDayStart: '', workDayEnd: '' } : null,
+    file: null
+  }
+});
+
+  const isCheckedOne = roles.includes("Owner") ? watch("baseWorkSched.saturday") : false;
+  const isCheckedTwo = roles.includes("Owner") ? watch("baseWorkSched.sunday") : false;
 
   const onSubmit = async (data) => {
-    const newRestaurant = { ...restaurant, ...data };
+    //const newRestaurant = { ...restaurant, ...data };
+    const formData = new FormData();
+    formData.append("Id", id);
+    formData.append("Name", data.name);
+    formData.append("Address.StreetAndNumber", data.address.streetAndNumber);
+    formData.append("Address.City", data.address.city);
+    formData.append("Address.PostalCode", data.address.postalCode);
+    formData.append("Description", data.description);
+    formData.append("PhoneNumber", data.phoneNumber);
+    if (roles.includes("Owner")) {
+      formData.append("BaseWorkSched.WorkDayStart", data.baseWorkSched.workDayStart);
+      formData.append("BaseWorkSched.WorkDayEnd", data.baseWorkSched.workDayEnd);
+      if (isCheckedOne || isCheckedTwo) {
+        formData.append("BaseWorkSched.WeekendStart",data.baseWorkSched.weekendStart);
+        formData.append("BaseWorkSched.WeekendEnd", data.baseWorkSched.weekendEnd);
+        if (isCheckedOne) {
+          formData.append("BaseWorkSched.Saturday", true);
+        }
+        if (isCheckedTwo) {
+          formData.append("BaseWorkSched.Sunday", true);
+        }
+      }
+      else {
+        formData.append("BaseWorkSched.WeekendStart", "00:00:00");
+        formData.append("BaseWorkSched.WeekendEnd", "00:00:00");
+      }
+    }
+    if (data.file) {
+      formData.append("file", data.file);
+    }
     try {
       setLoading(true);
-      const response = await updateRestaurant(id, data);
+      const response = await updateRestaurant(id, formData);
       setError('');
       alert('Uspesno ste izmenili restoran');
       navigate(-1);
@@ -72,32 +112,75 @@ const RestaurantForm = () => {
     }
   }, [id]);
 
-  return(
+
+  return (
     <div className="restaurants-form-container">
-      
-      
       <form onSubmit={handleSubmit(onSubmit)}>
         <h3>Forma za dodavanje restorana</h3>
-        {loading && <div id="loadingSpinner" className="spinner"></div>}
-        {error && <p style={{ color: 'red', margin: 0 }}>{error}</p>}
-        <label>Naziv:</label>
-        <input type="text" {...register("name", {required: 'Ovo polje je obavezno' })} />
-        {formState.errors.name && <p style={{ color: 'red', margin: 0 }}>{formState.errors.name.message}</p>}
-        <label>Opis:</label>
-         <textarea {...register("description", {required: 'Ovo polje je obavezno' })} rows="4" cols="50"></textarea>
-        {formState.errors.description && <p style={{ color: 'red', margin: 0 }}>{formState.errors.description.message}</p>}
-        <label>Adresa:</label>
-        <input type="text" {...register("address.streetAndNumber", {required: 'Ovo polje je obavezno' })} />
-        {formState.errors.address?.streetAndNumber && <p style={{ color: 'red', margin: 0 }}>{formState.errors.address.streetAndNumber.message}</p>}
-        <label>Grad:</label>
-        <input type="text" {...register("address.city", {required: 'Ovo polje je obavezno' })} />
-        {formState.errors.address?.city && <p style={{ color: 'red', margin: 0 }}>{formState.errors.address.city.message}</p>}
-        <label>Postanski broj:</label>
-        <input type="text" {...register("address.postalCode", {required: 'Ovo polje je obavezno' })} />
-        {formState.errors.address?.postalCode && <p style={{ color: 'red', margin: 0 }}>{formState.errors.address.postalCode.message}</p>}
-        <label>Telefon:</label>
-        <input type="phone" {...register("phoneNumber", {required: 'Ovo polje je obavezno' })} />
-        {formState.errors.phoneNumber && <p style={{ color: 'red', margin: 0 }}>{formState.errors.phoneNumber.message}</p>}
+        <section className="section-row" style={{ justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+          <section style={{display:"flex", flexDirection: 'column', height: '30vh' }}>
+          {loading && <div id="loadingSpinner" className="spinner"></div>}
+          {error && <p style={{ color: 'red', margin: 0 }}>{error}</p>}
+          <label>Naziv:</label>
+          <input type="text" {...register('name', { required: 'Ovo polje je obavezno' })}/>
+          {formState.errors.name && (
+            <p style={{ color: 'red', margin: 0 }}>{formState.errors.name.message}</p>)}
+          <label>Opis:</label>
+          <textarea {...register('description', { required: 'Ovo polje je obavezno' })} rows="4" cols="50"></textarea>
+          {formState.errors.description && (
+            <p style={{ color: 'red', margin: 0 }}>{formState.errors.description.message}</p>)}
+          <label>Telefon:</label>
+          <input type="phone" {...register('phoneNumber', { required: 'Ovo polje je obavezno' })}/>
+          {formState.errors.phoneNumber && (
+            <p style={{ color: 'red', margin: 0 }}>{formState.errors.phoneNumber.message}</p>)}
+        </section>
+        <section style={{display:"flex", flexDirection: 'column'}}>
+          <label>Adresa:</label>
+          <input type="text" {...register('address.streetAndNumber', { required: 'Ovo polje je obavezno'})}/>
+          {formState.errors.address?.streetAndNumber && (
+            <p style={{ color: 'red', margin: 0 }}>{formState.errors.address.streetAndNumber.message}</p>)}
+          <label>Grad:</label>
+          <input type="text" {...register('address.city', { required: 'Ovo polje je obavezno' })}/>
+          {formState.errors.address?.city && (
+            <p style={{ color: 'red', margin: 0 }}>{formState.errors.address.city.message}</p>)}
+          <label>Postanski broj:</label>
+          <input type="text" {...register('address.postalCode', { required: 'Ovo polje je obavezno'})}/>
+          {formState.errors.address?.postalCode && (
+            <p style={{ color: 'red', margin: 0 }}>{formState.errors.address.postalCode.message}</p>)}
+        </section>
+        {roles.includes("Owner") && (<section style={{display:"flex", flexDirection: 'column', height: '30vh' }}>
+          <h4>Radno vreme:</h4>
+          <section className="section-row" style={{justifyContent: 'flex-start'}}>
+            <label>Radnim danima od:</label>
+            <input type="time" {...register('baseWorkSched.workDayStart', {required: 'Ovo polje je obavezno'})}/>
+            <label>do:</label>
+            <input type="time" {...register('baseWorkSched.workDayEnd', {required: 'Ovo polje je obavezno'})}/>
+          </section>
+          <section className="section-row" style={{justifyContent: 'flex-start'}}>
+            <p>Subota:</p>
+            <input type="checkbox" {...register('baseWorkSched.saturday')}/>
+            <p>Nedelja:</p>
+            <input type="checkbox" {...register('baseWorkSched.sunday')}/>
+          </section>
+          <section className="section-row" style={{justifyContent: 'flex-start'}}>
+            <label>Vikendom od:</label>
+            <Controller name="baseWorkSched.weekendStart" control={control}
+            rules={{ required: !isCheckedOne && !isCheckedTwo ? "Ovo polje je obavezno" : false }} render={({ field }) => (
+            <input type="time" {...field} disabled={!isCheckedOne && !isCheckedTwo}/>)}/>
+            <label>do:</label>
+            <Controller name="baseWorkSched.weekendEnd" control={control} 
+            rules={{ required: !isCheckedOne && !isCheckedTwo ? "Ovo polje je obavezno" : false }} render={({ field }) => (
+              <input type="time" {...field} disabled={!isCheckedOne && !isCheckedTwo}/>)}/>
+          </section>
+        </section>
+        )}
+        </section>
+        {roles.includes("Owner") && (<section>
+          <label>Izaberi sliku: </label>
+          <Controller name="file" control={control} render={({ field }) => (
+            <input type="file" onChange={(e) => field.onChange(e.target.files[0])}/>)}/>
+        </section>
+        )}
         <button type="submit">Potvrdi izmenu</button>
       </form>
     </div>

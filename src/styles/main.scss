@@ -298,8 +298,36 @@ table {
         padding: calc(0.6rem - 1px) calc(1.2rem - 1px);
       }
     }
+
+    input[type="time"] {
+      width: 20%;
+    }
+
+    input[type="checkbox"] {
+      width: auto;
+    }
+
+    input[type="file"] {
+      border: none;
+      padding: 0;
+      width: fit-content;
+      
+    }
+
+    input[type="file"]::file-selector-button {
+      background-color: #9cd6dd;
+      border-radius: 4px;
+      border: none;
+      padding: 0.3rem;
+      &:hover {
+        background-color: #4f8aa1;
+        color: white;
+        cursor: pointer;
+      }
+    }
     
     label {
+      margin-top: 1vh;
       margin-left: 0.4rem;
       align-self: flex-start;
     }
