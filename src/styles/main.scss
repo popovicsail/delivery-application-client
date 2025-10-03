@@ -84,15 +84,19 @@ img {
     margin-top: 50px;
   }
   
-  .spinner {
-    border: 6px solid #f3f3f3;
-    border-top: 6px solid #3498db;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    animation: spin 1s linear infinite;
-    margin-bottom: 10px;
-  }
+ .spinner {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  margin: 10px auto;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  top: 40%;
+  left: 50%;
+  color: #155ce0;
+}
   
   @keyframes spin {
     0% { transform: rotate(0deg); }
@@ -237,3 +241,212 @@ table {
 }
 
 
+}
+
+
+
+
+// RestaurantsAdmin specific styles
+
+#restaurants-admin-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  h3 {
+    margin: 4vh 0;
+    text-decoration: underline;
+  }
+  table {
+    width: fit-content;
+  }
+}
+
+
+// RestaurantForm specific styles
+
+.restaurants-form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  h3 {
+    text-align: center;
+    margin: 0.6rem 0;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin: 4rem;
+    padding: 1rem;
+    border: 2px solid rgb(99, 99, 99);
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.288);
+    background-color: #dae0d7;
+    
+    input, select, textarea {
+      box-sizing: border-box;
+      padding: 0.6rem 1.2rem;
+      border: 1px solid #adaaaa;
+      border-radius: 3px;
+      width: 300px;
+      align-self: center;
+      &:focus {
+        border: 2px solid #4f8aa1;
+        outline: none;
+        box-shadow: 0 0 5px #4f8aa1;
+        padding: calc(0.6rem - 1px) calc(1.2rem - 1px);
+      }
+    }
+    
+    label {
+      margin-left: 0.4rem;
+      align-self: flex-start;
+    }
+
+    button {
+      width: fit-content;
+      padding: 0.6rem 1.2rem;
+      background-color: #4f8aa1;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+  }
+}
+
+
+// RestaurantsOwner specific styles
+
+#restaurants-owner-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  h3 {
+    margin: 2vh 0;
+  }
+}
+
+#cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 4rem;
+  width: 100%;
+}
+
+.restaurant-card {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  max-width: 23%;
+  height: 60vh;
+  min-height: 36rem;
+  background: #d4c1aa;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  padding: 1.2rem;
+  transition: 0.3s all;
+  &:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.158);
+  }
+  h4 {
+    color: #70593b;
+  }
+  P {
+    color: #5c5c5c;
+    font-size: large;
+    margin-left: 0.4rem;
+    margin-right: 0.4rem;
+  }
+  img {
+    border-radius: 8px;
+    width: 69%;
+    height: auto;
+    box-shadow: 2px 5px 8px #0000002f;
+  }
+  section {
+    justify-content: space-around;
+    section {
+      box-shadow: 5px 5px 15px #0000000e;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      width: fit-content;
+      padding: 0.7rem 0;
+      h4, p {
+        margin: 0.7rem 0.3rem;
+      }
+      p {
+        text-decoration: underline;
+      }
+    }
+  }
+  .restaurant-name {
+    text-align: center;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #3a2e1f;
+    margin: 0.6rem 0;
+  }
+  .r-card-contact-row {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    p {
+      color: #70593b !important;
+      font-weight: 600;
+      margin: 0;
+    }
+    .address {
+      min-width: 0;
+      word-break: break-word;
+    }
+    .phone {
+      white-space: nowrap;
+      margin-right: 0.6rem;
+    }
+  }
+  .card-desc {
+    overflow: hidden;
+    margin: 0 0.4rem;
+    margin-top: 1vh;
+    text-align: left;
+    flex-grow: 1;
+    box-shadow: 5px 5px 8px #0000000e;
+
+    white-space: pre-line;
+  }
+}
+
+.section-row.button-group {
+  justify-content: space-evenly;
+  align-items: flex-end;
+  margin-bottom: 2vh;
+  margin-top: 0;
+  padding-top: 2vh;
+  button {
+    width: 100px;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    border: none;
+    background-color: #6a4e23;
+    border-radius: 6px;
+    color: rgb(255, 243, 221);
+    box-shadow: 2px 7px 6px #00000029;
+    transition: 0.2s all;
+    &:hover {
+      background-color: #8b6935;
+      cursor: pointer;
+    }
+  }
+}
