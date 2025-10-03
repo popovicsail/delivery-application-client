@@ -102,11 +102,6 @@ img {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
-
-
-.hidden {
-  display: none;
-}
   
 
 .buttons {
@@ -116,15 +111,6 @@ img {
     width: 10%;
     height: auto;
     border-radius: 5px;
-}
-
-.delete-btn {
-  background-color: #e74c3c;
-  color: white;
-}
-.edit-btn {
-  background-color: #3498db;
-  color: white;
 }
 
 .image, .publishers  {
@@ -140,11 +126,11 @@ img {
     flex-direction: column; /* Postavlja elemente u kolonu */
     align-items: center; /* Centriranje elemenata po horizontali */
   
-        input {
+        input,select {
             width: 500px;
             margin: 10px;
             padding: 10px;
-            border: 1px solid #00b7ff;
+            border: 1px solid #222;
             border-radius: 20px;
         }
 
@@ -154,19 +140,31 @@ img {
         border: 1px solid #ccc;
         border-radius: 5px;
     }
+
 }
 
 
 // Tabela - generalni stilovi
+
+.naslov{
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
 table {
   border-collapse: collapse;
   border: 2px solid $primary-color;
+  width: 90%;
+  margin: 10px auto;
+  text-align: center ;
 
   thead {
     tr {
       background-color: $primary-color;
       color: white;
       opacity: 0.9;
+      border: 2px solid #222;
 
       th {
         padding: 0.6rem 1.2rem;
@@ -174,27 +172,74 @@ table {
     }
   }
 
-  tr {
+  tbody {
+    tr {
+      border: 1px solid #ddd;
 
-    td {
-      border: 2px solid $primary-color;
-      padding: 0.6rem 1.2rem;
-      text-align: center;
+      &:nth-child(even) {
+        background-color: #f9f9f9;
+      }
 
-      button {
-        margin: 0 5px;
-        padding: 5px 10px;
-        border: none;
-        border-radius: 3px;
-        cursor: pointer;
+      &:hover {
+        background-color: #f1f1f1;
+      }
 
-        &:hover {
-          opacity: 0.8;
-        }
+      td {
+        padding: 0.6rem 1.2rem;
+        border: 1px solid #ddd;
       }
     }
   }
+
+
+  button {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    width: 80px;
+    height: 30px;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  button {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    width: 80px;
+    height: 30px;
+
+    &:hover {
+      background-color: #e60000;
+    }
+
+  }
 }
+
+
+
+.createButton {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 20px;
+
+    &:hover {
+        background-color: #218838;
+    }
+}
+
 
 
 

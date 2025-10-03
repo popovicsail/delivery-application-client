@@ -1,0 +1,353 @@
+@import 'main.scss';
+
+$sidebar-width: 220px;
+$bg-light: #f9f9f9;
+$bg-dark: #ffffff;
+$primary: #222;
+$text-color: #333;
+$border-color: #ddd;
+
+.account-panel {
+  display: flex;
+  flex-wrap: wrap;
+  background-color: $bg-dark;
+  border: 1px solid $border-color;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  height: 100vh;
+
+  .sidebar {
+    width: $sidebar-width;
+    background-color: $bg-light;
+    border-right: 1px solid $border-color;
+    padding: 1rem;
+
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+
+      li {
+        padding: 0.75rem 1rem;
+        margin-bottom: 0.5rem;
+        cursor: pointer;
+        border-radius: 4px;
+        color: $text-color;
+        transition: background-color 0.2s ease;
+
+        &:hover {
+          background-color: lighten($primary, 40%);
+        }
+
+        &.active {
+          background-color: $primary;
+          color: white;
+          font-weight: bold;
+        }
+      }
+    }
+  }
+
+  .content {
+    flex: 1;
+    padding: 1.5rem;
+    min-height: 300px;
+
+    section {
+      display: none;
+
+      &.active {
+        display: block;
+      }
+    }
+  }
+
+  #user-profile {
+    display: none;
+  
+    &.visible {
+      display: block;
+    }
+  }
+
+  #edit-user-form {
+    width: 50%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  
+    .form-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 80%;
+      margin: 5px 0;
+  
+      label {
+        width: 40%;
+        text-align: right;
+        margin-right: 10px;
+      }
+  
+      input,
+      select {
+        width: 60%;
+        padding: 10px;
+        border: 1px solid $primary;
+        border-radius: 20px;
+      }
+    }
+  .upload-section {
+    width: 100%;
+    margin-left: 400px;
+      .form-row-file {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        margin-top: 10px;
+      
+        label,
+        input {
+          margin-bottom: 5px;
+        }
+      
+        p {
+          margin-top: 8px;
+          text-align: center;
+          width: 100%;
+          font-size: 14px;
+          color: #555;
+          display: block;
+        }
+      }
+  }
+    
+  
+    button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 30%;
+      padding: 10px;
+      margin: 10px;
+      border-radius: 10px;
+      background-color: $primary;
+      color: white;
+      border: none;
+      cursor: pointer;
+  
+      &:hover {
+        background-color: #0090cc;
+      }
+    }
+  }
+  
+  // Responsive prilagođavanje za mobilne uređaje
+  @media (max-width: 768px) {
+    #edit-user-form {
+      width: 90%;
+  
+      .form-row {
+        flex-direction: column;
+        align-items: flex-start;
+  
+        label {
+          text-align: left;
+          width: 100%;
+          margin-bottom: 5px;
+        }
+  
+        input,
+        select {
+          width: 100%;
+        }
+      }
+  
+      button {
+        width: 100%;
+      }
+    }
+  }
+  
+
+
+  .activity-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 2rem;
+  
+    th, td {
+      border: 1px solid #ccc;
+      padding: 0.75rem;
+      text-align: left;
+    }
+  
+    th {
+      background-color: #f0f0f0;
+    }
+  
+    .activity-buttons {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    
+      button {
+        padding: 0.5rem 1rem;
+        background-color: #0077cc;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    
+        &:hover {
+          background-color: #005fa3;
+        }
+      }
+    }
+  }
+
+  .alergenForm{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 100%;
+    .alergen1, .alergen2 {
+      width: 50%;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .dugme {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      margin-top: 20px;
+    }
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      background-color: #f3f3f3;
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    
+      input[type="checkbox"] {
+        accent-color: black; // Za moderni browser styling
+        width: 16px;
+        height: 16px;
+      }
+    
+      &:has(input[type="checkbox"]:checked) {
+        background-color: black;
+        color: white;
+        font-weight: bold;
+      }
+    }    
+  }
+
+  .address-list {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 1rem;
+  
+    .address-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f3f3f3;
+      padding: 10px 15px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+  
+      .address-actions {
+        display: flex;
+        gap: 10px;
+  
+        button {
+          background-color: #222;
+          color: white;
+          border: none;
+          padding: 6px 12px;
+          border-radius: 6px;
+          cursor: pointer;
+  
+          &:hover {
+            background-color: #0090cc;
+          }
+        }
+      }
+    }
+  }
+  
+  .address-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  
+    input {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+  
+    button {
+      align-self: center;
+      padding: 10px 20px;
+      background-color: #222;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+  
+      &:hover {
+        background-color: #0090cc;
+      }
+    }
+  }
+
+  .address-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #f9f9f9;
+  }
+  
+  .address-text {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+  
+  .address-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .address-actions button {
+    padding: 0.4rem 0.8rem;
+    background-color: black;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .address-actions button:hover {
+    background-color: #333;
+  }
+  
+  
+  
+}
