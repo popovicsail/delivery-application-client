@@ -15,3 +15,10 @@ export const login = async (userName: string, password: string) => {
 
   return response.data;
 };
+
+
+export const logout = () => {
+  sessionStorage.removeItem("token");
+  sessionStorage.removeItem("role");
+  sessionStorage.clear();
+};

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { getProfile } from "../services/user.services.tsx";
 import "../styles/main.scss";
+import { logout } from "../services/auth.services.tsx";
 
 const Header = () => {
   const [roles, setRoles] = useState([]);
@@ -12,11 +13,11 @@ const Header = () => {
   const getRoles = async () => {
     if (token) {
       try {
-        const user = await getProfile();
-        setRoles(user.roles);
+        const profile = JSON.parse(sessionStorage.getItem("myProfile"));
+        setRoles(profile.user.roles ? profile.user.roles : []);
       } catch (error) {
         console.error("Error fetching profile:", error);
-        setRole(null);
+        setRoles([]);
       }
     }
   };
@@ -27,21 +28,69 @@ const Header = () => {
 
   const handleLogout = () => {
     sessionStorage.removeItem("token");
+    sessionStorage.removeItem("myProfile");
     setRoles([]);
     alert("Uspešno ste se odjavili.");
   }
+
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const token = sessionStorage.getItem("token");
+    if (!token) return;
+
+    setIsAuthenticated(true);
+
+    getProfile()
+      .then((profile) => {
+        const roles = profile.roles || [];
+        if (roles.includes("Administrator")) {
+          setIsAdmin(true);
+        }
+      })
+      .catch((err) => {
+        console.error("Greška pri učitavanju profila:", err);
+        setIsAuthenticated(false);
+        setIsAdmin(false);
+      });
+  }, []);
+
+  const LogoutButton = () => {
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+      logout();
+      navigate("/login");
+    };
+
+    return <Link onClick={handleLogout} to="/login">Odjavite se</Link>;
+  };
 
   return (
     <header className="header">
       <h1>Dobrodošli — Gozba na Klik</h1>
       <nav>
         <ul className="nav-list">
+          {isAuthenticated && (
+            <>
+              {isAdmin && (
+                <li id={current === "/admin" ? "current" : ""}>
+                  <Link to="/admin">Admin Panel</Link>
+                </li>
+              )}
+              <li id={current === "/controlPanel" ? "current" : ""}>
+                <Link to="/controlPanel">Kontrolna tabla</Link>
+              </li>
+            </>
+          )}
           <li id={current === "/home" ? "current" : ""}><Link to="/home">Početna</Link></li>
           <li className={roles.length != 0 ? "hidden" : ""} id={current === "/register" ? "current" : ""}><Link  to="/register">Registruj se</Link></li>
           <li className={roles != 0 ? "hidden" : ""} id={current === "/login" ? "current" : ""}><Link to="/login">Prijavite se</Link></li>
           <li className={roles.includes("Administrator") ? "" : "hidden"} id={current === "/restaurantsAdmin" ? "current" : ""}><Link to="/restaurantsAdmin">Restorani</Link></li>
           <li className={roles.includes("Administrator") ? "" : "hidden"} id={current === "/createRestaurant" ? "current" : ""}><Link to="/createRestaurant">Kreiraj</Link></li>
-          <li className={roles == 0 ? "hidden" : ""}><Link to="/home" onClick={handleLogout}>Logout</Link></li>
+          <li className={roles.includes("Owner") ? "" : "hidden"} id={current === "/restaurantsOwner" ? "current" : ""}><Link to="/restaurantsOwner">Moji Restorani</Link></li>
+          <li className={roles != 0 ? "" : "hidden"}><Link to="/home" onClick={handleLogout}>Logout</Link></li>
         </ul>
       </nav>
     </header>
