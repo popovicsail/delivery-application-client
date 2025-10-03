@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { getProfile } from "../services/user.services.tsx";
 import "../styles/main.scss";
-import { getProfile } from "../services/user.services.tsx";
 import { logout } from "../services/auth.services.tsx";
 
 const Header = () => {

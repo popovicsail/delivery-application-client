@@ -1,11 +1,9 @@
 import api from "../services/api.jsx";
 
-
 export async function createUser(userData) {
   const response = await api.post("/Auth/register", userData);
   return response;
 }
-
 
 export async function getAllUsers() {
   const response = await api.get("/Users");
@@ -41,7 +39,6 @@ export async function putMyAllergens(payload) {
   return response.data;
 }
 
-
 export async function updateProfile(profileData) {
   const response = await api.put("/Profile/me", profileData);
   return response.data;
@@ -58,27 +55,15 @@ export async function addAddress(addressData) {
 }
 
 export async function updateAddress(id, payload) {
-  return api.put(`/Customers/my-addresses/${id}`, payload, {
+  const response = await api.put(`/Customers/my-addresses/${id}`, payload, {
     headers: {
       "Content-Type": "application/json"
     }
-  }).then(res => res.data);
+  });
+  return response.data;
 }
 
 export async function deleteAddress(id) {
-  return api.delete(`/Customers/my-addresses/${id}`)
-    .then(res => res.data);
-}
-
-
-export const getProfile = async () => {
-    const response = await api.get("profile/me");
-
-    return response.data;
-}
-
-export const getAllUsers = async () => {
-    const response = await api.get("users/owners");
-
-    return response.data;
+  const response = await api.delete(`/Customers/my-addresses/${id}`);
+  return response.data;
 }
