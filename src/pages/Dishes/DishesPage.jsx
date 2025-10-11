@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import DishForm from "./DishForm";
 import DishGroupForm from "./DishGroupForm";
-import { dishService } from "../../services/dishes.services";
+import { dishService } from "../../services/dishes.services.tsx";
 
 const DishesPage = () => {
   const [dishes, setDishes] = useState([]);

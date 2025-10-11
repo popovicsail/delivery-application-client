@@ -1,6 +1,6 @@
 import api from './api'
 
-export const login = async (userName: string, password: string) => {
+export const login = async (userName, password) => {
     
     const loginData = {
         userName: userName,

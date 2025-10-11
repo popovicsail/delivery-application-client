@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import FileUploader from "./FileUploader";
 import { useNavigate } from "react-router-dom";
-import { getProfile } from "../../services/user.services.tsx";
-import * as userService from "../../services/user.services.tsx";
+import { getProfile } from "../../services/user.services.jsx";
+import * as userService from "../../services/user.services.jsx";
 import "../../styles/userControlPanel.scss";
 
 const UsersControlPanel = () => {

@@ -15,6 +15,10 @@ a, th {
   font-weight: bolder;
 }
 
+.hidden {
+  display: none;
+}
+
 .section-row {
   display: flex;
   justify-content: center;
@@ -155,9 +159,7 @@ img {
 table {
   border-collapse: collapse;
   border: 2px solid $primary-color;
-  width: 90%;
-  margin: 10px auto;
-  text-align: center ;
+  text-align: center;
 
   thead {
     tr {
@@ -172,41 +174,29 @@ table {
     }
   }
 
-  tbody {
-    tr {
-      border: 1px solid #ddd;
+  tr {
+    td {
+      border: 1px solid $primary-color;
+      padding: 0.6rem 1.2rem;
+      text-align: center;
 
-      &:nth-child(even) {
-        background-color: #f9f9f9;
-      }
+      button {
+        margin: 0 5px;
+        padding: 5px 10px;
+        border: none;
+        border-radius: 3px;
+        min-width: 3.5rem;
+        cursor: pointer;
 
-      &:hover {
-        background-color: #f1f1f1;
-      }
-
-      td {
-        padding: 0.6rem 1.2rem;
-        border: 1px solid #ddd;
+        &:hover {
+          opacity: 0.8;
+        }
       }
     }
   }
+}
 
-
-  button {
-    background-color: #ff4d4d;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 3px;
-    cursor: pointer;
-    width: 80px;
-    height: 30px;
-
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-
+.users-table {
   button {
     background-color: #ff4d4d;
     color: white;
@@ -223,8 +213,7 @@ table {
 
   }
 }
-
-
+  
 
 .createButton {
     background-color: #28a745;
@@ -300,7 +289,8 @@ table {
     }
 
     input[type="time"] {
-      width: 20%;
+      width: min-content;
+      padding: 0.4rem;
     }
 
     input[type="checkbox"] {
@@ -396,12 +386,14 @@ table {
   }
   img {
     border-radius: 8px;
-    width: 69%;
+    max-width: 68%;
+    max-height: 21vh;
     height: auto;
     box-shadow: 2px 5px 8px #0000002f;
   }
   section {
     justify-content: space-around;
+    gap: 0.8rem;
     section {
       box-shadow: 5px 5px 15px #0000000e;
       text-align: center;
@@ -475,4 +467,13 @@ table {
       cursor: pointer;
     }
   }
+}
+
+.delete-btn {
+  background-color: #e74c3c;
+  color: white;
+}
+.edit-btn {
+  background-color: #3498db;
+  color: white;
 }

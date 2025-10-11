@@ -1,4 +1,4 @@
-@import 'main.scss';
+@use 'main.scss' as *;
 
 $sidebar-width: 220px;
 $bg-light: #f9f9f9;
@@ -37,7 +37,7 @@ $border-color: #ddd;
         transition: background-color 0.2s ease;
 
         &:hover {
-          background-color: lighten($primary, 40%);
+          //background-color: lighten($primary, 40%);
         }
 
         &.active {

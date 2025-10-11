@@ -1,4 +1,4 @@
-import api from "../services/api.jsx";
+import api from "./api.jsx";
 
 export async function createUser(userData) {
   const response = await api.post("/Auth/register", userData);
@@ -8,6 +8,11 @@ export async function createUser(userData) {
 export async function getAllUsers() {
   const response = await api.get("/Users");
   return Array.isArray(response.data) ? response.data : [];
+}
+
+export async function getAllOwners() {
+  const response = await api.get("/users/owners");
+  return response.data;
 }
 
 export async function getProfile() {

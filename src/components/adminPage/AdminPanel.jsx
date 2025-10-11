@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../../styles/main.scss";
 import { useNavigate } from "react-router-dom";
-import { getAllUsers } from "../../services/user.services.tsx";
+import { getAllUsers } from "../../services/user.services.jsx";
 
 export const UsersTable = () => {
   const [users, setUsers] = useState([]);

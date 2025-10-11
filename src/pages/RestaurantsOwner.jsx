@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
-import { getMyRestaurants, deleteRestaurant, getImage } from "../services/restaurant.services.tsx"
+import { getMyRestaurants, deleteRestaurant, getImage } from "../services/restaurant.services.jsx"
 import "../styles/main.scss";
 
 const RestaurantsOwner = () => {
