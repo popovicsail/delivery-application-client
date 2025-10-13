@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import FileUploader from "./FileUploader";
 import { useNavigate } from "react-router-dom";
 import { getProfile } from "../../services/user.services.tsx";
+import { toImageUrl } from "../../services/imageUtils.tsx";
 import * as userService from "../../services/user.services.tsx";
 import "../../styles/userControlPanel.scss";
 
@@ -10,6 +11,8 @@ const UsersControlPanel = () => {
   const [activeTab, setActiveTab] = useState("profil-view");
   const [profile, setProfile] = useState(null);
   const [user, setUser] = useState(null);
+  const [profilePictureBase64, setProfilePictureBase64] = useState(null);
+  const [profilePictureMimeType, setProfilePictureMimeType] = useState(null);
   const [newAddress, setNewAddress] = useState({ streetAndNumber: "", city: "" ,postalCode: ""});
   const [editingAddress, setEditingAddress] = useState(null);
   const [currentAddress, setCurrentAddress] = useState(null);
@@ -18,45 +21,54 @@ const UsersControlPanel = () => {
 
   
 
-  useEffect(() => {
-    const token = sessionStorage.getItem("token");
-    if (!token) return;
+useEffect(() => {
+  const token = sessionStorage.getItem("token");
+  if (!token) return;
 
-    userService.getMyAddresses()
-      .then((data) => {
-        console.log("Učitane adrese:", data);
-        setCurrentAddress({ addresses: data });
-      })
-      .catch((err) => {
-        console.error("Greška pri učitavanju adresa:", err);
-        setCurrentAddress({ addresses: [] });
-      });
+  userService.getMyAddresses()
+    .then((data) => {
+      console.log("Učitane adrese:", data);
+      setCurrentAddress({ addresses: data || [] });
+    })
+    .catch((err) => {
+      console.error("Greška pri učitavanju adresa:", err);
+      setCurrentAddress({ addresses: [] });
+    });
 
-    userService.getAllergens()
-      .then((data) => {
-        const enriched = data.map(a => ({ ...a, selected: false }));
-        setAlergens(enriched);
-      })
-      .catch((err) => console.error("Greška pri učitavanju alergena:", err));
+  userService.getAllergens()
+    .then((data) => {
+      const enriched = (data || []).map(a => ({ ...a, selected: false }));
+      setAlergens(enriched);
+    })
+    .catch((err) => console.error("Greška pri učitavanju alergena:", err));
 
     getProfile()
-      .then((data) => {
-        setProfile(data);
-        setUser({
-          userName: data.userName || "",
-          password: "",
-          firstName: data.firstName || "",
-          lastName: data.lastName || "",
-          email: data.email || "",
-          file: null
-        });
-      })
-      .catch((err) => {
-        console.error("Greška pri učitavanju profila:", err);
-        sessionStorage.removeItem("token");
-        navigate("/login");
+    .then((data) => {
+      const imageUrl = toImageUrl(
+        data?.profilePictureBase64 ?? null,
+        data?.profilePictureMimeType ?? "image/png"
+      );
+  
+      setProfile({
+        ...data,
+        imageUrl,
       });
-  }, [navigate]);
+  
+      setUser({
+        userName: data.userName || "",
+        password: "",
+        firstName: data.firstName || "",
+        lastName: data.lastName || "",
+        email: data.email || "",
+        file: imageUrl,
+      });
+    })
+    .catch((err) => {
+      console.error("Greška pri učitavanju profila:", err);
+      sessionStorage.removeItem("token");
+      navigate("/login");
+    });
+}, [navigate]);
 
   
   const handleFileSelect = (file) => {
@@ -78,14 +90,17 @@ const UsersControlPanel = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+  
     const payload = {
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
+      profilePictureBase64,   
+      profilePictureMimeType, 
     };
-
+  
     console.log("Podaci za slanje:", payload);
+  
     userService.updateProfile(payload)
       .then(() => alert("Podaci su uspešno ažurirani."))
       .catch((err) => {
@@ -93,7 +108,6 @@ const UsersControlPanel = () => {
         alert("Došlo je do greške prilikom ažuriranja profila.");
       });
   };
-
   const handleSubmitAlergens = (e) => {
     e.preventDefault();
   
@@ -203,8 +217,12 @@ const UsersControlPanel = () => {
           ) : (
             <>
               <div className="profile-picture">
-                <img src={profile.imageUrl || "/default-avatar.png"} alt="Profilna slika" />
+                <img
+                  src={profile?.imageUrl || "/default-avatar.png"}
+                  alt="Profilna slika"
+                />
               </div>
+
               <p><strong>Korisničko ime:</strong> <span>{profile.userName}</span></p>
               <p><strong>Ime:</strong> <span>{profile.firstName}</span></p>
               <p><strong>Prezime:</strong> <span>{profile.lastName}</span></p>
@@ -233,7 +251,12 @@ const UsersControlPanel = () => {
                 <input type="email" id="email" value={user.email} onChange={handleInputChange} required />
               </div>
               <div className="upload-section">
-                <FileUploader onFileSelect={handleFileSelect} />
+              <FileUploader
+                onFileProcessed={({ base64, mimeType }) => {
+                  setProfilePictureBase64(base64);
+                  setProfilePictureMimeType(mimeType);
+                }}
+              />
               </div>
               <button id="save" type="submit">Sačuvaj</button>
             </form>

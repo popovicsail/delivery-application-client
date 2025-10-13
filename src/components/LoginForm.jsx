@@ -37,6 +37,7 @@ export const LoginForm = () => {
       setLoading(false);
       alert(`Dobrodošao, ${username}!`);
       navigate("/home");
+      window.location.reload();
     } catch (error) {
       const err = error || {};
       if (err.response) {
