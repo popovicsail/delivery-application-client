@@ -6,8 +6,7 @@ export default function EditUserForm({
   active,
   handleSubmit,
   handleInputChange,
-  setProfilePictureBase64,
-  setProfilePictureMimeType
+  setProfilePictureFile
 }) {
   return (
     <section id="izmeni-podatke-form" className={active}>
@@ -17,25 +16,40 @@ export default function EditUserForm({
         <form id="edit-user-form" onSubmit={handleSubmit}>
           <div className="form-row">
             <label htmlFor="firstName">Ime:</label>
-            <input type="text" id="firstName" value={user.firstName} onChange={handleInputChange} required />
+            <input
+              type="text"
+              id="firstName"
+              value={user.firstName || ""}
+              onChange={handleInputChange}
+              required
+            />
           </div>
           <div className="form-row">
             <label htmlFor="lastName">Prezime:</label>
-            <input type="text" id="lastName" value={user.lastName} onChange={handleInputChange} required />
+            <input
+              type="text"
+              id="lastName"
+              value={user.lastName || ""}
+              onChange={handleInputChange}
+              required
+            />
           </div>
           <div className="form-row">
             <label htmlFor="email">Email:</label>
-            <input type="email" id="email" value={user.email} onChange={handleInputChange} required />
-          </div>
-          <div className="upload-section">
-            <FileUploader
-              onFileProcessed={({ base64, mimeType }) => {
-                setProfilePictureBase64(base64);
-                setProfilePictureMimeType(mimeType);
-              }}
+            <input
+              type="email"
+              id="email"
+              value={user.email || ""}
+              onChange={handleInputChange}
+              required
             />
           </div>
-          <button id="save" type="submit">Sačuvaj</button>
+          <div className="upload-section">
+          <FileUploader onFileSelected={setProfilePictureFile} />
+          </div>
+          <button id="save" type="submit">
+            Sačuvaj
+          </button>
         </form>
       )}
     </section>

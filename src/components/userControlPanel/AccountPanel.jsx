@@ -1,7 +1,7 @@
 import React from "react";
 import ProfileView from "./ProfileView";
 import EditUserForm from "./EditUserForm";
-import AllergensContainer from "./AllergensContainer"; // <- umesto AllergenView
+import AllergensContainer from "./AllergensContainer";
 import AddressView from "./AddressView";
 
 export default function AccountPanel({
@@ -11,8 +11,7 @@ export default function AccountPanel({
   user,
   handleSubmit,
   handleInputChange,
-  setProfilePictureBase64,
-  setProfilePictureMimeType,
+  setProfilePictureFile,
   currentAddress,
   handleEditAddress,
   handleDeleteAddress,
@@ -21,12 +20,14 @@ export default function AccountPanel({
   editingAddress,
   setEditingAddress,
   handleAddAddress,
-  handleUpdateAddress
+  handleUpdateAddress,
+  isAdmin
 }) {
   const isActive = (tab) => (activeTab === tab ? "active" : "");
 
+
   return (
-    <div className="account-panel">
+    <div className={`account-panel ${isAdmin ? "admin" : ""}`}>
       <aside className="sidebar">
         <ul>
           <li
@@ -35,53 +36,64 @@ export default function AccountPanel({
           >
             Profil
           </li>
-          <li
-            className={isActive("izmeni-podatke-form")}
-            onClick={() => setActiveTab("izmeni-podatke-form")}
-          >
-            Izmeni podatke
-          </li>
-          <li
-            className={isActive("alergen-view")}
-            onClick={() => setActiveTab("alergen-view")}
-          >
-            Alergeni
-          </li>
-          <li
-            className={isActive("adrese-view")}
-            onClick={() => setActiveTab("adrese-view")}
-          >
-            Adrese
-          </li>
+
+          {!isAdmin && (
+            <>
+              <li
+                className={isActive("izmeni-podatke-form")}
+                onClick={() => setActiveTab("izmeni-podatke-form")}
+              >
+                Izmeni podatke
+              </li>
+              <li
+                className={isActive("alergen-view")}
+                onClick={() => setActiveTab("alergen-view")}
+              >
+                Alergeni
+              </li>
+              <li
+                className={isActive("adrese-view")}
+                onClick={() => setActiveTab("adrese-view")}
+              >
+                Adrese
+              </li>
+            </>
+          )}
         </ul>
       </aside>
 
       <main className="content">
         <ProfileView profile={profile} active={isActive("profil-view")} />
 
-        <EditUserForm
-          user={user}
-          active={isActive("izmeni-podatke-form")}
-          handleSubmit={handleSubmit}
-          handleInputChange={handleInputChange}
-          setProfilePictureBase64={setProfilePictureBase64}
-          setProfilePictureMimeType={setProfilePictureMimeType}
-        />
+        {!isAdmin && (
+          <EditUserForm
+            user={user}
+            active={isActive("izmeni-podatke-form")}
+            handleSubmit={handleSubmit}
+            handleInputChange={handleInputChange}
+            setProfilePictureFile={setProfilePictureFile}
+          />
+        )}
 
-        <AllergensContainer active={isActive("alergen-view")} />
+        {!isAdmin && <AllergensContainer 
+        active={isActive("alergen-view")} 
+        isAdmin={isAdmin} 
+        />}
 
-        <AddressView
-          currentAddress={currentAddress}
-          handleEditAddress={handleEditAddress}
-          handleDeleteAddress={handleDeleteAddress}
-          newAddress={newAddress}
-          setNewAddress={setNewAddress}
-          editingAddress={editingAddress}
-          setEditingAddress={setEditingAddress}
-          handleAddAddress={handleAddAddress}
-          handleUpdateAddress={handleUpdateAddress}
-          active={isActive("adrese-view")}
-        />
+        {!isAdmin && (
+          <AddressView
+            currentAddress={currentAddress}
+            handleEditAddress={handleEditAddress}
+            handleDeleteAddress={handleDeleteAddress}
+            newAddress={newAddress}
+            setNewAddress={setNewAddress}
+            editingAddress={editingAddress}
+            setEditingAddress={setEditingAddress}
+            handleAddAddress={handleAddAddress}
+            handleUpdateAddress={handleUpdateAddress}
+            active={isActive("adrese-view")}
+          />
+        )}
       </main>
     </div>
   );

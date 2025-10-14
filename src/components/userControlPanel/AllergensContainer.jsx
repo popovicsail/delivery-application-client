@@ -2,15 +2,19 @@ import React, { useEffect, useState } from "react";
 import * as userService from "../../services/user.services.jsx";
 import AllergenView from "./AllergenView";
 
-export default function AllergensContainer({ active }) {
+export default function AllergensContainer({ active,isAdmin  }) {
   const [alergens, setAlergens] = useState([]);
 
-  // 1. Učitaj sve alergene odmah
+
   useEffect(() => {
     const fetchAll = async () => {
+      if (isAdmin) {
+        console.log("Admin – preskačem (200 OK fallback)");
+        return;
+      }
       try {
         const all = await userService.getAllergens();
-        // inicijalno svi bez selekcije
+
         const mapped = all.map((a) => ({
           ...a,
           id: a.allergenGuid ?? a.id,
@@ -22,14 +26,18 @@ export default function AllergensContainer({ active }) {
       }
     };
     fetchAll();
-  }, []);
+  }, [isAdmin]);
 
-  // 2. Kada se učitaju alergeni, povuci korisnikove i označi
+
   useEffect(() => {
     const fetchMine = async () => {
+      if (isAdmin) {
+        console.log("Admin – preskačem (200 OK fallback)");
+        return;
+      }
       try {
         const mine = await userService.getMyAllergens(); 
-        // očekujem { allergenIds: [...] }
+
         setAlergens((prev) =>
           prev.map((a) => ({
             ...a,
@@ -44,7 +52,7 @@ export default function AllergensContainer({ active }) {
     if (alergens.length > 0) {
       fetchMine();
     }
-  }, [alergens.length]);
+  }, [alergens.length,isAdmin]);
 
   // 3. Toggle logika
   const toggleAlergen = (id) => {

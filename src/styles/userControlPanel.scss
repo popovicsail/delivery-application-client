@@ -37,7 +37,7 @@ $border-color: #ddd;
         transition: background-color 0.2s ease;
 
         &:hover {
-          //background-color: lighten($primary, 40%);
+          background-color: lighten($primary, 40%);
         }
 
         &.active {
@@ -366,6 +366,12 @@ $border-color: #ddd;
     background-color: #333;
   }
   
-  
-  
+}
+
+/* Sakrij sve osim "Profil" taba ako je admin */
+.account-panel.admin .sidebar li:nth-child(2), /* Izmeni podatke */
+.account-panel.admin .sidebar li:nth-child(3), /* Alergeni */
+.account-panel.admin .sidebar li:nth-child(4)  /* Adrese */
+{
+  display: none;
 }

@@ -3,7 +3,6 @@ import "../../styles/userControlPanel.scss";
 import AccountPanel from "./AccountPanel.jsx";
 import * as userService from "../../services/user.services"; 
 
-
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState("profil-view");
   const [profile, setProfile] = useState(null);
@@ -16,62 +15,69 @@ export default function ProfilePage() {
     postalCode: ""
   });
   const [editingAddress, setEditingAddress] = useState(null);
-  const [profilePictureBase64, setProfilePictureBase64] = useState(null);
-  const [profilePictureMimeType, setProfilePictureMimeType] = useState(null);
+  const [profilePictureFile, setProfilePictureFile] = useState(null);
+
+  const isAdmin = user?.roles?.some(r => r.toLowerCase().includes("admin"));
 
   // 🔄 Učitavanje podataka
   useEffect(() => {
     (async () => {
       const prof = await userService.getProfile();
-  
-      // Ako backend vraća imageBase64 i mimeType
-      if (prof.
-        profilePictureBase64 && prof.profilePictureMimeType) {
-        prof.imageUrl = `data:${prof.profilePictureMimeType};base64,${prof.profilePictureBase64}`;
+
+      if (prof.profilePictureBase64) {
+        prof.imageUrl = prof.profilePictureBase64;
       }
-  
+
       setProfile(prof);
       setUser(prof);
-  
+      console.log("Učitani podaci profila:", prof);
+
+      if (prof.roles?.some(r => r.toLowerCase().includes("Admninistrator"))) {
+        setAlergens([]);
+        setCurrentAddress({ addresses: [] });
+        return;
+      }
+
       const allergens = await userService.getAllergens();
       setAlergens(allergens.map(a => ({ ...a, selected: false })));
-  
+
       const addresses = await userService.getMyAddresses();
       setCurrentAddress({ addresses });
     })();
   }, []);
 
-  // ✏️ Izmena korisnika
   const handleInputChange = (e) => {
     const { id, value } = e.target;
     setUser((prev) => ({ ...prev, [id]: value }));
   };
 
+  // ✏️ Izmena korisnika
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    const payload = {
-      ...user,
-      profilePictureBase64,
-      profilePictureMimeType
-    };
-  
-    console.log("Payload:", payload);
-  
-    await userService.updateProfile(payload);
-  
-    // povuci novi profil sa servera
-    const updated = await userService.getProfile();
-  
-    if (updated.profilePictureBase64 && updated.profilePictureMimeType) {
-      updated.imageUrl = `data:${updated.profilePictureMimeType};base64,${updated.profilePictureBase64}`;
+    if (isAdmin) {
+      console.log("Admin – preskačem update profila (200 OK fallback)");
+      return;
     }
-    sessionStorage.setItem("myProfile", JSON.stringify(updated));
+
+    const formData = new FormData();
+    formData.append("firstName", user.firstName);
+    formData.append("lastName", user.lastName); 
+    formData.append("email", user.email);
+
+    if (profilePictureFile) {
+      formData.append("profilePicture", profilePictureFile);
+    }
+
+    await userService.updateProfile(formData);
+
+    const updated = await userService.getProfile();
+    if (updated.profilePictureBase64) {
+      updated.imageUrl = updated.profilePictureBase64;
+    }
     setProfile(updated);
     setUser(updated);
-    window.location.reload(); // osvezi stranicu da se vide izmene
+    window.location.reload();
   };
-  
 
   // 🧬 Alergeni
   const toggleAlergen = (id) => {
@@ -82,8 +88,13 @@ export default function ProfilePage() {
 
   const handleSubmitAlergens = async (e) => {
     e.preventDefault();
+    if (isAdmin) {
+      console.log("Admin – preskačem čuvanje alergena (200 OK fallback)");
+      return;
+    }
+
     const selectedIds = alergens.filter((a) => a.selected).map((a) => a.id);
-  
+
     try {
       await userService.putMyAllergens({ allergenIds: selectedIds });
       console.log("Alergeni uspešno sačuvani!");
@@ -93,37 +104,53 @@ export default function ProfilePage() {
   };
 
   // 📍 Adrese
-
   const refreshAddresses = async () => {
+    if (isAdmin) {
+      console.log("Admin – preskačem refresh adresa (200 OK fallback)");
+      setCurrentAddress({ addresses: [] });
+      return;
+    }
     const addresses = await userService.getMyAddresses();
     setCurrentAddress({ addresses });
   };
 
-
   const handleAddAddress = async (e) => {
-  e.preventDefault();
-  await userService.addAddress(newAddress);
-  await refreshAddresses();
-  setNewAddress({ streetAndNumber: "", city: "", postalCode: "" });
-};
+    e.preventDefault();
+    if (isAdmin) {
+      console.log("Admin – preskačem dodavanje adrese (200 OK fallback)");
+      return;
+    }
 
-const handleUpdateAddress = async (e) => {
-  e.preventDefault();
-  await userService.updateAddress(editingAddress.id, newAddress);
-  await refreshAddresses();
-  setEditingAddress(null);
-  setNewAddress({ streetAndNumber: "", city: "", postalCode: "" });
-};
+    await userService.addAddress(newAddress);
+    await refreshAddresses();
+    setNewAddress({ streetAndNumber: "", city: "", postalCode: "" });
+  };
 
-const handleDeleteAddress = async (id) => {
-  await userService.deleteAddress(id);
-  await refreshAddresses();
-};
+  const handleUpdateAddress = async (e) => {
+    e.preventDefault();
+    if (isAdmin) {
+      console.log("Admin – preskačem update adrese (200 OK fallback)");
+      return;
+    }
+
+    await userService.updateAddress(editingAddress.id, newAddress);
+    await refreshAddresses();
+    setEditingAddress(null);
+    setNewAddress({ streetAndNumber: "", city: "", postalCode: "" });
+  };
+
+  const handleDeleteAddress = async (id) => {
+    if (isAdmin) {
+      console.log("Admin – preskačem brisanje adrese (200 OK fallback)");
+      return;
+    }
+    await userService.deleteAddress(id);
+    await refreshAddresses();
+  };
 
   const handleEditAddress = (addr) => {
     setEditingAddress(addr);
     setNewAddress(addr);
-    
   };
 
   return (
@@ -132,16 +159,16 @@ const handleDeleteAddress = async (id) => {
       setActiveTab={setActiveTab}
       profile={profile}
       user={user}
+      isAdmin={isAdmin}
       handleSubmit={handleSubmit}
-      handleInputChange={handleInputChange}
-      setProfilePictureBase64={setProfilePictureBase64}
-      setProfilePictureMimeType={setProfilePictureMimeType}
+      setProfilePictureFile={setProfilePictureFile}
       alergens={alergens}
       toggleAlergen={toggleAlergen}
       handleSubmitAlergens={handleSubmitAlergens}
       currentAddress={currentAddress}
       handleEditAddress={handleEditAddress}
       handleDeleteAddress={handleDeleteAddress}
+      handleInputChange={handleInputChange}
       newAddress={newAddress}
       setNewAddress={setNewAddress}
       editingAddress={editingAddress}

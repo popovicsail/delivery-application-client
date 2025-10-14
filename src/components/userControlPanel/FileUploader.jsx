@@ -1,31 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import "../../styles/userControlPanel.scss";
 
-function FileUploader({ onFileProcessed }) {
+function FileUploader({ onFileSelected }) {
   const [selectedFile, setSelectedFile] = useState(null);
+  const [preview, setPreview] = useState(null);
 
   const handleFileChange = (event) => {
     if (event.target.files && event.target.files.length > 0) {
       const file = event.target.files[0];
-
-      //  Dozvoljeni tipovi
-      if (!['image/png', 'image/jpeg'].includes(file.type)) {
-        alert('Samo PNG i JPEG su dozvoljeni!');
-        return;
-      }
-
       setSelectedFile(file);
-
-      // Konverzija u Base64
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result.split(',')[1]; // skini "data:image/png;base64,"
-        onFileProcessed({
-          base64: base64String,
-          mimeType: file.type,
-        });
-      };
-      reader.readAsDataURL(file);
+      setPreview(URL.createObjectURL(file));
+      onFileSelected(file);
     }
   };
 
@@ -33,13 +18,17 @@ function FileUploader({ onFileProcessed }) {
     <div className="form-row">
       <div className="form-row-file">
         <p>Dodaj sliku:</p>
-        <input
-          id="upload"
-          type="file"
-          accept="image/png, image/jpeg"
-          onChange={handleFileChange}
-        />
+        <input id="upload" type="file" onChange={handleFileChange} />
         {selectedFile && <p>Izabrani fajl: {selectedFile.name}</p>}
+        {preview && (
+          <div className="preview">
+            <img
+              src={preview}
+              alt="Preview"
+              style={{ maxWidth: "150px", marginTop: "10px" }}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
