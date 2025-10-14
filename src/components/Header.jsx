@@ -44,28 +44,16 @@ const Header = () => {
       });
   }, []);
 
-
-  const getRoles = async () => {
-    if (token) {
-      try {
-        const profile = JSON.parse(sessionStorage.getItem("myProfile"));
-        setRoles(profile.user.roles ? profile.user.roles : []);
-      } catch (error) {
-        console.error("Error fetching profile:", error);
-        setRoles([]);
-      }
-    }
-  };
-
-  useEffect(() => {
-    getRoles();
-  }, [token]);
-
   const handleLogout = () => {
     logout();
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("myProfile");
+    setIsAuthenticated(false);
+    setIsAdmin(false);
     setRoles([]);
     alert("Uspešno ste se odjavili.");
-  }
+    navigate("/login");
+  };
 
   return (
     <header className="header">

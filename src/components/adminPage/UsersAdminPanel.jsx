@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getAllUsers, deleteUser } from "../../services/user.services.tsx";
+import * as userService from "../../services/user.services.jsx";
 import "../../styles/adminPanel.scss";
 import { Link } from "react-router-dom";
 
@@ -11,7 +11,7 @@ export default function UsersAdminPanel() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const data = await getAllUsers();
+        const data = await userService.getAllUsers();
         setUsers(data);
       } catch (error) {
         console.error("Greška pri učitavanju korisnika:", error);

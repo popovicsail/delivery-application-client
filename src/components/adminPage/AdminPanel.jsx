@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../../styles/main.scss";
+import UsersAdminPanel from "./UsersAdminPanel.jsx";
+import AllergensAdminPanel from "./AllergensAdminPanel.jsx";
 import { useNavigate } from "react-router-dom";
 import { getAllUsers } from "../../services/user.services.jsx";
 

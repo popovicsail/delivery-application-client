@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import * as userService from "../../services/user.services.tsx";
+import * as userService from "../../services/user.services.jsx";
+import "../../styles/adminPanel.scss";
 
 export default function AllergensAdminPanel() {
   const [allergens, setAllergens] = useState([]);
