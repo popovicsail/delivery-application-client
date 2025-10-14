@@ -3,7 +3,6 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { getProfile } from "../services/user.services.jsx";
 import "../styles/main.scss";
 import { logout } from "../services/auth.services.jsx";
-import { logout } from "../services/auth.services.tsx";
 import { toImageUrl } from "../services/imageUtils";
 
 const Header = () => {
@@ -45,19 +44,6 @@ const Header = () => {
       });
   }, []);
 
-  const handleLogout = () => {
-    logout();
-    sessionStorage.removeItem("token");
-    sessionStorage.removeItem("myProfile");
-    setIsAuthenticated(false);
-    setIsAdmin(false);
-    setRoles([]);
-    alert("Uspešno ste se odjavili.");
-    navigate("/login");
-  };
-  const location = useLocation();
-  const current = location.pathname;
-  const token = sessionStorage.getItem("token");
 
   const getRoles = async () => {
     if (token) {

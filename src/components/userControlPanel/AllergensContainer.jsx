@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import * as userService from "../../services/user.services.tsx";
+import * as userService from "../../services/user.services.jsx";
 import AllergenView from "./AllergenView";
 
 export default function AllergensContainer({ active }) {
