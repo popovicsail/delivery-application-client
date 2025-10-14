@@ -15,6 +15,11 @@ export async function getProfile() {
   return response.data;
 }
 
+export async function deleteUser(id) {
+  const response = await api.delete(`/Admin/delete-user/${id}`);
+  return response.data;
+}
+
 export async function createCourier(courierData) {
   const response = await api.post("/Admin/register-courier", courierData);
   return response.data;
@@ -28,6 +33,27 @@ export async function createOwner(ownerData) {
 export async function getAllergens() {
   const response = await api.get("/Allergens");
   return Array.isArray(response.data) ? response.data : [];
+}
+
+export async function getMyAllergens() {
+  const response = await api.get("/Customers/my-allergens");
+  return response.data?.allergenIds ?? [];
+}
+
+
+export async function deleteAllergen(id) {
+  const response = await api.delete(`Allergens/${id}`);
+  return response.data;
+}
+
+export async function createAllergen(allergenData) {
+  const response = await api.post("/Allergens", allergenData);
+  return response.data;
+}
+
+export async function updateAllergen(id, payload) {
+  const response = await api.put(`/Allergens/${id}`, payload, )
+  return response.data;
 }
 
 export async function putMyAllergens(payload) {

@@ -212,46 +212,64 @@ $border-color: #ddd;
     }
   }
 
-  .alergenForm{
+  .alergenForm {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
+    flex-direction: column;
     width: 100%;
-    .alergen1, .alergen2 {
-      width: 50%;
-      gap: 10px;
-      margin-bottom: 15px;
-    }
-    .dugme {
-      display: flex;
-      justify-content: center;
-      width: 100%;
-      margin-top: 20px;
-    }
-    .checkbox-label {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 14px;
-      background-color: #f3f3f3;
-      padding: 6px 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-    
-      input[type="checkbox"] {
-        accent-color: black; // Za moderni browser styling
-        width: 16px;
-        height: 16px;
-      }
-    
-      &:has(input[type="checkbox"]:checked) {
-        background-color: black;
-        color: white;
-        font-weight: bold;
-      }
-    }    
+    max-height: 350px; /* ukupna visina prostora */
   }
+  
+  .alergen-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
+    /* automatski pravi više kolona, svaka kolona može da primi ~5 redova */
+    gap: 10px;
+    flex: 1;
+    overflow-y: auto; /* skroluje se samo lista */
+    padding-right: 8px; /* da scrollbar ne preklapa sadržaj */
+  }
+  
+  .alergen-item {
+    display: flex;
+    align-items: center;
+  }
+  
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    background-color: #f3f3f3;
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    width: 100%;
+  
+    input[type="checkbox"] {
+      accent-color: black;
+      width: 16px;
+      height: 16px;
+    }
+  
+    &:has(input[type="checkbox"]:checked) {
+      background-color: black;
+      color: white;
+      font-weight: bold;
+    }
+  }
+  
+  /* Dugme ostaje ispod, ne skroluje se */
+  .dugme {
+    margin-top: 12px;
+    display: flex;
+    justify-content: center;
+    padding: 10px 0;
+    border-top: 1px solid #eee;
+    background: #fff; /* da se odvoji od liste */
+  }
+  
+  
 
   .address-list {
     list-style: none;

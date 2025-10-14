@@ -1,0 +1,318 @@
+// adminPanel.scss
+
+// Color system (aligned with user panel vibe)
+$bg: #fcf5e8;            // pozadina stranice
+$surface: #ffffff;       // kartice / content
+$surface-alt: #f9f9f9;   // sidebar / alternativna pozadina
+$border: #ddd;           // borderi
+$muted: #555;            // sekundarni tekst
+$text: #333;             // osnovni tekst
+$accent: #28a745;        // primary action (zelena)
+$accent-hover: #218838;  // hover zelena
+$danger: #ff4d4d;        // delete crvena
+$danger-hover: #e60000;  // hover crvena
+$warning: #f2a60d;       // žuta (ako ti zatreba za badge)
+
+
+// Spacing scale
+$space-1: 8px;
+$space-2: 12px;
+$space-3: 16px;
+$space-4: 20px;
+$space-5: 24px;
+$space-6: 32px;
+
+// Radius and shadow
+$radius-sm: 6px;
+$radius-md: 10px;
+$shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.25);
+
+// Typography
+$font-base: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+$font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+
+.admin-page {
+  font-family: $font-base;
+  color: $text;
+  background: $bg;
+  min-height: calc(100vh - 80px); // below header
+  padding: $space-6 $space-5;
+
+  // page title style if needed
+  .naslov {
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin: 0 0 $space-4 0;
+    letter-spacing: 0.2px;
+    color: $text;
+  }
+}
+
+.admin-tabs {
+  display: flex;
+  gap: $space-2;
+  border-bottom: 1px solid $border;
+  margin-bottom: $space-4;
+  padding-bottom: $space-2;
+
+  button {
+    appearance: none;
+    border: 1px solid transparent;
+    background: transparent;
+    color: $muted;
+    padding: $space-2 $space-3;
+    border-radius: $radius-sm;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    transition: all 140ms ease;
+
+    &:hover {
+      color: $text;
+      background: $surface;
+      border-color: $border;
+    }
+
+    &.active {
+      color: $text;
+      background: linear-gradient(180deg, $surface, $surface-alt);
+      border: 1px solid $border;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+  }
+}
+
+.admin-content {
+  background: linear-gradient(180deg, $surface, $surface-alt);
+  border: 1px solid $border;
+  border-radius: $radius-md;
+  box-shadow: $shadow-soft;
+  padding: $space-5;
+}
+
+// Common button styles
+.createButton {
+  appearance: none;
+  border: 1px solid transparent;
+  background: $accent;
+  color: #0b1016;
+  padding: $space-2 $space-4;
+  border-radius: $radius-sm;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  transition: background 140ms ease, transform 80ms ease;
+  margin-bottom: $space-3;
+
+  &:hover { background: $accent-hover; }
+  &:active { transform: translateY(1px); }
+}
+
+button.danger,
+.delete-column button {
+  appearance: none;
+  border: 1px solid transparent;
+  background: $danger;
+  color: #fff;
+  padding: $space-2 $space-3;
+  border-radius: $radius-sm;
+  font-weight: 600;
+  transition: background 140ms ease, transform 80ms ease;
+
+  &:hover { background: $danger-hover; }
+  &:active { transform: translateY(1px); }
+}
+
+// Users table
+.users-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: $radius-md;
+  overflow: hidden;
+  box-shadow: $shadow-soft;
+
+  thead {
+    background: $surface-alt;
+
+    th {
+      text-align: left;
+      padding: $space-3;
+      font-weight: 700;
+      color:white;
+      border-bottom: 1px solid $border;
+      font-size: 0.95rem;
+      letter-spacing: 0.2px;
+    }
+  }
+
+  tbody {
+    tr {
+      border-bottom: 1px solid $border;
+      transition: background 120ms ease;
+
+      &:hover { background: rgba(255, 255, 255, 0.03); }
+    }
+
+    td {
+      padding: $space-3;
+      color: $text;
+      vertical-align: middle;
+
+      // Roles cell: show chips
+      &:nth-child(4) {
+        .role-chip {
+          display: inline-block;
+          background: rgba($warning, 0.15);
+          color: $warning;
+          border: 1px solid rgba($warning, 0.35);
+          border-radius: 999px;
+          padding: 2px 8px;
+          margin-right: 6px;
+          font-size: 0.85rem;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+
+  // narrow columns where needed
+  .delete-column {
+    width: 120px;
+    text-align: right;
+  }
+}
+
+
+
+// Allergens panel (mirrors user panel forms)
+.allergens-admin-panel {
+  .form-row {
+    display: flex;
+    gap: $space-2;
+    margin-bottom: $space-3;
+
+    input[type="text"] {
+      flex: 1;
+      background: $surface;
+      border: 1px solid $border;
+      color: $text;
+      padding: $space-2 $space-3;
+      border-radius: $radius-sm;
+      outline: none;
+      transition: border-color 140ms ease;
+
+      &::placeholder { color: $muted; }
+      &:focus { border-color: $accent; }
+    }
+
+    button {
+      @extend .createButton;
+    }
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: $space-2;
+      background: $surface;
+      border: 1px solid $border;
+      border-radius: $radius-sm;
+      padding: $space-2 $space-3;
+      margin-bottom: $space-2;
+
+      .label {
+        color: $text;
+        font-weight: 600;
+      }
+
+      .actions {
+        display: flex;
+        gap: $space-2;
+
+        .delete {
+          @extend .delete-column,button;
+        }
+      }
+    }
+  }
+  
+}
+
+.btn-primary {
+  appearance: none;
+  border: 1px solid transparent;
+  background: $text;
+  color: $surface;
+  padding: $space-2 $space-4;
+  border-radius: $radius-sm;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  transition: background 140ms ease, transform 80ms ease;
+
+  &:hover { background: $muted; }
+  &:active { transform: translateY(1px); }
+}
+
+.form-grid {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.form-row label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #555;
+}
+
+.form-row input {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.form-row input:focus {
+  border-color: #28a745;
+}
+
+// Responsive tweaks
+@media (max-width: 900px) {
+  .admin-content { padding: $space-4; }
+
+  .users-table {
+    thead { display: none; }
+    tbody tr {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: $space-1;
+      padding: $space-2;
+    }
+    tbody td {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px dashed $border;
+    }
+    .delete-column { width: auto; text-align: left; }
+  }
+}
+
+@media (max-width: 600px) {
+  .admin-tabs { flex-wrap: wrap; }
+  .createButton { width: 100%; }
+}

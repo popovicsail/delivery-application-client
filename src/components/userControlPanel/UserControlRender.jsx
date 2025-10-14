@@ -83,7 +83,13 @@ export default function ProfilePage() {
   const handleSubmitAlergens = async (e) => {
     e.preventDefault();
     const selectedIds = alergens.filter((a) => a.selected).map((a) => a.id);
-    await userService.putMyAllergens(selectedIds);
+  
+    try {
+      await userService.putMyAllergens({ allergenIds: selectedIds });
+      console.log("Alergeni uspešno sačuvani!");
+    } catch (err) {
+      console.error("Greška pri čuvanju alergena:", err);
+    }
   };
 
   // 📍 Adrese

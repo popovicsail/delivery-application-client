@@ -1,8 +1,8 @@
+import React from "react";
 import ProfileView from "./ProfileView";
 import EditUserForm from "./EditUserForm";
-import AllergenView from "./AllergenView";
+import AllergensContainer from "./AllergensContainer"; // <- umesto AllergenView
 import AddressView from "./AddressView";
-import React from "react";
 
 export default function AccountPanel({
   activeTab,
@@ -13,9 +13,6 @@ export default function AccountPanel({
   handleInputChange,
   setProfilePictureBase64,
   setProfilePictureMimeType,
-  alergens,
-  toggleAlergen,
-  handleSubmitAlergens,
   currentAddress,
   handleEditAddress,
   handleDeleteAddress,
@@ -32,15 +29,36 @@ export default function AccountPanel({
     <div className="account-panel">
       <aside className="sidebar">
         <ul>
-          <li className={isActive("profil-view")} onClick={() => setActiveTab("profil-view")}>Profil</li>
-          <li className={isActive("izmeni-podatke-form")} onClick={() => setActiveTab("izmeni-podatke-form")}>Izmeni podatke</li>
-          <li className={isActive("alergen-view")} onClick={() => setActiveTab("alergen-view")}>Alergeni</li>
-          <li className={isActive("adrese-view")} onClick={() => setActiveTab("adrese-view")}>Adrese</li>
+          <li
+            className={isActive("profil-view")}
+            onClick={() => setActiveTab("profil-view")}
+          >
+            Profil
+          </li>
+          <li
+            className={isActive("izmeni-podatke-form")}
+            onClick={() => setActiveTab("izmeni-podatke-form")}
+          >
+            Izmeni podatke
+          </li>
+          <li
+            className={isActive("alergen-view")}
+            onClick={() => setActiveTab("alergen-view")}
+          >
+            Alergeni
+          </li>
+          <li
+            className={isActive("adrese-view")}
+            onClick={() => setActiveTab("adrese-view")}
+          >
+            Adrese
+          </li>
         </ul>
       </aside>
 
       <main className="content">
         <ProfileView profile={profile} active={isActive("profil-view")} />
+
         <EditUserForm
           user={user}
           active={isActive("izmeni-podatke-form")}
@@ -49,12 +67,9 @@ export default function AccountPanel({
           setProfilePictureBase64={setProfilePictureBase64}
           setProfilePictureMimeType={setProfilePictureMimeType}
         />
-        <AllergenView
-          alergens={alergens}
-          toggleAlergen={toggleAlergen}
-          handleSubmitAlergens={handleSubmitAlergens}
-          active={isActive("alergen-view")}
-        />
+
+        <AllergensContainer active={isActive("alergen-view")} />
+
         <AddressView
           currentAddress={currentAddress}
           handleEditAddress={handleEditAddress}

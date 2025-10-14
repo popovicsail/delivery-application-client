@@ -54,6 +54,7 @@ export const RegisterForm = () => {
       if (token) {
         sessionStorage.setItem("token", token);
         navigate("/home");
+        window.location.reload();
       } else {
         setErrors(["Registracija je prošla, ali token nije vraćen."]);
       }
