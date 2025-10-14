@@ -1,6 +1,6 @@
 import React from "react";
 import { useForm, useFieldArray } from "react-hook-form";
-import { dishService } from "../../services/dishes.services";
+import { dishService } from "../../services/dishes.services.tsx";
 
 const DishGroupForm = ({ dishId, onClose }) => {
   const { register, control, handleSubmit, reset, formState: { errors } } = useForm({

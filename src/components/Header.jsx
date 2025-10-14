@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { getProfile } from "../services/user.services.tsx";
+import { getProfile } from "../services/user.services.jsx";
 import "../styles/main.scss";
+import { logout } from "../services/auth.services.jsx";
 import { logout } from "../services/auth.services.tsx";
 import { toImageUrl } from "../services/imageUtils";
 
@@ -54,6 +55,31 @@ const Header = () => {
     alert("Uspešno ste se odjavili.");
     navigate("/login");
   };
+  const location = useLocation();
+  const current = location.pathname;
+  const token = sessionStorage.getItem("token");
+
+  const getRoles = async () => {
+    if (token) {
+      try {
+        const profile = JSON.parse(sessionStorage.getItem("myProfile"));
+        setRoles(profile.user.roles ? profile.user.roles : []);
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+        setRoles([]);
+      }
+    }
+  };
+
+  useEffect(() => {
+    getRoles();
+  }, [token]);
+
+  const handleLogout = () => {
+    logout();
+    setRoles([]);
+    alert("Uspešno ste se odjavili.");
+  }
 
   return (
     <header className="header">

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useForm} from 'react-hook-form';
-import { createRestaurant } from "../services/restaurant.services.tsx"
-import { getAllUsers } from "../services/user.services.tsx"
+import { createRestaurant } from "../services/restaurant.services.jsx"
+import { getAllOwners } from "../services/user.services.jsx"
 import "../styles/main.scss";
 
 const RestaurantForm = () => {
@@ -50,7 +50,7 @@ const RestaurantForm = () => {
     const fetchOwners = async () => {
       try {
         setLoading(true);
-        const data = await getAllUsers();
+        const data = await getAllOwners();
         setOwners(data || []);
         setError('');
       } catch (err) {

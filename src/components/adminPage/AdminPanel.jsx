@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import UsersAdminPanel from "./UsersAdminPanel.jsx";
-import AllergensAdminPanel from "./AllergensAdminPanel.jsx";
-import "../../styles/adminPanel.scss";
+import React, { useEffect, useState } from "react";
+import "../../styles/main.scss";
+import { useNavigate } from "react-router-dom";
+import { getAllUsers } from "../../services/user.services.jsx";
 
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState("users");

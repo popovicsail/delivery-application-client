@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Outlet, useNavigate } from 'react-router-dom';
-import { getRestaurants, deleteRestaurant } from "../services/restaurant.services.tsx"
+import { getRestaurants, deleteRestaurant } from "../services/restaurant.services.jsx"
 import "../styles/main.scss";
 
 const RestaurantsAdmin = () => {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../../styles/main.scss";
-import * as userService from "../../services/user.services.tsx";
+import * as userService from "../../services/user.services.jsx";
 import { useNavigate } from "react-router-dom";
 
 export const UserForm = () => {

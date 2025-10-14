@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
-import { getOneRestaurant, updateRestaurant } from "../services/restaurant.services.tsx"
+import { getOneRestaurant, updateRestaurant } from "../services/restaurant.services.jsx"
 import "../styles/main.scss";
 
 const RestaurantForm = () => {

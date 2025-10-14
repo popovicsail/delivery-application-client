@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import DishForm from "./DishForm";
 import DishGroupForm from "./DishGroupForm";
-import { dishService } from "../../services/dishes.services";
+import { dishService } from "../../services/dishes.services.tsx";
 
 const DishesPage = () => {
   const [dishes, setDishes] = useState([]);
@@ -35,10 +35,10 @@ const DishesPage = () => {
   const handleSave = async (dish) => {
     try {
       if (dish.id) {
-        const updated = await dishService.update(dish.id, dish);
-        setDishes((prev) =>
-          prev.map((d) => (d.id === updated.id ? updated : d))
-        );
+      await dishService.update(dish.id, dish);
+
+      const data = await dishService.getAll();
+      setDishes(data);
       } else {
         const created = await dishService.create(dish);
         setDishes((prev) => [...prev, created]);
@@ -99,7 +99,7 @@ const DishesPage = () => {
                 {isRoleAdmin && (
                   <div style={{display: "flex", justifyContent: "space-around"}}>
                     <button 
-                      onClick={() => { setSelectedDish(dish); setIsFormOpen(true); getDishData("77777777-7777-7777-7777-777777777777")}}
+                      onClick={() => { setSelectedDish(dish); setIsFormOpen(true); getDishData("77777777-7777-7777-7777-777777777777");}}
                       style={{
                         padding: "8px 14px",
                         borderRadius: "6px",
