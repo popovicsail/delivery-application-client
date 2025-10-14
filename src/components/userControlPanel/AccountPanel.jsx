@@ -77,7 +77,6 @@ export default function AccountPanel({
 
         {!isAdmin && <AllergensContainer 
         active={isActive("alergen-view")} 
-        isAdmin={isAdmin} 
         />}
 
         {!isAdmin && (
