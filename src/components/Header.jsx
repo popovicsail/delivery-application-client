@@ -33,8 +33,6 @@ const Header = () => {
 
   const handleLogout = () => {
     logout();
-    sessionStorage.removeItem("token");
-    sessionStorage.removeItem("myProfile");
     setRoles([]);
     alert("Uspešno ste se odjavili.");
     navigate("/login");
