@@ -4,9 +4,11 @@ import AllergenView from "./AllergenView";
 
 export default function AllergensContainer({ active}) {
   const [alergens, setAlergens] = useState([]);
+  const roles = sessionStorage.getItem("roles");
 
   // 1. Učitaj sve alergene odmah
   useEffect(() => {
+    if (!roles || (!roles.includes("Customer"))) return;
     const fetchAll = async () => {
       try {
         const all = await userService.getAllergens();
@@ -26,6 +28,7 @@ export default function AllergensContainer({ active}) {
 
   // 2. Kada se učitaju alergeni, povuci korisnikove i označi
   useEffect(() => {
+    if (!roles || (!roles.includes("Customer"))) return;
     const fetchMine = async () => {
       try {
         const mine = await userService.getMyAllergens(); 
