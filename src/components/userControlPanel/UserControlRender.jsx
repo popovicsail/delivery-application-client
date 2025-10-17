@@ -24,8 +24,8 @@ export default function ProfilePage() {
     (async () => {
       const prof = await userService.getProfile();
 
-      if (prof.profilePictureBase64) {
-        prof.imageUrl = prof.profilePictureBase64;
+      if (prof.profilePictureUrl) {
+        prof.imageUrl = prof.profilePictureUrl;
       }
 
       setProfile(prof);
@@ -71,8 +71,8 @@ export default function ProfilePage() {
     await userService.updateProfile(formData);
 
     const updated = await userService.getProfile();
-    if (updated.profilePictureBase64) {
-      updated.imageUrl = updated.profilePictureBase64;
+    if (updated.profilePictureUrl) {
+      updated.imageUrl = updated.profilePictureUrl;
     }
     setProfile(updated);
     setUser(updated);

@@ -19,8 +19,9 @@ const Header = () => {
 
     getProfile()
       .then((profile) => {
+        console.log("Učitani profil:", profile);
         setRoles(profile.roles || []);
-        setProfileImage(profile.profilePictureBase64); // već data URL
+        setProfileImage(profile.profilePictureUrl);
         setFullName(`${profile.firstName} ${profile.lastName}`);
       })
       .catch((error) => {
