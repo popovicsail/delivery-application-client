@@ -42,7 +42,7 @@ export async function getAllergens() {
 
 export async function getMyAllergens() {
   const response = await api.get("/Customers/my-allergens");
-  return response.data?.allergenIds ?? [];
+  return response.data ?? [];
 }
 
 

@@ -65,8 +65,14 @@ export default function ProfilePage() {
     formData.append("email", user.email);
 
     if (profilePictureFile) {
-      formData.append("profilePicture", profilePictureFile);
+      formData.append("ProfilePictureUrl", profilePictureFile);
     }
+    console.log("Ažuriranje profila sa podacima: ", {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      profilePictureFile
+    });
 
     await userService.updateProfile(formData);
 

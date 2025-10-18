@@ -28,7 +28,8 @@ export default function AllergensContainer({ active}) {
   useEffect(() => {
     const fetchMine = async () => {
       try {
-        const mine = await userService.getMyAllergens(); 
+        const mine = await userService.getMyAllergens();
+        console.log("Korisnikovi alergeni:", mine);
         // očekujem { allergenIds: [...] }
         setAlergens((prev) =>
           prev.map((a) => ({
@@ -63,6 +64,7 @@ export default function AllergensContainer({ active}) {
     try {
       await userService.putMyAllergens({ allergenIds: selectedIds });
       console.log("Alergeni uspešno sačuvani!");
+      window.location.reload();
     } catch (err) {
       console.error("Greška pri čuvanju alergena:", err);
     }
