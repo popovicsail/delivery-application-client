@@ -37,9 +37,10 @@ export default function ProfilePage() {
         setCurrentAddress({ addresses: [] });
         return;
       }
-
-      const allergens = await userService.getAllergens();
-      setAlergens(allergens.map(a => ({ ...a, selected: false })));
+      if (prof.roles?.includes("Customer")) {
+        const allergens = await userService.getAllergens();
+        setAlergens(allergens.map(a => ({ ...a, selected: false })));
+      }
 
       const addresses = await userService.getMyAddresses();
       setCurrentAddress({ addresses });

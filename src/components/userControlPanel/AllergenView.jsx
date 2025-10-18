@@ -1,6 +1,14 @@
 import React from "react";
 
 export default function AllergenView({ alergens = [], toggleAlergen, handleSubmitAlergens, active }) {
+  const roles = sessionStorage.getItem("roles");
+   if (!roles || !roles.includes("Customer")) {
+      return (
+        <section id="alergen-view" className={active}>
+          <p>Alergeni ne mogu biti ucitani bez uloge Customer-a!</p>
+        </section>
+      )
+    };
   return (
     <section id="alergen-view" className={active}>
       <div className="form-section">

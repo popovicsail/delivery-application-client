@@ -124,11 +124,8 @@ button.danger,
 // Users table
 .users-table {
   width: 100%;
-  border-collapse: collapse;
   background: $surface;
   margin-top: $space-5 ;
-  border: 1px solid $border;
-  border-radius: $radius-md;
   overflow: hidden;
   box-shadow: $shadow-soft;
 
@@ -139,8 +136,6 @@ button.danger,
       text-align: left;
       padding: $space-3;
       font-weight: 700;
-      color:white;
-      border-bottom: 1px solid $border;
       font-size: 0.95rem;
       letter-spacing: 0.2px;
     }
@@ -181,8 +176,22 @@ button.danger,
     width: 120px;
     text-align: right;
   }
-}
 
+  button {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    width: 80px;
+    height: 30px;
+
+    &:hover {
+      background-color: #e60000;
+    }
+  }
+}
 
 
 // Allergens panel (mirrors user panel forms)

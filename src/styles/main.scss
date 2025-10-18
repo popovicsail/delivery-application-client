@@ -15,6 +15,8 @@ a, th {
   font-weight: bolder;
 }
 
+//GLOBAL CLASSES
+
 .hidden {
   display: none;
 }
@@ -27,6 +29,65 @@ a, th {
   margin: 0.4rem 0;
 }
 
+#current {
+  background-color: #5a5a5a;
+  &:hover {
+    background-color: #5a5a5a;
+  }
+}
+  
+img {
+    height: 150px;
+    width: auto;
+    
+}
+.error {
+    color: #d8000c;
+    background-color: #ffbaba;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.9rem
+}
+
+.buttons {
+    margin-left: 2%;
+    margin: 2%;
+    padding: 10px;
+    width: 10%;
+    height: auto;
+    border-radius: 5px;
+}
+
+.delete-btn {
+  background-color: #e74c3c;
+  color: white;
+}
+.edit-btn {
+  background-color: #3498db;
+  color: white;
+}
+
+.createButton {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 20px;
+
+    &:hover {
+        background-color: #218838;
+    }
+}
+
+.naslov{
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+//HEADER
 .header {
     background-color: #222;
     color: white;
@@ -36,6 +97,39 @@ a, th {
     flex-direction: column;
     align-items: center;
   }
+
+  .header-profile-box {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+  color: white;
+  z-index: 10;
+}
+
+.header-profile-image {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #fff;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s ease;
+}
+
+.header-profile-image:hover {
+  transform: scale(1.05);
+  border-color: #ccc;
+}
+
+.header-profile-name {
+  font-size: 1.1rem;
+  font-weight: bold;
+  font-family: Arial, Helvetica, sans-serif;
+}
   
 .nav-list {
   list-style: none;
@@ -61,28 +155,7 @@ a, th {
   }
 }
 
-
-
-#current {
-  background-color: #5a5a5a;
-  &:hover {
-    background-color: #5a5a5a;
-  }
-}
-  
-img {
-    height: 150px;
-    width: auto;
-    
-}
-.error {
-    color: #d8000c;
-    background-color: #ffbaba;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.9rem
-}
-
+//SPINNER
 .spinner-container {
     display: flex;
     flex-direction: column;
@@ -108,16 +181,6 @@ img {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
-  
-
-.buttons {
-    margin-left: 2%;
-    margin: 2%;
-    padding: 10px;
-    width: 10%;
-    height: auto;
-    border-radius: 5px;
-}
 
 .image, .publishers  {
     margin-left: 2%;
@@ -126,6 +189,7 @@ img {
 }
 
 
+//ADMIN FORMA
 .formaDodaj,.form-section,.formaLogin,.adminUserCreate {
     border-radius: 5px;
     display: flex; /* Aktivira Flexbox */
@@ -152,25 +216,21 @@ img {
 
 // Tabela - generalni stilovi
 
-.naslov{
-  text-align: center;
-  margin-top: 20px;
-  margin-bottom: 10px;
-}
-
 table {
   border-collapse: collapse;
-  border: 2px solid $primary-color;
   text-align: center;
-
+  border-radius: 10px;
+  border:none;
+  overflow: hidden;
   thead {
     tr {
       background-color: $primary-color;
       color: white;
       opacity: 0.9;
-      border: 2px solid #222;
-
+      border:none;
+      border-bottom: 1px solid black;
       th {
+        border:none;
         padding: 0.6rem 1.2rem;
       }
     }
@@ -197,43 +257,6 @@ table {
     }
   }
 }
-
-.users-table {
-  button {
-    background-color: #ff4d4d;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 3px;
-    cursor: pointer;
-    width: 80px;
-    height: 30px;
-
-    &:hover {
-      background-color: #e60000;
-    }
-
-  }
-}
-  
-
-.createButton {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin: 20px;
-
-    &:hover {
-        background-color: #218838;
-    }
-}
-
-
-
-
 
 // RestaurantsAdmin specific styles
 
@@ -470,38 +493,3 @@ table {
     }
   }
 }
-
-.header-profile-box {
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  text-decoration: none;
-  color: white;
-  z-index: 10;
-}
-
-.header-profile-image {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #fff;
-  box-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
-  transition: transform 0.2s ease;
-}
-
-.header-profile-image:hover {
-  transform: scale(1.05);
-  border-color: #ccc;
-}
-
-.header-profile-name {
-  font-size: 1.1rem;
-  font-weight: bold;
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-
