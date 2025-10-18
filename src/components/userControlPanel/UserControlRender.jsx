@@ -20,31 +20,37 @@ export default function ProfilePage() {
   const isAdmin = user?.roles?.some(r => r.toLowerCase().includes("admin"));
 
   // 🔄 Učitavanje podataka
-  useEffect(() => {
-    (async () => {
-      const prof = await userService.getProfile();
+useEffect(() => {
+  (async () => {
+    const prof = await userService.getProfile();
 
-      if (prof.profilePictureUrl) {
-        prof.imageUrl = prof.profilePictureUrl;
-      }
+    if (prof.profilePictureUrl) {
+      prof.imageUrl = prof.profilePictureUrl;
+    }
 
-      setProfile(prof);
-      setUser(prof);
-      console.log("Učitani podaci profila:", prof);
+    setProfile(prof);
+    setUser(prof);
+    console.log("Učitani podaci profila:", prof);
 
-      if (prof.roles?.some(r => r.toLowerCase().includes("Admninistrator"))) {
-        setAlergens([]);
-        setCurrentAddress({ addresses: [] });
-        return;
-      }
-      if (prof.roles?.includes("Customer")) {
-        const allergens = await userService.getAllergens();
-        setAlergens(allergens.map(a => ({ ...a, selected: false })));
-      }
+    // 👉 Sačuvaj role u sessionStorage
+    if (prof.roles) {
+      sessionStorage.setItem("roles", JSON.stringify(prof.roles));
+    }
 
-      const addresses = await userService.getMyAddresses();
-      setCurrentAddress({ addresses });
-    })();
+    if (prof.roles?.some(r => r.toLowerCase().includes("administrator"))) {
+      setAlergens([]);
+      setCurrentAddress({ addresses: [] });
+      return;
+    }
+
+    if (prof.roles?.includes("Customer")) {
+      const allergens = await userService.getAllergens();
+      setAlergens(allergens.map(a => ({ ...a, selected: false })));
+    }
+
+    const addresses = await userService.getMyAddresses();
+    setCurrentAddress({ addresses });
+  })();
   }, []);
 
   const handleInputChange = (e) => {
