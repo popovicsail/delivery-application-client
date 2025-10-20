@@ -12,7 +12,8 @@ import { LoginForm } from "./components/LoginForm.jsx";
 import AdminPage from "./components/adminPage/AdminPanelRender.jsx";
 import { UserForm } from "./components/adminPage/AdminUserCeationForm.jsx";
 import ProfilePage from "../src/components/userControlPanel/UserControlRender.jsx";
-import DishesPage from "./pages/Dishes/DishesPage.jsx";
+import MenuPage from "./pages/Menus/MenuPage.jsx";
+import RestaurantsSearch from "./pages/RestaurantsSearch.jsx";
 
 const App = () => {
   return(
@@ -30,7 +31,8 @@ const App = () => {
           <Route path="/restaurantsOwner" element = {<RestaurantsOwner />}/>
           <Route path="/restaurantForm/:id" element = {<RestaurantForm />}/>
           <Route path="/createRestaurant" element = {<CreateRestaurant />}/>
-          <Route path="/dishes" element ={<DishesPage />} />
+          <Route path="/restaurantsSearch" element = {<RestaurantsSearch />}/>
+          <Route path="/restaurantId/:restaurantId/menuId/:menuId" element ={<MenuPage />} />
         </Routes>
     </BrowserRouter>
     </div>

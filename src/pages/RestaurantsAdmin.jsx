@@ -34,23 +34,25 @@ const RestaurantsAdmin = () => {
       setRefreshKey((prev) => prev + 1);
       alert('Uspesno ste uklonili restoran');
     } catch (error) {
-      if (error.response) {
-        if (error.response.status === 404) {
-          setError('Ne postoji restoran sa ovim id-em.');
-        } else if (error.response.status === 500) {
-          setError('Greska na serveru. Pokusajte kasnije.');
+         if (error.response) {
+          if (error.response.status === 404) {
+            setError('Nije pronadjen nijedan restoran.');
+          } else if (error.response.status === 401) {
+            setError('Ova stranica je rezervisana samo za administratore.');
+            } else if (error.response.status === 500) {
+            setError('Greska na serveru. Pokusajte kasnije.');
+          } else {
+            setError(`Greska: ${error.response.status}`);
+          }
+        } else if (error.request) {
+          setError('Nema odgovora sa servera.');
         } else {
-          setError(`Greska: ${error.response.status}`);
+          setError('Doslo je do greske.');
         }
-      } else if (error.request) {
-        setError('Nema odgovora sa servera.');
-      } else {
-        setError('Doslo je do greske.');
+        console.error('Greska:', error.message);
+      } finally {
+        setLoading(false);
       }
-      console.error('Greska:', error.message);
-    } finally {
-      setLoading(false);
-    }
   };
 
   const handleEdit = (id) => {

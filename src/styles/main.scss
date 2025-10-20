@@ -1,4 +1,23 @@
 $primary-color: #222;
+@mixin container-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@mixin form-box-styles {
+  @include container-column;
+  border: 2px solid rgb(99, 99, 99);
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.288);
+  background-color: #dae0d7;
+}
+
+@mixin form-inputs-focus-styles {
+  border: 2px solid #4f8aa1;
+  outline: none;
+  box-shadow: 0 0 5px #4f8aa1;
+}
 
 body {
   height: 100%;
@@ -58,6 +77,21 @@ img {
     border-radius: 5px;
 }
 
+.buttons-form {
+  width: fit-content;
+  margin-top: 1rem;
+  padding: 0.5rem 1.2rem;
+  background-color: #4f8aa1;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
 .delete-btn {
   background-color: #e74c3c;
   color: white;
@@ -81,6 +115,25 @@ img {
     }
 }
 
+.circle-buttons {
+  height: 1.3rem;
+  width: 1.3rem;
+  border-radius: 16px;
+  background-color: #7c6f61;
+  transition: 0.4s all;
+  &:hover {
+    cursor: pointer;
+    background-color: #584c41;
+  }
+}
+
+#center-button {
+  height: 1.9rem;
+  width: 1.9rem;
+  border-radius: 6px;
+  background-color: #554734;
+}
+
 .naslov{
   text-align: center;
   margin-top: 20px;
@@ -93,9 +146,7 @@ img {
     color: white;
     padding: 1rem;
     border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    @include container-column;
   }
 
   .header-profile-box {
@@ -157,9 +208,7 @@ img {
 
 //SPINNER
 .spinner-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    @include container-column;
     margin-top: 50px;
   }
   
@@ -192,9 +241,7 @@ img {
 //ADMIN FORMA
 .formaDodaj,.form-section,.formaLogin,.adminUserCreate {
     border-radius: 5px;
-    display: flex; /* Aktivira Flexbox */
-    flex-direction: column; /* Postavlja elemente u kolonu */
-    align-items: center; /* Centriranje elemenata po horizontali */
+    @include container-column;
   
         input,select {
             width: 500px;
@@ -261,9 +308,7 @@ table {
 // RestaurantsAdmin specific styles
 
 #restaurants-admin-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  @include container-column;
   h3 {
     margin: 4vh 0;
     text-decoration: underline;
@@ -277,9 +322,7 @@ table {
 // RestaurantForm specific styles
 
 .restaurants-form-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  @include container-column;
 
   h3 {
     text-align: center;
@@ -287,29 +330,21 @@ table {
   }
 
   form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    @include form-box-styles;
     gap: 1rem;
     margin: 4rem;
     padding: 1rem;
-    border: 2px solid rgb(99, 99, 99);
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.288);
-    background-color: #dae0d7;
     
     input, select, textarea {
       box-sizing: border-box;
-      padding: 0.6rem 1.2rem;
+      padding: 0.6rem 0.7rem;
       border: 1px solid #adaaaa;
       border-radius: 3px;
       width: 300px;
       align-self: center;
       &:focus {
-        border: 2px solid #4f8aa1;
-        outline: none;
-        box-shadow: 0 0 5px #4f8aa1;
-        padding: calc(0.6rem - 1px) calc(1.2rem - 1px);
+        @include form-inputs-focus-styles;
+        padding: calc(0.6rem - 1px) calc(0.7rem - 1px);
       }
     }
 
@@ -346,20 +381,6 @@ table {
       margin-left: 0.4rem;
       align-self: flex-start;
     }
-
-    button {
-      width: fit-content;
-      padding: 0.6rem 1.2rem;
-      background-color: #4f8aa1;
-      color: white;
-      border: none;
-      border-radius: 3px;
-      cursor: pointer;
-
-      &:hover {
-        opacity: 0.8;
-      }
-    }
   }
 }
 
@@ -367,9 +388,7 @@ table {
 // RestaurantsOwner specific styles
 
 #restaurants-owner-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  @include container-column;
   h3 {
     margin: 2vh 0;
   }
@@ -398,7 +417,7 @@ table {
   transition: 0.3s all;
   &:hover {
   transform: translateY(-6px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.158);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.151);
   }
   h4 {
     color: #70593b;
@@ -420,7 +439,9 @@ table {
     justify-content: space-around;
     gap: 0.8rem;
     section {
-      box-shadow: 5px 5px 15px #0000000e;
+      box-shadow: 5px 5px 15px #0000001c;
+      background-color: #5e320011;
+      border-radius: 10px;
       text-align: center;
       white-space: nowrap;
       overflow: hidden;
@@ -466,7 +487,7 @@ table {
     text-align: left;
     flex-grow: 1;
     box-shadow: 5px 5px 8px #0000000e;
-
+    border-radius: 8px;
     white-space: pre-line;
   }
 }
@@ -492,4 +513,75 @@ table {
       cursor: pointer;
     }
   }
+}
+
+
+//Restaurants Search - User POV -------> koristi .restaurant-card iz ownera
+
+#restaurants-search-container {
+  display: flex;
+  margin: 3rem 1rem;
+  #filter-container {
+    margin-top: 10vh;
+    #filter-box {
+      @include form-box-styles;
+      padding: 1.5rem 1rem;
+      padding-top: 0.3rem;
+      border-radius: 8px;
+      h4 {
+        margin: 1rem;
+        font-size: larger;
+      }
+      h5 {
+        font-size: medium;
+        margin-top: 0.7rem;
+        margin-bottom: 0.5rem;
+        align-self: flex-start;
+      }
+      select {
+        margin: 0 auto;
+        width: 80%;
+        height: 3vh;
+      }
+      input[type="text"] {
+        height: 2vh;
+      }
+      input[type="time"] {
+        padding: 0.3rem;
+      }
+      input[type="checkbox"] {
+        width: auto;
+      }
+      .time-specific-section-row {
+        margin-right: 3rem;
+      }
+
+      input, select {
+        &:focus {
+          @include form-inputs-focus-styles;
+        }
+      }
+    }
+  }
+  #cards-container {
+    .restaurant-card {
+      flex-grow: 1;
+      max-width: 23vw;
+      &:hover {
+        cursor: pointer;
+      }
+    }
+    #buttons-row {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      #buttons-box {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1.3rem;
+      }
+    }
+  }
+  
 }

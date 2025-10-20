@@ -82,7 +82,7 @@ const RestaurantForm = () => {
         {formState.errors.ownerId && <p style={{ color: 'red', margin: 0 }}>{formState.errors.ownerId.message}</p>}
         {loading && <div id="loadingSpinner" className="spinner"></div>}
         {error && <p style={{ color: 'red' }}>{error}</p>}
-        <button type="submit">Kreiraj</button>
+        <button className="buttons-form" type="submit">Kreiraj</button>
       </form>
     </div>
   );
