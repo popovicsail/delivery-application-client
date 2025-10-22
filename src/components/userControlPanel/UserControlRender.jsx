@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../../styles/userControlPanel.scss";
+import "../../styles/courierPanel.scss";
 import AccountPanel from "./AccountPanel.jsx";
 import * as userService from "../../services/user.services"; 
 
@@ -18,6 +19,8 @@ export default function ProfilePage() {
   const [profilePictureFile, setProfilePictureFile] = useState(null);
 
   const isAdmin = user?.roles?.some(r => r.toLowerCase().includes("admin"));
+  const isCourier = user?.roles?.some(r => r.toLowerCase().includes("courier"));
+
 
   // 🔄 Učitavanje podataka
 useEffect(() => {
@@ -173,6 +176,7 @@ useEffect(() => {
       profile={profile}
       user={user}
       isAdmin={isAdmin}
+      isCourier={isCourier}
       handleSubmit={handleSubmit}
       setProfilePictureFile={setProfilePictureFile}
       alergens={alergens}
