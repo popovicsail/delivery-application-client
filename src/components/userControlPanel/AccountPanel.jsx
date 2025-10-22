@@ -3,6 +3,7 @@ import ProfileView from "./ProfileView";
 import EditUserForm from "./EditUserForm";
 import AllergensContainer from "./AllergensContainer";
 import AddressView from "./AddressView";
+import VoucherList from "../customerComponents/VoucherList";
 
 export default function AccountPanel({
   activeTab,
@@ -21,10 +22,10 @@ export default function AccountPanel({
   setEditingAddress,
   handleAddAddress,
   handleUpdateAddress,
-  isAdmin
+  isAdmin,
+  vouchers
 }) {
   const isActive = (tab) => (activeTab === tab ? "active" : "");
-
 
   return (
     <div className={`account-panel ${isAdmin ? "admin" : ""}`}>
@@ -57,6 +58,12 @@ export default function AccountPanel({
               >
                 Adrese
               </li>
+              <li
+                className={isActive("voucher-list")}
+                onClick={() => setActiveTab("voucher-list")}
+              >
+                Vouchers
+              </li>
             </>
           )}
         </ul>
@@ -75,8 +82,8 @@ export default function AccountPanel({
           />
         )}
 
-        {!isAdmin && <AllergensContainer 
-        active={isActive("alergen-view")} 
+        {!isAdmin && <AllergensContainer
+          active={isActive("alergen-view")}
         />}
 
         {!isAdmin && (
@@ -91,8 +98,16 @@ export default function AccountPanel({
             handleAddAddress={handleAddAddress}
             handleUpdateAddress={handleUpdateAddress}
             active={isActive("adrese-view")}
+          />        
+        )}
+
+        {!isAdmin && (
+          <VoucherList
+            vouchers={vouchers}
+            active={isActive("voucher-list")}
           />
         )}
+        
       </main>
     </div>
   );
