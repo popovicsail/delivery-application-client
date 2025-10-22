@@ -15,6 +15,16 @@ export default function ProfileView({ profile, active }) {
             <p><strong>Prezime:</strong> <span>{profile.lastName}</span></p>
             <p><strong>Email:</strong> <span>{profile.email}</span></p>
             <p><strong>Uloga:</strong> <span>{profile.roles?.join(", ")}</span></p>
+            {profile.roles?.includes("Courier") && (
+            <p>
+              <strong>Status kurira:</strong>{" "}
+              <span>
+                {profile.status === "AKTIVAN"
+                  ? "🟢 Aktivan"
+                  : "⚪ Neaktivan"}
+              </span>
+            </p>
+          )}
           </>
         )}
       </section>

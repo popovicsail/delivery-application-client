@@ -3,6 +3,8 @@ import ProfileView from "./ProfileView";
 import EditUserForm from "./EditUserForm";
 import AllergensContainer from "./AllergensContainer";
 import AddressView from "./AddressView";
+import CourierTabContainer from "./Courier/CourierTabContainer.jsx";
+import CourierTabView from "./Courier/CourierTabView";
 import VoucherList from "../customerComponents/VoucherList";
 
 export default function AccountPanel({
@@ -23,9 +25,12 @@ export default function AccountPanel({
   handleAddAddress,
   handleUpdateAddress,
   isAdmin,
+  isCourier,
+  isCustomer,
   vouchers
 }) {
   const isActive = (tab) => (activeTab === tab ? "active" : "");
+  const roles = sessionStorage.getItem("roles") || "";
 
   return (
     <div className={`account-panel ${isAdmin ? "admin" : ""}`}>
@@ -46,24 +51,41 @@ export default function AccountPanel({
               >
                 Izmeni podatke
               </li>
+
+              {!isCourier && (
               <li
                 className={isActive("alergen-view")}
                 onClick={() => setActiveTab("alergen-view")}
               >
                 Alergeni
               </li>
+              )}
+              {!isCourier && (
               <li
                 className={isActive("adrese-view")}
                 onClick={() => setActiveTab("adrese-view")}
               >
                 Adrese
               </li>
-              <li
+              )}
+
+              {isCourier && (
+                <li
+                  className={isActive("courier-view")}
+                  onClick={() => setActiveTab("courier-view")}
+                >
+                  Kurir
+                </li>
+              )}
+
+              {isCustomer && (
+                <li
                 className={isActive("voucher-list")}
                 onClick={() => setActiveTab("voucher-list")}
               >
                 Vouchers
               </li>
+              )}
             </>
           )}
         </ul>
@@ -82,9 +104,9 @@ export default function AccountPanel({
           />
         )}
 
-        {!isAdmin && <AllergensContainer
-          active={isActive("alergen-view")}
-        />}
+        {!isAdmin && (
+          <AllergensContainer active={isActive("alergen-view")} />
+        )}
 
         {!isAdmin && (
           <AddressView
@@ -101,13 +123,17 @@ export default function AccountPanel({
           />        
         )}
 
-        {!isAdmin && (
+
+        {!isAdmin && isCourier && (
+          <CourierTabContainer active={isActive("courier-view")} />
+        )}
+
+        {!isAdmin && isCustomer && (
           <VoucherList
             vouchers={vouchers}
             active={isActive("voucher-list")}
           />
         )}
-        
       </main>
     </div>
   );
