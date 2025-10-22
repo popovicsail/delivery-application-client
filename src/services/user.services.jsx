@@ -11,7 +11,7 @@ export async function getAllUsers() {
 }
 
 export async function getAllOwners() {
-  const response = await api.get("/users/owners");
+  const response = await api.get("/owners");
   return response.data;
 }
 

@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { getOneRestaurant, updateRestaurant } from "../services/restaurant.services.jsx"
+import { dishService } from "../services/dishes.services.jsx";
 import "../styles/main.scss";
 
 const RestaurantForm = () => {
   const { id } = useParams();
+  const [menuId, setMenuId ]= useState("0");
   const [restaurant, setRestaurant] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -105,8 +107,25 @@ const RestaurantForm = () => {
           setLoading(false);
         }
       };
+      
+      const fetchMenu = async () => {
+        setLoading(true);
+        try {
+          const data = await dishService.getRestaurantMenu(id);
+          setMenuId(data.id);
+          setError('');
+        } catch (err) {
+          setError('Greska pri ucitavanju menija.');
+        } finally {
+          setLoading(false);
+        }
+      };
 
       fetchAndSet();
+      if (roles.includes('Owner')) {
+        fetchMenu();
+      }
+
     } else {
       setLoading(false);
     }
@@ -181,7 +200,11 @@ const RestaurantForm = () => {
             <input type="file" onChange={(e) => field.onChange(e.target.files[0])}/>)}/>
         </section>
         )}
-        <button type="submit">Potvrdi izmenu</button>
+        <section className="section-row">
+          <button className="buttons-form" type="submit">Potvrdi izmenu</button>
+          {roles.includes("Owner") && <button className="buttons-form" type="button" onClick={e => navigate("/restaurantId/" + restaurant.id + "/menuId/" + menuId)}>Menu</button>}
+        </section>
+        
       </form>
     </div>
   );

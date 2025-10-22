@@ -61,6 +61,9 @@ const Header = () => {
           <li id={current === "/home" ? "current" : ""}>
             <Link to="/home">Početna</Link>
           </li>
+          <li id={current === "/restaurantsSearch" ? "current" : ""}>
+            <Link to="/restaurantsSearch">Pretraga</Link>
+          </li>
 
           {!isAuthenticated ? (
             <>

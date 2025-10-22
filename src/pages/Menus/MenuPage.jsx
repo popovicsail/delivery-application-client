@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
-import DishForm from "./DishForm";
-import DishGroupForm from "./DishGroupForm";
-import { dishService } from "../../services/dishes.services.tsx";
+import { useParams, useNavigate } from 'react-router-dom';
+import DishForm from "./DishForm.jsx";
+import DishGroupForm from "./DishGroupForm.jsx";
+import { dishService } from "../../services/dishes.services.jsx";
 
-const DishesPage = () => {
+const MenuPage = () => {
+  const { restaurantId, menuId } = useParams();
   const [dishes, setDishes] = useState([]);
   const [newDishId, setNewDishId] = useState([]);
   const [selectedDish, setSelectedDish] = useState(null);
@@ -15,15 +17,15 @@ const DishesPage = () => {
   const isRoleAdmin = JSON.parse(myProfile).user.roles.includes("Administrator") || JSON.parse(myProfile).user.roles.includes("Owner")
 
   useEffect(() => {
-    const fetchDishes = async () => {
+    const fetchMenu = async () => {
       try {
-        const data = await dishService.getAll();
-        setDishes(data);
+        const data = await dishService.getRestaurantMenu(restaurantId);
+        setDishes(data.menus[0].dishes);
       } catch (err) {
         console.error("Greška pri učitavanju jela:", err);
       }
     };
-    fetchDishes();
+    fetchMenu();
   }, []);
 
   const grouped = dishes.reduce((a, dish) => {
@@ -153,4 +155,4 @@ const DishesPage = () => {
   );
 };
 
-export default DishesPage;
+export default MenuPage;

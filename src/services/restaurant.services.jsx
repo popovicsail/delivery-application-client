@@ -1,7 +1,24 @@
 import api from "./api.jsx"
 
 export const getRestaurants = async () => {
-    const response = await api.get("restaurants/all");
+    const response = await api.get("restaurants");
+    
+    return response.data;
+}
+
+export const getPagedRestaurants = async (sort, filters, page) => {
+  const params = new URLSearchParams();
+  filters.closedToo = filters.closedToo.toString()
+
+  if (filters.name) params.append("Name", filters.name);
+  if (filters.openingTime) params.append("OpeningTime", filters.openingTime);
+  if (filters.closingTime) params.append("ClosingTime", filters.closingTime);
+  if (filters.closedToo) params.append("ClosedToo", filters.closedToo);
+  if (filters.city) params.append("City", filters.city);
+  params.append("sort", sort);
+  params.append("page", page)
+
+  const response = await api.get(`/restaurants/paged?${params.toString()}`);
 
     return response.data;
 }
@@ -34,20 +51,4 @@ export const createRestaurant = async (data) => {
     const response = await api.post("restaurants", data);
     
     return response.data;
-}
-
-export const uploadImage = async (id, image) => {
-  const response = await api.post(`restaurants/${id}/image`, image, {
-    headers: {
-      'Content-Type': 'multipart/form-data'
-    }
-  });
-  return response.data;
-}
-
-export const getImage = async (id) => {
-  const response = await api.get(`restaurants/${id}/image`, {
-    responseType: 'blob'
-  });
-  return response.data;
 }
