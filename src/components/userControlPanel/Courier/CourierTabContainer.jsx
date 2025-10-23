@@ -5,6 +5,7 @@ import WeeklyScheduleReview from "./steps/WeeklyScheduleReview.jsx"; // nova kom
 
 export default function CourierTabContainer({ active }) {
   const [existing, setExisting] = useState([]);
+  const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(true);
   const roles = sessionStorage.getItem("roles") || "";
 
@@ -55,12 +56,10 @@ export default function CourierTabContainer({ active }) {
     <section id="courier-view" className={active}>
       <h3>🚴 Kurir raspored</h3>
 
-      {existing.length === 0 ? (
-        // Ako nema rasporeda → wizard za unos
+      {existing.length === 0 || editing ? (
         <CourierTabView existing={existing} onConfirm={handleConfirm} />
       ) : (
-        // Ako raspored postoji → pregled pon–ned
-        <WeeklyScheduleReview schedules={existing} />
+        <WeeklyScheduleReview schedules={existing} onEdit={() => setEditing(true)} />
       )}
     </section>
   );

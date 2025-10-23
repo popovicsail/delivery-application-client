@@ -1,7 +1,7 @@
 import React from "react";
 
 // schedules je niz iz backenda u formatu { weekDay, workStart, workEnd }
-export default function WeeklyScheduleReview({ schedules }) {
+export default function WeeklyScheduleReview({ schedules,onEdit }) {
   // helper da generiše 7 dana od ponedeljka do nedelje
   const getWeekDays = () => {
     const today = new Date();
@@ -53,17 +53,24 @@ export default function WeeklyScheduleReview({ schedules }) {
           {weekDays.map((d) => {
             const dayName = formatDayName(d);
             const sched = scheduleMap[dayName.charAt(0).toUpperCase() + dayName.slice(1)];
+
+            if (!sched) return null; // 👈 preskoči ako nema podataka
+
             return (
               <tr key={d.toISOString()}>
-                <td>{formatDate(d)}</td>
-                <td>{dayName}</td>
-                <td>{sched ? formatTime(sched.workStart) : ""}</td>
-                <td>{sched ? formatTime(sched.workEnd) : ""}</td>
+                <td>{sched.date}</td>
+                <td>{sched.weekDay}</td>
+                <td>{formatTime(sched.workStart)}</td>
+                <td>{formatTime(sched.workEnd)}</td>
               </tr>
             );
           })}
         </tbody>
       </table>
+
+      <button onClick={onEdit} className="btn btn-primary" style={{ marginTop: "1rem" }}>
+        ✏️ Izmeni raspored
+      </button>
     </div>
   );
 }
