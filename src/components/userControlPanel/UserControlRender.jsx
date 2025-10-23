@@ -3,6 +3,7 @@ import "../../styles/userControlPanel.scss";
 import "../../styles/courierPanel.scss";
 import AccountPanel from "./AccountPanel.jsx";
 import * as userService from "../../services/user.services"; 
+import VoucherList from "../customerComponents/VoucherList.jsx";
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState("profil-view");
@@ -17,8 +18,10 @@ export default function ProfilePage() {
   });
   const [editingAddress, setEditingAddress] = useState(null);
   const [profilePictureFile, setProfilePictureFile] = useState(null);
+  const [vouchers, setVouchers] = useState(null);
 
   const isAdmin = user?.roles?.some(r => r.toLowerCase().includes("admin"));
+  const isCustomer = user?.roles?.some(r => r.toLowerCase().includes("customer"));
   const isCourier = user?.roles?.some(r => r.toLowerCase().includes("courier"));
 
 
@@ -49,6 +52,9 @@ useEffect(() => {
     if (prof.roles?.includes("Customer")) {
       const allergens = await userService.getAllergens();
       setAlergens(allergens.map(a => ({ ...a, selected: false })));
+
+      const vouchers = await userService.getMyVouchers();
+      setVouchers(vouchers)
     }
 
     const addresses = await userService.getMyAddresses();
@@ -192,6 +198,8 @@ useEffect(() => {
       setEditingAddress={setEditingAddress}
       handleAddAddress={handleAddAddress}
       handleUpdateAddress={handleUpdateAddress}
+      vouchers={vouchers}
+      isCustomer={isCustomer}
     />
   );
 }

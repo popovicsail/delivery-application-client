@@ -98,3 +98,8 @@ export async function deleteAddress(id) {
   const response = await api.delete(`/Customers/my-addresses/${id}`);
   return response.data;
 }
+
+export async function getMyVouchers() {
+  const response = await api.get("/customers/my-vouchers");
+  return response.data;
+}
