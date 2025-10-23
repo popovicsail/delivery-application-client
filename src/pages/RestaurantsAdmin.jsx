@@ -15,12 +15,27 @@ const RestaurantsAdmin = () => {
       setLoading(true);
       const data = await getRestaurants();
       setRestaurants(data || []);
-      setError('');
+      setError("");
     } catch (error) {
-      console.error('Error:', error);
-      setError('Greska pri ucitavanju restorana.');
+      if (error.response) {
+        if (error.response.status === 404) {
+          setError("Vlasnik sa ovim id-em ne poseduje nijedan restoran.");
+        } else if (error.response.status === 401) {
+          setError("Ova stranica je rezervisana samo za vlasnike restorana.");
+        } else if (error.response.status === 500) {
+          setError("Greska na serveru. Pokusajte kasnije.");
+        } else {
+          setError(`Greska: ${error.response.status}`);
+        }
+      } else if (error.request) {
+        setError("Nema odgovora sa servera.");
+      } else {
+        setError("Doslo je do greske.");
+      }
+      console.error("Greska:", error.message);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleDelete = async (id, name) => {

@@ -62,6 +62,7 @@ export const LoginForm = () => {
     }
   };
 
+  if (loading) return <div id="loadingSpinner" className="spinner"></div>;
   return (
     <form className="formaLogin" onSubmit={handleSubmit}>
       <section className="form-section">

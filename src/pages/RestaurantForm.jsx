@@ -100,36 +100,67 @@ const RestaurantForm = () => {
   useEffect(() => {
     if (id) {
       const fetchAndSet = async () => {
-        setLoading(true);
         try {
+          setLoading(true);
           const data = await getOneRestaurant(id);
           setRestaurant(data);
-          setError('');
-        } catch (err) {
-          setError('Greska pri ucitavanju restorana.');
+          setError("");
+        } catch (error) {
+          if (error.response) {
+            if (error.response.status === 404) {
+              setError("Restoran sa ovim ID-em ne postoji ili je pogresna ruta.");
+            } else if (error.response.status === 401) {
+              setError("Ova stranica je rezervisana samo za vlasnike restorana.");
+            } else if (error.response.status === 500) {
+              setError("Greska na serveru. Pokusajte kasnije.");
+            } else {
+              setError(`Greska: ${error.response.status}`);
+            }
+          } else if (error.request) {
+            setError("Nema odgovora sa servera.");
+          } else {
+            setError("Doslo je do greske.");
+          }
+          console.error("Greska:", error.message);
         } finally {
           setLoading(false);
         }
       };
-      
+
       const fetchMenu = async () => {
         setLoading(true);
         try {
           const data = await dishService.getRestaurantMenu(id);
           setMenuId(data.id);
-          setError('');
-        } catch (err) {
-          setError('Greska pri ucitavanju menija.');
+          setError("");
+        } catch (error) {
+          if (error.response) {
+            if (error.response.status === 400) {
+              setError("Niste uneli validne podatke.");
+            } else if (error.response.status === 404) {
+              setError("Restoran sa ovim ID-em ne postoji ili je pogresna ruta.");
+            } else if (error.response.status === 401) {
+              setError("Ova stranica je rezervisana samo za vlasnike restorana.");
+            } else if (error.response.status === 500) {
+              setError("Greska na serveru. Pokusajte kasnije.");
+            } else {
+              setError(`Greska: ${error.response.status}`);
+            }
+          } else if (error.request) {
+            setError("Nema odgovora sa servera.");
+          } else {
+            setError("Doslo je do greske.");
+          }
+          console.error("Greska:", error.message);
         } finally {
           setLoading(false);
         }
       };
 
       fetchAndSet();
-      if (roles.includes('Owner')) {
+      if (roles.includes("Owner")) {
         fetchMenu();
       }
-
     } else {
       setLoading(false);
     }

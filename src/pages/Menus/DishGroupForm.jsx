@@ -1,8 +1,10 @@
-import React from "react";
+import React, {useState} from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { dishService } from "../../services/dishes.services.jsx";
 
 const DishGroupForm = ({ dishId, onClose }) => {
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const { register, control, handleSubmit, reset, formState: { errors } } = useForm({
     defaultValues: {
       type: "independent",
@@ -35,6 +37,8 @@ const DishGroupForm = ({ dishId, onClose }) => {
     }
   };
 
+  if (loading) return <div id="loadingSpinner" className="spinner"></div>;
+  if (error) return <p style={{ color: 'red' }}>{error}</p>;
   return (
     <div
       onClick={onClose}

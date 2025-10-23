@@ -607,6 +607,7 @@ table {
 .dish-card {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   height: fit-content;
   width: 19vw;
   height: 35vh;
@@ -635,6 +636,7 @@ table {
 
   .dish-info-wrapper {
     height: fit-content;
+    flex: 1 1 auto;
   }
 
   ul {
@@ -671,6 +673,7 @@ table {
   }
 
   .dish-image-wrapper {
+    height: 62%;
     display: flex;
     flex-direction: column;
     justify-content: end;
