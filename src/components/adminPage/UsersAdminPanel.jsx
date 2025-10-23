@@ -5,29 +5,65 @@ import { Link } from "react-router-dom";
 
 export default function UsersAdminPanel() {
   const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   // učitavanje korisnika
   useEffect(() => {
     const fetchUsers = async () => {
       try {
+        setLoading(true);
         const data = await userService.getAllUsers();
         setUsers(data);
       } catch (error) {
-        console.error("Greška pri učitavanju korisnika:", error);
-      } finally {
-        setLoading(false);
+      if (error.response) {
+        if (error.response.status === 404) {
+          setError("Pogresna ruta.");
+        } else if (error.response.status === 401) {
+          setError("Ova stranica je rezervisana samo za Admine.");
+        } else if (error.response.status === 500) {
+          setError("Greska na serveru. Pokusajte kasnije.");
+        } else {
+          setError(`Greska: ${error.response.status}`);
+        }
+      } else if (error.request) {
+        setError("Nema odgovora sa servera.");
+      } else {
+        setError("Doslo je do greske.");
       }
+      console.error("Greska:", error.message);
+    } finally {
+      setLoading(false);
+    }
     };
     fetchUsers();
   }, []);
 
   const handleDelete = async (id) => {
     try {
+      if (!window.confirm("Da li ste sigurni da zelite da izbrisete korisnika?")) {
+        return;
+      }
+      setLoading(true);
       await userService.deleteUser(id); // pretpostavljam da imaš endpoint
       setUsers(users.filter((u) => u.id !== id));
-    } catch (err) {
-      console.error("Greška pri brisanju korisnika:", err);
+    } catch (error) {
+      if (error.response) {
+        if (error.response.status === 404) {
+          setError("Ne postoji korisnik sa ovim id-em.");
+        } else if (error.response.status === 500) {
+          setError("Greska na serveru. Pokusajte kasnije.");
+        } else {
+          setError(`Greska: ${error.response.status}`);
+        }
+      } else if (error.request) {
+        setError("Nema odgovora sa servera.");
+      } else {
+        setError("Doslo je do greske.");
+      }
+      console.error("Greska:", error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -41,7 +77,7 @@ export default function UsersAdminPanel() {
       </div>
 
       {loading ? (
-        <p>Učitavanje...</p>
+       <div id="loadingSpinner" className="spinner"></div>
       ) : (
         <table className="users-table">
           <thead>

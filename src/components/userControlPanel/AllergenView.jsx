@@ -1,7 +1,8 @@
 import React from "react";
 
 export default function AllergenView({ alergens = [], toggleAlergen, handleSubmitAlergens, active }) {
-  const roles = sessionStorage.getItem("roles");
+  const myProfile = JSON.parse(sessionStorage.getItem("myProfile"));
+  const roles = myProfile ? myProfile.user.roles : [];
    if (!roles || !roles.includes("Customer")) {
       return (
         <section id="alergen-view" className={active}>

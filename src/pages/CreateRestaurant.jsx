@@ -29,7 +29,9 @@ const RestaurantForm = () => {
         if (error.response.status === 400) {
           setError('Niste uneli validne podatke.');
         } else if (error.response.status === 404) {
-          setError('Ne postoji vlasnik sa ovim id-em.');
+          setError('Pogresna ruta.');
+        } else if (error.response.status === 401) {
+          setError("Ova stranica je rezervisana samo za Administratore.");
         } else if (error.response.status === 500) {
           setError('Greska na serveru. Pokusajte kasnije.');
         } else {
@@ -52,10 +54,24 @@ const RestaurantForm = () => {
         setLoading(true);
         const data = await getAllOwners();
         setOwners(data || []);
-        setError('');
-      } catch (err) {
-        setError('Greska pri ucitavanju vlasnika.');
-        console.error('Greska:', err.message);
+        setError("");
+      } catch (error) {
+        if (error.response) {
+          if (error.response.status === 404) {
+            setError("Pogresna ruta.");
+          } else if (error.response.status === 401) {
+            setError("Ova stranica je rezervisana samo za Administratore.");
+          } else if (error.response.status === 500) {
+            setError("Greska na serveru. Pokusajte kasnije.");
+          } else {
+            setError(`Greska: ${error.response.status}`);
+          }
+        } else if (error.request) {
+          setError("Nema odgovora sa servera.");
+        } else {
+          setError("Doslo je do greske.");
+        }
+        console.error("Greska:", error.message);
       } finally {
         setLoading(false);
       }

@@ -45,7 +45,7 @@ const Header = () => {
     <header className="header">
       <h1>Dobrodošli — Gozba na Klik</h1>
 
-      {isAuthenticated && profileImage && (
+      {isAuthenticated && (
         <Link to="/controlPanel" className="header-profile-box">
           <img
             src={profileImage}   // direktno koristiš string iz backenda
@@ -58,49 +58,30 @@ const Header = () => {
 
       <nav>
         <ul className="nav-list">
-          <li id={current === "/home" ? "current" : ""}>
-            <Link to="/home">Početna</Link>
-          </li>
-          <li id={current === "/restaurantsSearch" ? "current" : ""}>
-            <Link to="/restaurantsSearch">Pretraga</Link>
-          </li>
+          <li id={current === "/home" ? "current" : ""}><Link to="/home">Početna</Link></li>
+          <li id={current === "/restaurantsSearch" ? "current" : ""}><Link to="/restaurantsSearch">Pretraga Restorana</Link></li>
 
           {!isAuthenticated ? (
             <>
-              <li id={current === "/register" ? "current" : ""}>
-                <Link to="/register">Registruj se</Link>
-              </li>
-              <li id={current === "/login" ? "current" : ""}>
-                <Link to="/login">Prijavite se</Link>
-              </li>
+              <li id={current === "/register" ? "current" : ""}><Link to="/register">Registruj se</Link></li>
+              <li id={current === "/login" ? "current" : ""}><Link to="/login">Prijavite se</Link></li>
             </>
           ) : (
             <>
+              <li id={current === "/dishesSearch" ? "current" : ""}><Link to="/dishesSearch">Pretraga Jela</Link></li>
               {roles.includes("Administrator") && (
                 <>
-                  <li id={current === "/admin" ? "current" : ""}>
-                    <Link to="/admin">Admin Panel</Link>
-                  </li>
-                  <li id={current === "/restaurantsAdmin" ? "current" : ""}>
-                    <Link to="/restaurantsAdmin">Restorani</Link>
-                  </li>
-                  <li id={current === "/createRestaurant" ? "current" : ""}>
-                    <Link to="/createRestaurant">Kreiraj</Link>
-                  </li>
+                  <li id={current === "/admin" ? "current" : ""}><Link to="/admin">Admin Panel</Link></li>
+                  <li id={current === "/restaurantsAdmin" ? "current" : ""}><Link to="/restaurantsAdmin">Restorani</Link></li>
+                  <li id={current === "/createRestaurant" ? "current" : ""}><Link to="/createRestaurant">Kreiraj</Link></li>
                 </>
               )}
 
               {roles.includes("Owner") && (
-                <li id={current === "/restaurantsOwner" ? "current" : ""}>
-                  <Link to="/restaurantsOwner">Moji Restorani</Link>
-                </li>
+                <li id={current === "/restaurantsOwner" ? "current" : ""}><Link to="/restaurantsOwner">Moji Restorani</Link></li>
               )}
 
-              <li>
-                <Link to="/login" onClick={handleLogout}>
-                  Odjavite se
-                </Link>
-              </li>
+              <li><Link to="/login" onClick={handleLogout}>Odjavite se</Link></li>
             </>
           )}
         </ul>

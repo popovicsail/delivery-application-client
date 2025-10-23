@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../styles/main.scss";
 import { useNavigate } from "react-router-dom";
 import { login } from "../services/auth.services"
-import { getProfile } from "../services/user.services"
+import { getMyAllergens, getProfile } from "../services/user.services"
 
 export const LoginForm = () => {
   const navigate = useNavigate();
@@ -32,6 +32,13 @@ export const LoginForm = () => {
       await login(username, password);
       const user = await getProfile();
       sessionStorage.setItem("myProfile", JSON.stringify({user}));
+      if (user.roles && user.roles.includes('Customer')) {
+        const allergens = await getMyAllergens();
+        if (allergens && allergens.length > 0) {
+          const list = allergens.reduce((l, a) => (l.push(a), l), [])
+          sessionStorage.setItem("myAllergens", JSON.stringify(list));
+        }
+      }
       setUsername(user.userName)
       setLoggedIn(true);
       setLoading(false);
@@ -55,6 +62,7 @@ export const LoginForm = () => {
     }
   };
 
+  if (loading) return <div id="loadingSpinner" className="spinner"></div>;
   return (
     <form className="formaLogin" onSubmit={handleSubmit}>
       <section className="form-section">
