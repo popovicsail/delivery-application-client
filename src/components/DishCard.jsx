@@ -25,13 +25,13 @@ const DishCard = ({ dish, highlighted, isInMenu, isOwnerHere, deleteDish, setSel
         {(dish.allergens && dish.allergens.length > 0) &&
           <ul>
             {dish.allergens.map(a => (
-              <li title={a.name} style={(myAllergens.includes(a.id) ? {color: 'red'} : {color: 'black'})} key={a.name}>{a.name}</li>
+              <li title={a.name} style={((myAllergens && myAllergens.includes(a.id)) ? {color: 'red'} : {color: 'black'})} key={a.name}>{a.name}</li>
             ))}
           </ul>
           }
         </div>
         <div className="dish-image-wrapper">
-          <img className="dish-image" src="https://www.keralatourism.org/_next/image/?url=http%3A%2F%2F127.0.0.1%2Fktadmin%2Fimg%2Fpages%2Flarge-desktop%2Frice-dishes-1714219146_4b2d13389d18792a8c3d.webp&w=3840&q=75" alt="slika" />
+          <img className="dish-image" src={dish.picture && dish.picture.length > 0 ? dish.picture : "https://www.keralatourism.org/_next/image/?url=http%3A%2F%2F127.0.0.1%2Fktadmin%2Fimg%2Fpages%2Flarge-desktop%2Frice-dishes-1714219146_4b2d13389d18792a8c3d.webp&w=3840&q=75"} alt="slika" />
           {isOwnerHere && (
             <section className="section-row">
                 <button className="edit-btn buttons" onClick={() => { setSelectedDish(dish); setIsFormOpen(true); getDishData(dish.id);}}>Izmeni jelo</button>

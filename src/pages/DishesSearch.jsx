@@ -6,7 +6,7 @@ import "../styles/main.scss";
 const DishesSearch = () => {
   const [dishes, setDishes] = useState([]);
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [sort, setSort] = useState(0);
   const [page, setPage] = useState(1);
   const [pagination, setPagination] = useState({
@@ -50,15 +50,30 @@ const DishesSearch = () => {
         currentPage: data.currentPage,
         totalPages: data.totalPages,
         hasPreviousPage: data.hasPreviousPage,
-        hasNextPage: data.hasNextPage
-      })
-      
-      setError('');
+        hasNextPage: data.hasNextPage,
+      });
+
+      setError("");
     } catch (error) {
-      console.error('Error:', error);
-      setError('Greska pri ucitavanju jela.');
+      if (error.response) {
+        if (error.response.status === 400) {
+          setError("Niste uneli validne podatke.");
+        } else if (error.response.status === 404) {
+          setError("Pogresna ruta.");
+        } else if (error.response.status === 500) {
+          setError("Greska na serveru. Pokusajte kasnije.");
+        } else {
+          setError(`Greska: ${error.response.status}`);
+        }
+      } else if (error.request) {
+        setError("Nema odgovora sa servera.");
+      } else {
+        setError("Doslo je do greske.");
+      }
+      console.error("Greska:", error.message);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
   
   useEffect(() => {
@@ -128,7 +143,7 @@ const DishesSearch = () => {
             <div className={!pagination.hasNextPage ? "circle-buttons hidden" : "circle-buttons"} 
             onClick={e => {pagination.hasNextPage && (setPage(page + 1))}}></div>
             <div className={(Number(pagination.totalPages) > (pagination.currentPage + 1)) ? "circle-buttons" : "circle-buttons hidden"} 
-            onClick={e => {setPage(Number(pagination.totalPages) - 1)}}></div>
+            onClick={e => {setPage(Number(pagination.totalPages))}}></div>
           </div>
         </div>
       </div>

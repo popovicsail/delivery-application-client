@@ -14,6 +14,7 @@ export const UserForm = () => {
   const [feedback, setFeedback] = useState("");
   const [isValid, setIsValid] = useState(false);
   const [errors, setErrors] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -49,6 +50,7 @@ export const UserForm = () => {
     };
 
     try {
+      setLoading(true);
       if (role === "Courier") {
         await userService.createCourier(payload);
       } else if (role === "Owner") {
@@ -67,9 +69,12 @@ export const UserForm = () => {
         setErrors([error.message || "Došlo je do greške."]);
       }
       console.error("Create error:", error);
+    }finally {
+      setLoading(false);
     }
   };
 
+  if (loading) return <div id="loadingSpinner" className="spinner"></div>;
   return (
     <form className="formaDodaj" onSubmit={handleSubmit}>
       <section className="form-section">

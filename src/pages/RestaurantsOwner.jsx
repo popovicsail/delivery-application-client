@@ -6,7 +6,7 @@ import RestaurantCard from "../components/RestaurantCard.jsx";
 const RestaurantsOwner = () => {
   const [restaurants, setRestaurants] = useState([]);
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
 
     const loadRestaurants = async () => {
@@ -18,7 +18,7 @@ const RestaurantsOwner = () => {
       } catch (error) {
          if (error.response) {
           if (error.response.status === 404) {
-            setError('Vlasnik sa ovim id-em ne poseduje nijedan restoran.');
+            setError('Vlasnik sa ovim id-em ne postoji ili ova ruta ne postoji.');
           } else if (error.response.status === 401) {
             setError('Ova stranica je rezervisana samo za vlasnike restorana.');
             } else if (error.response.status === 500) {
