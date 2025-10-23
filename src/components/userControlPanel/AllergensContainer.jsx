@@ -4,7 +4,8 @@ import AllergenView from "./AllergenView";
 
 export default function AllergensContainer({ active}) {
   const [alergens, setAlergens] = useState([]);
-  const roles = sessionStorage.getItem("roles");
+  const myProfile = JSON.parse(sessionStorage.getItem("myProfile"));
+  const roles = myProfile ? myProfile.user.roles : [];
 
   // 1. Učitaj sve alergene odmah
   useEffect(() => {

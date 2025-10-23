@@ -21,6 +21,7 @@ export default function AccountPanel({
   setEditingAddress,
   handleAddAddress,
   handleUpdateAddress,
+  isCustomer,
   isAdmin
 }) {
   const isActive = (tab) => (activeTab === tab ? "active" : "");
@@ -37,7 +38,7 @@ export default function AccountPanel({
             Profil
           </li>
 
-          {!isAdmin && (
+          {isCustomer && (
             <>
               <li
                 className={isActive("izmeni-podatke-form")}
@@ -65,7 +66,7 @@ export default function AccountPanel({
       <main className="content">
         <ProfileView profile={profile} active={isActive("profil-view")} />
 
-        {!isAdmin && (
+        {isCustomer && (
           <EditUserForm
             user={user}
             active={isActive("izmeni-podatke-form")}
@@ -75,11 +76,11 @@ export default function AccountPanel({
           />
         )}
 
-        {!isAdmin && <AllergensContainer 
+        {isCustomer && <AllergensContainer 
         active={isActive("alergen-view")} 
         />}
 
-        {!isAdmin && (
+        {isCustomer && (
           <AddressView
             currentAddress={currentAddress}
             handleEditAddress={handleEditAddress}

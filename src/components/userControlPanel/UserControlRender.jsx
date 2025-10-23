@@ -17,7 +17,8 @@ export default function ProfilePage() {
   const [editingAddress, setEditingAddress] = useState(null);
   const [profilePictureFile, setProfilePictureFile] = useState(null);
 
-  const isAdmin = user?.roles?.some(r => r.toLowerCase().includes("admin"));
+  const isCustomer = user?.roles?.some(r => r.toLowerCase().includes("customer"));
+  const isAdmin = user?.roles?.some(r => r.toLowerCase().includes("Administrator"));
 
   // 🔄 Učitavanje podataka
   useEffect(() => {
@@ -41,7 +42,9 @@ export default function ProfilePage() {
         const allergens = await userService.getAllergens();
         setAlergens(allergens.map(a => ({ ...a, selected: false })));
       }
-
+      else {
+        return;
+      }
       const addresses = await userService.getMyAddresses();
       setCurrentAddress({ addresses });
     })();
@@ -55,8 +58,8 @@ export default function ProfilePage() {
   // ✏️ Izmena korisnika
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isAdmin) {
-      console.log("Admin – preskačem update profila (200 OK fallback)");
+    if (!isCustomer) {
+      console.log("Nije 'Customer' – preskačem update profila (200 OK fallback)");
       return;
     }
 
@@ -89,8 +92,8 @@ export default function ProfilePage() {
 
   const handleSubmitAlergens = async (e) => {
     e.preventDefault();
-    if (isAdmin) {
-      console.log("Admin – preskačem čuvanje alergena (200 OK fallback)");
+    if (!isCustomer) {
+      console.log("Nije 'Customer' – preskačem čuvanje alergena (200 OK fallback)");
       return;
     }
 
@@ -106,8 +109,8 @@ export default function ProfilePage() {
 
   // 📍 Adrese
   const refreshAddresses = async () => {
-    if (isAdmin) {
-      console.log("Admin – preskačem refresh adresa (200 OK fallback)");
+    if (!isCustomer) {
+      console.log("Nije 'Customer' – preskačem refresh adresa (200 OK fallback)");
       setCurrentAddress({ addresses: [] });
       return;
     }
@@ -117,8 +120,8 @@ export default function ProfilePage() {
 
   const handleAddAddress = async (e) => {
     e.preventDefault();
-    if (isAdmin) {
-      console.log("Admin – preskačem dodavanje adrese (200 OK fallback)");
+    if (!isCustomer) {
+      console.log("Nije 'Customer' – preskačem dodavanje adrese (200 OK fallback)");
       return;
     }
 
@@ -129,8 +132,8 @@ export default function ProfilePage() {
 
   const handleUpdateAddress = async (e) => {
     e.preventDefault();
-    if (isAdmin) {
-      console.log("Admin – preskačem update adrese (200 OK fallback)");
+    if (!isCustomer) {
+      console.log("Nije 'Customer' – preskačem update adrese (200 OK fallback)");
       return;
     }
 
@@ -141,8 +144,8 @@ export default function ProfilePage() {
   };
 
   const handleDeleteAddress = async (id) => {
-    if (isAdmin) {
-      console.log("Admin – preskačem brisanje adrese (200 OK fallback)");
+    if (!isCustomer) {
+      console.log("Nije 'Customer' – preskačem brisanje adrese (200 OK fallback)");
       return;
     }
     await userService.deleteAddress(id);
@@ -160,6 +163,7 @@ export default function ProfilePage() {
       setActiveTab={setActiveTab}
       profile={profile}
       user={user}
+      isCustomer={isCustomer}
       isAdmin={isAdmin}
       handleSubmit={handleSubmit}
       setProfilePictureFile={setProfilePictureFile}

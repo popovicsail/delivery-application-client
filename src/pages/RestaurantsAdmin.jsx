@@ -93,8 +93,8 @@ const RestaurantsAdmin = () => {
               <td>{r.phoneNumber}</td>
               <td>{r.address.streetAndNumber}, {r.address.city}</td>
               <td>{r.owner.firstName + " " + r.owner.lastName}</td>
-              <td><button className="delete-btn" onClick={() => handleDelete(r.id, r.name)}>Delete</button></td>
-              <td><button className="edit-btn" onClick={() => handleEdit(r.id)}>Edit</button></td>
+              <td><button className="delete-btn buttons" onClick={() => handleDelete(r.id, r.name)}>Delete</button></td>
+              <td><button className="edit-btn buttons" onClick={() => handleEdit(r.id)}>Edit</button></td>
             </tr>
           ))}
         </tbody>

@@ -42,7 +42,7 @@ export async function getAllergens() {
 
 export async function getMyAllergens() {
   const response = await api.get("/Customers/my-allergens");
-  return response.data?.allergenIds ?? [];
+  return response.data ?? [];
 }
 
 
@@ -96,5 +96,12 @@ export async function updateAddress(id, payload) {
 
 export async function deleteAddress(id) {
   const response = await api.delete(`/Customers/my-addresses/${id}`);
+  return response.data;
+}
+
+//PERMITS
+
+export async function getMenuPermissionAsync(menuId) {
+  const response = await api.get(`/Owners/permit/menu/${menuId}`);
   return response.data;
 }
