@@ -67,6 +67,7 @@ export default function AllergensContainer({ active}) {
 
     try {
       await userService.putMyAllergens({ allergenIds: selectedIds });
+      sessionStorage.setItem('myAllergens', JSON.stringify(selectedIds));
       console.log("Alergeni uspešno sačuvani!");
       window.location.reload();
     } catch (err) {

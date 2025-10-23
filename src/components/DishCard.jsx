@@ -25,7 +25,7 @@ const DishCard = ({ dish, highlighted, isInMenu, isOwnerHere, deleteDish, setSel
         {(dish.allergens && dish.allergens.length > 0) &&
           <ul>
             {dish.allergens.map(a => (
-              <li title={a.name} style={(myAllergens.includes(a.id) ? {color: 'red'} : {color: 'black'})} key={a.name}>{a.name}</li>
+              <li title={a.name} style={((myAllergens && myAllergens.includes(a.id)) ? {color: 'red'} : {color: 'black'})} key={a.name}>{a.name}</li>
             ))}
           </ul>
           }

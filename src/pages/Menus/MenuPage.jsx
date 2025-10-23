@@ -38,7 +38,7 @@ const MenuPage = () => {
         sessionStorage.removeItem('permitRequest');
         setIsOwnerHere(response == true);
       } catch (err) {
-        console.error("Greška pri učitavanju restorana:", err);
+        console.error("Greška pri slanju zahteva za permisije:", err);
       }
     };
     fetchMenu();

@@ -109,6 +109,7 @@ export default function ProfilePage() {
 
     try {
       await userService.putMyAllergens({ allergenIds: selectedIds });
+      sessionStorage.setItem('myAllergens', JSON.stringify(selectedIds));
       console.log("Alergeni uspešno sačuvani!");
     } catch (err) {
       console.error("Greška pri čuvanju alergena:", err);
