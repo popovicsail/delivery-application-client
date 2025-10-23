@@ -13,6 +13,7 @@ import AdminPage from "./components/adminPage/AdminPanelRender.jsx";
 import { UserForm } from "./components/adminPage/AdminUserCeationForm.jsx";
 import ProfilePage from "../src/components/userControlPanel/UserControlRender.jsx";
 import DishesPage from "./pages/Dishes/DishesPage.jsx";
+import FeedbackSurvey from "./pages/Feedback/FeedbackSurvey.jsx";
 
 const App = () => {
   return(
@@ -31,6 +32,7 @@ const App = () => {
           <Route path="/restaurantForm/:id" element = {<RestaurantForm />}/>
           <Route path="/createRestaurant" element = {<CreateRestaurant />}/>
           <Route path="/dishes" element ={<DishesPage />} />
+          <Route path="/survey" element ={<FeedbackSurvey />} />
         </Routes>
     </BrowserRouter>
     </div>

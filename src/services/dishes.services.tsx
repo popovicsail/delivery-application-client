@@ -40,9 +40,27 @@ export const dishService = {
     await api.delete(`/dishes/${id}`);
   },
 
-  //Dish group
-  createGroup: async (extra: Extra): Promise<Extra> => {
-    const response = await api.post<Extra>("/dishOptionGroups", extra);
+  getAllGroups: async (): Promise<Extra[]> => {
+    const response = await api.get<Extra[]>("/DishOptionGroups");
     return response.data;
+  },
+
+  getGroupById: async (id: number): Promise<Extra> => {
+    const response = await api.get<Extra>(`/DishOptionGroups/${id}`);
+    return response.data;
+  },
+
+  createGroup: async (extra: Extra): Promise<Extra> => {
+    const response = await api.post<Extra>("/DishOptionGroups", extra);
+    return response.data;
+  },
+
+  updateGroup: async (id: number, extra: Extra): Promise<Extra> => {
+    const response = await api.put<Extra>(`/DishOptionGroups/${id}`, extra);
+    return response.data;
+  },
+
+  deleteGroup: async (id: number): Promise<void> => {
+    await api.delete(`/DishOptionGroups/${id}`);
   },
 };

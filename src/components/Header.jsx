@@ -91,6 +91,12 @@ const Header = () => {
                   <Link to="/restaurantsOwner">Moji Restorani</Link>
                 </li>
               )}
+              
+              <li>
+                <Link to="/survey">
+                  Feedback
+                </Link>
+              </li>
 
               <li>
                 <Link to="/login" onClick={handleLogout}>
