@@ -21,7 +21,7 @@ const Header = () => {
       .then((profile) => {
         console.log("Učitani profil:", profile);
         setRoles(profile.roles || []);
-        setProfileImage(profile.profilePictureUrl);
+        setProfileImage(profile.profilePictureBase64);
         setFullName(`${profile.firstName} ${profile.lastName}`);
       })
       .catch((error) => {
