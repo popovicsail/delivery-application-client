@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../../styles/userControlPanel.scss";
+import "../../styles/courierPanel.scss";
 import AccountPanel from "./AccountPanel.jsx";
 import * as userService from "../../services/user.services"; 
 
@@ -18,7 +19,8 @@ export default function ProfilePage() {
   const [profilePictureFile, setProfilePictureFile] = useState(null);
 
   const isCustomer = user?.roles?.some(r => r.toLowerCase().includes("customer"));
-  const isAdmin = user?.roles?.some(r => r.toLowerCase().includes("Administrator"));
+  const isCourier = user?.roles?.some(r => r.toLowerCase().includes("courier"));
+  const isAdmin = user?.roles?.some(r => r.toLowerCase().includes("administrator"));
 
   // 🔄 Učitavanje podataka
   useEffect(() => {
@@ -33,7 +35,7 @@ export default function ProfilePage() {
       setUser(prof);
       console.log("Učitani podaci profila:", prof);
 
-      if (prof.roles?.some(r => r.toLowerCase().includes("Admninistrator"))) {
+      if (prof.roles?.some(r => !r.toLowerCase().includes("customer"))) {
         setAlergens([]);
         setCurrentAddress({ addresses: [] });
         return;
@@ -69,8 +71,14 @@ export default function ProfilePage() {
     formData.append("email", user.email);
 
     if (profilePictureFile) {
-      formData.append("profilePicture", profilePictureFile);
+      formData.append("ProfilePictureBase64", profilePictureFile);
     }
+    console.log("Ažuriranje profila sa podacima: ", {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      profilePictureFile
+    });
 
     await userService.updateProfile(formData);
 
@@ -165,6 +173,7 @@ export default function ProfilePage() {
       user={user}
       isCustomer={isCustomer}
       isAdmin={isAdmin}
+      isCourier={isCourier}
       handleSubmit={handleSubmit}
       setProfilePictureFile={setProfilePictureFile}
       alergens={alergens}

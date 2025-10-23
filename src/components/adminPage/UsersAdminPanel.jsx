@@ -24,7 +24,7 @@ export default function UsersAdminPanel() {
 
   const handleDelete = async (id) => {
     try {
-      await deleteUser(id); // pretpostavljam da imaš endpoint
+      await userService.deleteUser(id); // pretpostavljam da imaš endpoint
       setUsers(users.filter((u) => u.id !== id));
     } catch (err) {
       console.error("Greška pri brisanju korisnika:", err);
