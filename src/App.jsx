@@ -14,6 +14,7 @@ import { UserForm } from "./components/adminPage/AdminUserCeationForm.jsx";
 import ProfilePage from "../src/components/userControlPanel/UserControlRender.jsx";
 import MenuPage from "./pages/Menus/MenuPage.jsx";
 import RestaurantsSearch from "./pages/RestaurantsSearch.jsx";
+import DishesSearch from "./pages/DishesSearch.jsx";
 
 const App = () => {
   return(
@@ -32,7 +33,8 @@ const App = () => {
           <Route path="/restaurantForm/:id" element = {<RestaurantForm />}/>
           <Route path="/createRestaurant" element = {<CreateRestaurant />}/>
           <Route path="/restaurantsSearch" element = {<RestaurantsSearch />}/>
-          <Route path="/restaurantId/:restaurantId/menuId/:menuId" element ={<MenuPage />} />
+          <Route path="/DishesSearch" element = {<DishesSearch />}/>
+          <Route path="/menuId/:menuId" element ={<MenuPage />} />
         </Routes>
     </BrowserRouter>
     </div>
