@@ -5,6 +5,7 @@ import AllergensContainer from "./AllergensContainer";
 import AddressView from "./AddressView";
 import CourierTabContainer from "./Courier/CourierTabContainer.jsx";
 import CourierTabView from "./Courier/CourierTabView";
+import VoucherList from "../customerComponents/VoucherList";
 
 export default function AccountPanel({
   activeTab,
@@ -25,7 +26,9 @@ export default function AccountPanel({
   handleUpdateAddress,
   isCustomer,
   isAdmin,
-  isCourier
+  isCourier,
+  isCustomer,
+  vouchers
 }) {
   const isActive = (tab) => (activeTab === tab ? "active" : "");
   const roles = sessionStorage.getItem("roles") || "";
@@ -73,6 +76,17 @@ export default function AccountPanel({
                   Kurir
                 </li>
               )}
+
+              {isCustomer && (
+                <li
+                className={isActive("voucher-list")}
+                onClick={() => setActiveTab("voucher-list")}
+              >
+                Vouchers
+              </li>
+              )}
+            </>
+          )}
         </ul>
       </aside>
 
@@ -105,12 +119,19 @@ export default function AccountPanel({
             handleAddAddress={handleAddAddress}
             handleUpdateAddress={handleUpdateAddress}
             active={isActive("adrese-view")}
-          />
+          />        
         )}
 
 
         {isCourier && (
           <CourierTabContainer active={isActive("courier-view")} />
+        )}
+
+        {!isAdmin && isCustomer && (
+          <VoucherList
+            vouchers={vouchers}
+            active={isActive("voucher-list")}
+          />
         )}
       </main>
     </div>

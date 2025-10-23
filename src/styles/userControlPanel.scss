@@ -59,6 +59,10 @@ $border-color: #ddd;
 
       &.active {
         display: block;
+        
+        &#voucher-list{
+        display:flex;
+      }
       }
     }
   }
@@ -68,7 +72,9 @@ $border-color: #ddd;
   
     &.visible {
       display: block;
+      
     }
+    
   }
 
   #edit-user-form {
