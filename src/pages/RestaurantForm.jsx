@@ -29,7 +29,6 @@ const RestaurantForm = () => {
   const isCheckedTwo = roles.includes("Owner") ? watch("baseWorkSched.sunday") : false;
 
   const onSubmit = async (data) => {
-    //const newRestaurant = { ...restaurant, ...data };
     const formData = new FormData();
     formData.append("Id", id);
     formData.append("Name", data.name);
@@ -86,6 +85,11 @@ const RestaurantForm = () => {
       setLoading(false);
     }
   };
+
+  const onMenuClick = () => {
+    sessionStorage.setItem('permitRequest', true);
+    navigate("/menuId/" + menuId)
+  }
 
   useEffect(() => {
     if (restaurant) {
@@ -202,7 +206,7 @@ const RestaurantForm = () => {
         )}
         <section className="section-row">
           <button className="buttons-form" type="submit">Potvrdi izmenu</button>
-          {roles.includes("Owner") && <button className="buttons-form" type="button" onClick={e => navigate("/restaurantId/" + restaurant.id + "/menuId/" + menuId)}>Menu</button>}
+          {roles.includes("Owner") && <button className="buttons-form" type="button" onClick={onMenuClick}>Menu</button>}
         </section>
         
       </form>

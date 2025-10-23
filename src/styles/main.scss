@@ -1,3 +1,5 @@
+@use "sass:color";
+
 $primary-color: #222;
 @mixin container-column {
   display: flex;
@@ -69,12 +71,12 @@ img {
 }
 
 .buttons {
-    margin-left: 2%;
-    margin: 2%;
-    padding: 10px;
-    width: 10%;
-    height: auto;
-    border-radius: 5px;
+  margin: 0 5px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 3px;
+  min-width: 3.5rem;
+  cursor: pointer;
 }
 
 .buttons-form {
@@ -95,10 +97,16 @@ img {
 .delete-btn {
   background-color: #e74c3c;
   color: white;
+  &:hover {
+    background-color: color.adjust(#FF0000, $lightness: 20%);
+  }
 }
 .edit-btn {
   background-color: #3498db;
   color: white;
+  &:hover {
+    background-color: color.adjust(#3498db, $lightness: 8%);
+  }
 }
 
 .createButton {
@@ -288,19 +296,6 @@ table {
       border: 1px solid $primary-color;
       padding: 0.6rem 1.2rem;
       text-align: center;
-
-      button {
-        margin: 0 5px;
-        padding: 5px 10px;
-        border: none;
-        border-radius: 3px;
-        min-width: 3.5rem;
-        cursor: pointer;
-
-        &:hover {
-          opacity: 0.8;
-        }
-      }
     }
   }
 }
@@ -412,12 +407,12 @@ table {
   min-height: 36rem;
   background: #d4c1aa;
   border-radius: 14px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   padding: 1.2rem;
   transition: 0.3s all;
   &:hover {
   transform: translateY(-6px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.151);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.116), 0 6px 20px 0 rgba(0, 0, 0, 0.075);
   }
   h4 {
     color: #70593b;
@@ -518,63 +513,82 @@ table {
 
 //Restaurants Search - User POV -------> koristi .restaurant-card iz ownera
 
-#restaurants-search-container {
+#restaurants-search-container, #dishes-search-container {
   display: flex;
   margin: 3rem 1rem;
-  #filter-container {
-    margin-top: 10vh;
-    #filter-box {
-      @include form-box-styles;
-      padding: 1.5rem 1rem;
-      padding-top: 0.3rem;
-      border-radius: 8px;
-      h4 {
-        margin: 1rem;
-        font-size: larger;
-      }
-      h5 {
-        font-size: medium;
-        margin-top: 0.7rem;
-        margin-bottom: 0.5rem;
-        align-self: flex-start;
-      }
-      select {
-        margin: 0 auto;
-        width: 80%;
-        height: 3vh;
-      }
-      input[type="text"] {
-        height: 2vh;
-      }
-      input[type="time"] {
-        padding: 0.3rem;
-      }
-      input[type="checkbox"] {
-        width: auto;
-      }
-      .time-specific-section-row {
-        margin-right: 3rem;
-      }
+}
 
-      input, select {
-        &:focus {
-          @include form-inputs-focus-styles;
-        }
+#filter-container {
+  margin-top: 10vh;
+  max-width: 14vw;
+
+  #filter-box {
+    @include form-box-styles;
+    padding: 1.5rem 1rem;
+    padding-top: 0.3rem;
+    border-radius: 8px;
+
+    h4 {
+      margin: 1rem;
+      font-size: larger;
+    }
+
+    h5 {
+      font-size: medium;
+      margin-top: 0.7rem;
+      margin-bottom: 0.5rem;
+      align-self: flex-start;
+    }
+
+    select {
+      margin: 0 auto;
+      width: 80%;
+      height: 3vh;
+    }
+
+    input[type="text"] {
+      height: 2vh;
+      margin-left: auto;
+    }
+
+    input[type="time"] {
+      padding: 0.3rem;
+    }
+
+    input[type="number"] {
+      width: 70%;
+      height: 2vh;
+    }
+
+    input[type="checkbox"] {
+      width: auto;
+    }
+
+    .time-specific-section-row {
+      margin-right: 3rem;
+    }
+    
+    .section-row {
+      width: 100%;
+    }
+    input, select {
+      &:focus {
+        @include form-inputs-focus-styles;
       }
     }
   }
-  #cards-container {
-    .restaurant-card {
-      flex-grow: 1;
-      max-width: 23vw;
-      &:hover {
-        cursor: pointer;
-      }
-    }
+}
+
+#cards-container {
+  .restaurant-card {
+    flex-grow: 1;
+    max-width: 23vw;
+  }
     #buttons-row {
       display: flex;
       justify-content: center;
       width: 100%;
+  
       #buttons-box {
         display: flex;
         justify-content: center;
@@ -582,6 +596,137 @@ table {
         gap: 1.3rem;
       }
     }
+}
+
+.restaurant-card-search-specific {
+  &:hover {
+      cursor: pointer;
   }
-  
+}
+
+.dish-card {
+  display: flex;
+  flex-direction: column;
+  height: fit-content;
+  width: 19vw;
+  height: 35vh;
+  background-color: rgb(231, 219, 168);
+  border-radius: 6px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  transition: 0.3s all;
+  overflow: hidden;
+
+  h2 {
+    margin-bottom: 10px;
+    margin-top: 0;
+  }
+
+  p {
+    margin: 6px 0;
+  }
+
+  .dish-info {
+    padding: 1.4rem 1.6rem;
+    padding-bottom: 0;
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+  }
+
+  .dish-info-wrapper {
+    height: fit-content;
+  }
+
+  ul {
+    flex: 0 0 auto;
+    padding: 0;
+    margin: 0;
+    margin-left: 1rem;
+    margin-bottom: 0.5rem;
+    font-size: 12px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .dish-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .dish-desc {
+    font-size: 0.95rem;
+    color: #444;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* number of lines before overflow */
+    -webkit-box-orient: vertical;
+  }
+
+  .dish-price {
+    font-weight: 500;
+    color: #222;
+  }
+
+  .dish-image-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    position: relative;
+    overflow: hidden;
+    margin-top: 0.2rem;
+
+    .section-row {
+      position:absolute;
+      top: 70%;
+      width: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      gap: 3rem;
+      button {
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      }
+    }
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 5px;
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+    }
+  }
+}
+
+.dish-card-hover:hover {
+  cursor: pointer;
+  transform: translateY(-6px);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.116), 0 6px 20px 0 rgba(0, 0, 0, 0.075);
+}
+
+#highlighted-dish {
+  border: 3px solid rgb(0, 128, 122);
+  box-shadow: 
+    3px 3px 8px 2px rgba(3, 82, 62, 0.45),
+    3px 5px 16px 2px rgba(3, 82, 62, 0.45);
+}
+
+.dish-type-row {
+  >h2 { 
+    padding: 0.7rem;
+    padding-left: 1.2rem;
+    margin-top: 2.5rem;
+    margin-bottom: 1.5rem;
+    width: 40%;
+    color: #533f24;
+    background-color: rgba(185, 101, 5, 0.356);
+    border-top-right-radius: 27px;
+    border-bottom-right-radius: 27px;
+  }
+}
+
+.dishes-row {
+  margin-bottom: 10vh;
 }

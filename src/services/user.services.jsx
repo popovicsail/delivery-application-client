@@ -99,6 +99,13 @@ export async function deleteAddress(id) {
   return response.data;
 }
 
+//PERMITS
+
+export async function getMenuPermissionAsync(menuId) {
+  const response = await api.get(`/Owners/permit/menu/${menuId}`);
+  return response.data;
+}
+
 export async function getMyVouchers() {
   const response = await api.get("/customers/my-vouchers");
   return response.data;

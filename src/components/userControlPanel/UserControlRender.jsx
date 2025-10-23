@@ -20,46 +20,38 @@ export default function ProfilePage() {
   const [profilePictureFile, setProfilePictureFile] = useState(null);
   const [vouchers, setVouchers] = useState(null);
 
-  const isAdmin = user?.roles?.some(r => r.toLowerCase().includes("admin"));
   const isCustomer = user?.roles?.some(r => r.toLowerCase().includes("customer"));
   const isCourier = user?.roles?.some(r => r.toLowerCase().includes("courier"));
-
+  const isAdmin = user?.roles?.some(r => r.toLowerCase().includes("administrator"));
 
   // 🔄 Učitavanje podataka
-useEffect(() => {
-  (async () => {
-    const prof = await userService.getProfile();
+  useEffect(() => {
+    (async () => {
+      const prof = await userService.getProfile();
 
-    if (prof.profilePictureUrl) {
-      prof.imageUrl = prof.profilePictureUrl;
-    }
+      if (prof.profilePictureBase64) {
+        prof.imageUrl = prof.profilePictureBase64;
+      }
 
-    setProfile(prof);
-    setUser(prof);
-    console.log("Učitani podaci profila:", prof);
+      setProfile(prof);
+      setUser(prof);
+      console.log("Učitani podaci profila:", prof);
 
-    // 👉 Sačuvaj role u sessionStorage
-    if (prof.roles) {
-      sessionStorage.setItem("roles", JSON.stringify(prof.roles));
-    }
-
-    if (prof.roles?.some(r => r.toLowerCase().includes("administrator"))) {
-      setAlergens([]);
-      setCurrentAddress({ addresses: [] });
-      return;
-    }
-
-    if (prof.roles?.includes("Customer")) {
-      const allergens = await userService.getAllergens();
-      setAlergens(allergens.map(a => ({ ...a, selected: false })));
-
-      const vouchers = await userService.getMyVouchers();
-      setVouchers(vouchers)
-    }
-
-    const addresses = await userService.getMyAddresses();
-    setCurrentAddress({ addresses });
-  })();
+      if (prof.roles?.some(r => !r.toLowerCase().includes("customer"))) {
+        setAlergens([]);
+        setCurrentAddress({ addresses: [] });
+        return;
+      }
+      if (prof.roles?.includes("Customer")) {
+        const allergens = await userService.getAllergens();
+        setAlergens(allergens.map(a => ({ ...a, selected: false })));
+      }
+      else {
+        return;
+      }
+      const addresses = await userService.getMyAddresses();
+      setCurrentAddress({ addresses });
+    })();
   }, []);
 
   const handleInputChange = (e) => {
@@ -70,8 +62,8 @@ useEffect(() => {
   // ✏️ Izmena korisnika
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isAdmin) {
-      console.log("Admin – preskačem update profila (200 OK fallback)");
+    if (!isCustomer) {
+      console.log("Nije 'Customer' – preskačem update profila (200 OK fallback)");
       return;
     }
 
@@ -81,7 +73,7 @@ useEffect(() => {
     formData.append("email", user.email);
 
     if (profilePictureFile) {
-      formData.append("ProfilePictureUrl", profilePictureFile);
+      formData.append("ProfilePictureBase64", profilePictureFile);
     }
     console.log("Ažuriranje profila sa podacima: ", {
       firstName: user.firstName,
@@ -93,8 +85,8 @@ useEffect(() => {
     await userService.updateProfile(formData);
 
     const updated = await userService.getProfile();
-    if (updated.profilePictureUrl) {
-      updated.imageUrl = updated.profilePictureUrl;
+    if (updated.profilePictureBase64) {
+      updated.imageUrl = updated.profilePictureBase64;
     }
     setProfile(updated);
     setUser(updated);
@@ -110,8 +102,8 @@ useEffect(() => {
 
   const handleSubmitAlergens = async (e) => {
     e.preventDefault();
-    if (isAdmin) {
-      console.log("Admin – preskačem čuvanje alergena (200 OK fallback)");
+    if (!isCustomer) {
+      console.log("Nije 'Customer' – preskačem čuvanje alergena (200 OK fallback)");
       return;
     }
 
@@ -127,8 +119,8 @@ useEffect(() => {
 
   // 📍 Adrese
   const refreshAddresses = async () => {
-    if (isAdmin) {
-      console.log("Admin – preskačem refresh adresa (200 OK fallback)");
+    if (!isCustomer) {
+      console.log("Nije 'Customer' – preskačem refresh adresa (200 OK fallback)");
       setCurrentAddress({ addresses: [] });
       return;
     }
@@ -138,8 +130,8 @@ useEffect(() => {
 
   const handleAddAddress = async (e) => {
     e.preventDefault();
-    if (isAdmin) {
-      console.log("Admin – preskačem dodavanje adrese (200 OK fallback)");
+    if (!isCustomer) {
+      console.log("Nije 'Customer' – preskačem dodavanje adrese (200 OK fallback)");
       return;
     }
 
@@ -150,8 +142,8 @@ useEffect(() => {
 
   const handleUpdateAddress = async (e) => {
     e.preventDefault();
-    if (isAdmin) {
-      console.log("Admin – preskačem update adrese (200 OK fallback)");
+    if (!isCustomer) {
+      console.log("Nije 'Customer' – preskačem update adrese (200 OK fallback)");
       return;
     }
 
@@ -162,8 +154,8 @@ useEffect(() => {
   };
 
   const handleDeleteAddress = async (id) => {
-    if (isAdmin) {
-      console.log("Admin – preskačem brisanje adrese (200 OK fallback)");
+    if (!isCustomer) {
+      console.log("Nije 'Customer' – preskačem brisanje adrese (200 OK fallback)");
       return;
     }
     await userService.deleteAddress(id);
@@ -181,6 +173,7 @@ useEffect(() => {
       setActiveTab={setActiveTab}
       profile={profile}
       user={user}
+      isCustomer={isCustomer}
       isAdmin={isAdmin}
       isCourier={isCourier}
       handleSubmit={handleSubmit}

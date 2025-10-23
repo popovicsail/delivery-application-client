@@ -1,13 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from 'react-router-dom';
-import RestaurantCard from "../components/RestaurantCard.jsx";
-import { getPagedRestaurants } from "../services/restaurant.services.jsx"
-import { dishService } from "../services/dishes.services";
+import { dishService } from "../services/dishes.services.jsx"
+import DishCard from "../components/DishCard.jsx";
 import "../styles/main.scss";
 
-const RestaurantsSearch = () => {
-  const navigate = useNavigate();
-  const [restaurants, setRestaurants] = useState([]);
+const DishesSearch = () => {
+  const [dishes, setDishes] = useState([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
   const [sort, setSort] = useState(0);
@@ -21,10 +18,10 @@ const RestaurantsSearch = () => {
   })
   const [filters, setFilters] = useState({
     name: '',
-    city: '',
-    openingTime: '',
-    closingTime: '',
-    closedToo: true
+    type: '',
+    minPrice: '',
+    maxPrice: '',
+    allergicOnAlso: true
   });
   const firstRender = useRef(true);
 
@@ -38,16 +35,16 @@ const RestaurantsSearch = () => {
 
   function resetFilters() {
     setFilters((prev => ({
-      ...prev, name: '', city: '', openingTime: '', closingTime: '', closedToo: true
+      ...prev, name: '', type: '', minPrice: '', allergicOnAlso: true
     })));
     setSort(0);
   }
 
-  const loadRestaurants = async () => {
+  const loadDishes = async () => {
     try {
       setLoading(true);
-      const data = await getPagedRestaurants(sort, filters, page);
-      setRestaurants(data.items || []);
+      const data = await dishService.getPaged(sort, filters, page);
+      setDishes(data.items || []);
       setPagination({
         count: data.count,
         currentPage: data.currentPage,
@@ -59,51 +56,26 @@ const RestaurantsSearch = () => {
       setError('');
     } catch (error) {
       console.error('Error:', error);
-      setError('Greska pri ucitavanju restorana.');
+      setError('Greska pri ucitavanju jela.');
     }
     setLoading(false);
   };
   
   useEffect(() => {
-    loadRestaurants();
+    loadDishes();
   }, [page]);
 
   useEffect(() => {
     if (firstRender.current) {
       firstRender.current = false;
-      setFilters(prev => ({ ...prev, closedToo: true }));
+      setFilters(prev => ({ ...prev, allergicOnAlso: true }));
     }
   }, []);
-
-  const handleCardClick = async (id) => {
-    try {
-      setLoading(true);
-      const menu = await dishService.getRestaurantMenu(id);
-      navigate(`/menuId/${menu.id}`);
-    } catch (error) {
-      if (error.response) {
-        if (error.response.status === 404) {
-          setError('Ne postoji restoran sa ovim id-em.');
-        } else if (error.response.status === 500) {
-          setError('Greska na serveru. Pokusajte kasnije.');
-        } else {
-          setError(`Greska: ${error.response.status}`);
-        }
-      } else if (error.request) {
-        setError('Nema odgovora sa servera.');
-      } else {
-        setError('Doslo je do greske.');
-      }
-      console.error('Greska:', error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   if (loading) return <div id="loadingSpinner" className="spinner"></div>;
   if (error) return <p style={{ color: 'red' }}>{error}</p>;
   return(
-    <div id="restaurants-search-container">
+    <div id="dishes-search-container">
       <div id="filter-container" >
         <div id="filter-box">
           <h4>Filteri</h4>
@@ -111,37 +83,40 @@ const RestaurantsSearch = () => {
             <label>Naziv:</label>
             <input type="text" name="name" value={filters.name} onChange={handleFilterChange} />
           </section>
+          <section className="section-row" id="tip">
+            <label>Tip:</label>
+            <input type="text" name="type" value={filters.type} onChange={handleFilterChange} />
+          </section>
           <section className="section-row">
-            <label>Grad:</label>
-            <input type="text" name="city" value={filters.city} onChange={handleFilterChange} />
+            <label>Min. Cena:</label>
+            <input type="number" name="minPrice" value={filters.minPrice} onChange={handleFilterChange} />
           </section>
-          <h5>Radi u vreme:</h5>
-          <section className="section-row time-specific-section-row">
-            <label>Od:</label>
-            <input type="time" name="openingTime" value={filters.openingTime} onChange={handleFilterChange} />
+          <section className="section-row">
+            <label>Max. Cena:</label>
+            <input type="number" name="maxPrice" value={filters.maxPrice} onChange={handleFilterChange} />
           </section>
-          <section className="section-row time-specific-section-row">
-            <label>Do:</label>
-            <input type="time" name="closingTime" value={filters.closingTime} onChange={handleFilterChange} />
-          </section>
-          <section className="section-row time-specific-section-row">
-            <label>Prikazi i zatvorene?</label>
-            <input type="checkbox" checked={(filters.closedToo == "false") || (filters.closedToo == false) ? false : true} name="closedToo" onChange={handleFilterChange} />
+          <section className="section-row">
+            <label>Prikazi i one na koje ste alergicni?</label>
+            <input type="checkbox" checked={(filters.allergicOnAlso == "false") || (filters.allergicOnAlso == false) ? false : true} name="allergicOnAlso" onChange={handleFilterChange} />
           </section>
           <h4>Sortiraj</h4>
           <select value={sort} onChange={e => setSort(Number(e.target.value))} name="sortSelect">
             <option value="0">Naziv Rastuce</option>
             <option value="1">Naziv Opadajuce</option>
+            <option value="2">Tip Rastuce</option>
+            <option value="3">Tip Opadajuce</option>
+            <option value="4">Cena Rastuce</option>
+            <option value="5">Cena Opadajuce</option>
           </select>
           <section className="section-row">
-            <button className="buttons-form" type="submit" onClick={loadRestaurants}>Primeni</button>
+            <button className="buttons-form" type="submit" onClick={loadDishes}>Primeni</button>
             <button className="buttons-form" type="reset" onClick={resetFilters}>Resetuj</button>
           </section>
         </div>
       </div>
       <div id="cards-container">
-        {restaurants.map((r) => (
-          <RestaurantCard key={r.id} isForOwner={false} restaurant={r} handleCardClick={handleCardClick}></RestaurantCard>
+        {dishes.map((d) => (
+          <DishCard key={d.id} isInMenu={false} isOwnerHere={false} dish={d}></DishCard>
         ))}
         <div id="buttons-row">
           <div id="buttons-box">
@@ -162,4 +137,4 @@ const RestaurantsSearch = () => {
   );
 }
 
-export default RestaurantsSearch;
+export default DishesSearch;

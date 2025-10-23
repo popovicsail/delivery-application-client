@@ -1,31 +1,48 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import DishForm from "./DishForm.jsx";
 import DishGroupForm from "./DishGroupForm.jsx";
 import { dishService } from "../../services/dishes.services.jsx";
+import { getMenuPermissionAsync } from "../../services/user.services.jsx";
+import DishCard from "../../components/DishCard.jsx";
 
 const MenuPage = () => {
-  const { restaurantId, menuId } = useParams();
+  const location = useLocation();
+  const highlightDishId = location.state?.highlightDishId;
+  const { menuId } = useParams();
+  const [selectedDish, setSelectedDish] = useState(null);
   const [dishes, setDishes] = useState([]);
   const [newDishId, setNewDishId] = useState([]);
-  const [selectedDish, setSelectedDish] = useState(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isOwnerHere, setIsOwnerHere] = useState(false);
   const [isDishGroupOpen, setIsDishGroupOpen] = useState(false);
-
   const myProfile = sessionStorage.getItem("myProfile"); 
   console.log("profile", JSON.parse(myProfile))
-  const isRoleAdmin = JSON.parse(myProfile).user.roles.includes("Administrator") || JSON.parse(myProfile).user.roles.includes("Owner")
 
   useEffect(() => {
     const fetchMenu = async () => {
       try {
-        const data = await dishService.getRestaurantMenu(restaurantId);
-        setDishes(data.menus[0].dishes);
+        const data = await dishService.getMenuByid(menuId);
+        setDishes(data.dishes);
       } catch (err) {
         console.error("Greška pri učitavanju jela:", err);
       }
     };
+    const fetchRestaurant = async () => {
+      const permit = JSON.parse(sessionStorage.getItem('permitRequest'));
+      if (!permit || permit != true) {
+        return;
+      }
+      try {
+        const response = await getMenuPermissionAsync(menuId);
+        sessionStorage.removeItem('permitRequest');
+        setIsOwnerHere(response == true);
+      } catch (err) {
+        console.error("Greška pri učitavanju restorana:", err);
+      }
+    };
     fetchMenu();
+    fetchRestaurant();
   }, []);
 
   const grouped = dishes.reduce((a, dish) => {
@@ -69,9 +86,9 @@ const MenuPage = () => {
 
   return (
     <div style={{ padding: "20px" }}>
-      <h1 style={{ fontSize: "28px", marginBottom: "20px" }}>Jelovnik:</h1>
+      <h1 style={{ fontSize: "28px", marginBottom: "0", fontStyle: 'italic' }}>Glavni Menu</h1>
       
-      {isRoleAdmin && (
+      {isOwnerHere && (
         <button 
           onClick={() => { setSelectedDish(null); setIsFormOpen(true);}}
           style={{
@@ -90,49 +107,12 @@ const MenuPage = () => {
       )}
 
       {Object.keys(grouped).map((type) => (
-        <div key={type} style={{ marginBottom: "30px" }}>
-          <h2 style={{ fontSize: "22px", marginBottom: "10px" }}>{type}</h2>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))", gap: "15px" }}>
+        <div className="dish-type-row" key={type} style={{ marginBottom: "30px" }}>
+          <h2>{type}</h2>
+          <div className="dishes-row" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))", gap: "15px" }}>
             {grouped[type].map((dish) => (
-              <div key={dish.id} style={{ border: "1px solid #ccc", borderRadius: "10px", padding: "15px" }}>
-                <h2 style={{ margin: "0 0 5px" }}>{dish.name}</h2>
-                <p style={{ fontSize: "14px" }}>{dish.description}</p>
-                <p style={{ marginTop: "8px", fontWeight: "bold" }}>{dish.price} RSD</p>
-                {isRoleAdmin && (
-                  <div style={{display: "flex", justifyContent: "space-around"}}>
-                    <button 
-                      onClick={() => { setSelectedDish(dish); setIsFormOpen(true); getDishData("77777777-7777-7777-7777-777777777777");}}
-                      style={{
-                        padding: "8px 14px",
-                        borderRadius: "6px",
-                        border: "none",
-                        backgroundColor: "#4CAF50",
-                        color: "white",
-                        cursor: "pointer",
-                        fontWeight: "bold",
-                        transition: "background 0.3s",
-                      }}
-                      >
-                      Izmeni jelo
-                    </button>
-                    <button 
-                      onClick={() => deleteDish(dish.id)}
-                      style={{
-                        padding: "8px 14px",
-                        borderRadius: "6px",
-                        border: "none",
-                        backgroundColor: "#f44336",
-                        color: "white",
-                        cursor: "pointer",
-                        fontWeight: "bold",
-                        transition: "background 0.3s",
-                      }}
-                    >
-                      Izbriši jelo
-                    </button>
-                  </div>
-                )}
-              </div>
+              <DishCard key={dish.id} dish={dish} isInMenu={true} isOwnerHere={isOwnerHere} deleteDish={deleteDish} 
+              setSelectedDish={setSelectedDish} setIsFormOpen={setIsFormOpen} getDishData={getDishData} highlighted={highlightDishId == dish.id}></DishCard>
             ))}
           </div>
         </div>

@@ -18,8 +18,5 @@ export const login = async (userName, password) => {
 
 
 export const logout = () => {
-  sessionStorage.removeItem("token");
-  sessionStorage.removeItem("role");
-  sessionStorage.removeItem("myProfile");
   sessionStorage.clear();
 };

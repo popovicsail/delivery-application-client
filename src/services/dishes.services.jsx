@@ -21,6 +21,28 @@ export const dishService = {
     return response.data;
   },
 
+  getPaged: async (sort, filters, page) => {
+    const params = new URLSearchParams();
+    filters.allergicOnAlso = filters.allergicOnAlso.toString()
+
+    if (filters.name) params.append("Name", filters.name);
+    if (filters.type) params.append("Type", filters.type);
+    if (filters.minPrice) params.append("MinPrice", filters.minPrice);
+    if (filters.maxPrice) params.append("MaxPrice", filters.maxPrice);
+    if (filters.allergicOnAlso) params.append("AllergicOnAlso", filters.allergicOnAlso);
+    params.append("sort", sort);
+    params.append("page", page)
+
+    const response = await api.get(`/dishes/paged?${params.toString()}`);
+
+    return response.data;
+  },
+
+  getMenuByid: async (id) => {
+    const response = await api.get(`/dishes/menu/${id}`);
+    return response.data;
+  },
+
   getRestaurantMenu: async (id) => {
     const response = await api.get(`restaurants/${id}/menu`);
     return response.data;
