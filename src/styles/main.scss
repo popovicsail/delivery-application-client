@@ -731,5 +731,87 @@ table {
 }
 
 .dishes-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3rem;
   margin-bottom: 10vh;
+}
+
+
+//DISHES's ORDER WINDOW
+
+.dish-n-order-wrapper {
+  display: flex;
+  gap: 1rem;
+}
+
+.dish-order-window {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding: 1.2rem 1.8rem;
+  background-color: rgb(245, 232, 203);
+  border-radius: 10px;
+  box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.151), 4px 3px 10px 0 rgba(0, 0, 0, 0.158);
+
+  >section {
+    gap: 0;
+  }
+  
+  div {
+    width: fit-content;
+    >section {
+      justify-content: flex-start;
+      >section {
+        margin: 0;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        gap: 0 0.4rem;
+        max-width: 17vw;
+        >section {
+          justify-content: flex-start;
+          gap: 0.2rem;
+        }
+      }
+    }
+  }
+ 
+  input[type="number"] {
+    width: 50px;
+    text-align: center;
+    border: none;
+    background: transparent;
+    font-size: 1rem;
+    &:focus {
+      outline: none;
+    }
+  }
+
+  input[type="checkbox"] {
+    accent-color: #b36b00;
+    transform: scale(1.2);
+  }
+  input[type="radio"] {
+    accent-color: #b36b00;
+    transform: translateY(-1px) scale(1.2);
+  }
+
+  button {
+    position: absolute;
+    right: 4%;
+    top: 4%;
+    padding: 0.4rem 0.7rem;
+  }
+
+  h3 {
+    width: fit-content;
+    font-size: medium;
+    margin: 0.4rem 0;
+  }
+
+  label {
+    color: #474747;
+    white-space: nowrap;
+  }
 }

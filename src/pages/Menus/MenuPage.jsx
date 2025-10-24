@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import { useParams, useLocation } from 'react-router-dom';
 import DishForm from "./DishForm.jsx";
 import DishGroupForm from "./DishGroupForm.jsx";
@@ -18,8 +18,85 @@ const MenuPage = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isOwnerHere, setIsOwnerHere] = useState(false);
   const [isDishGroupOpen, setIsDishGroupOpen] = useState(false);
-  const myProfile = sessionStorage.getItem("myProfile"); 
-  console.log("profile", JSON.parse(myProfile))
+  const [pickedId, setPickedId] = useState('');
+  const [order, setOrder] = useState([])
+
+  const handleClickForOrder = (id, dish) => {
+    setPickedId((prev) => (prev == id ? "" : id));
+    addDishToOrder(dish);
+  }
+
+  const addDishToOrder = (dishObj) => {
+    if(order.reduce((has, dish) => has || dish.id === dishObj.id, false)) return;
+    setOrder((prev) => [...prev, dishObj]);
+  };
+
+  const updateDishInOrder = (dishId, updatedData) => {
+    setOrder((prev) =>
+      prev.map((dish) => (dish.id === dishId ? { ...dish, ...updatedData } : dish))
+    );
+  };
+
+  const updateGroupsInOrder = (dishId, groupId, option, checked, groupType) => {
+  setOrder(prevOrder =>
+    prevOrder.map(dish => {
+      if (dish.id !== dishId) return dish;
+
+      // check if this group already exists
+      const groupExists = dish.dishOptionGroups.some(g => g.id === groupId);
+
+      let updatedGroups;
+
+      if (groupExists) {
+        // update existing group
+        updatedGroups = dish.dishOptionGroups.map(group => {
+          if (group.id !== groupId) return group;
+
+          if (groupType === "choice") {
+            // Only one option allowed
+            return {
+              ...group,
+              dishOptions: [{ id: option.id, price: option.price }]
+            };
+          }
+
+          // For independent (checkbox)
+          if (checked) {
+            // Add if not already there
+            if (!group.dishOptions.some(opt => opt.id === option.id)) {
+              return {
+                ...group,
+                dishOptions: [...group.dishOptions, { id: option.id, price: option.price }]
+              };
+            }
+            return group;
+          } else {
+            // Remove if unchecked
+            return {
+              ...group,
+              dishOptions: group.dishOptions.filter(opt => opt.id !== option.id)
+            };
+          }
+        });
+      } else {
+        // create new group if missing
+        updatedGroups = [
+          ...dish.dishOptionGroups,
+          {
+            id: groupId,
+            type: groupType,
+            dishOptions: checked ? [{ id: option.id, price: option.price }] : []
+          }
+        ];
+      }
+
+      return {
+        ...dish,
+        dishOptionGroups: updatedGroups
+      };
+    })
+  );
+};
 
   useEffect(() => {
     const fetchMenu = async () => {
@@ -189,8 +266,7 @@ const MenuPage = () => {
             color: "white",
             cursor: "pointer",
             fontWeight: "bold",
-            transition: "background 0.3s", }}
-        >
+            transition: "background 0.3s", }}>
           + Dodaj jelo
         </button>
       )}
@@ -198,14 +274,63 @@ const MenuPage = () => {
       {Object.keys(grouped).map((type) => (
         <div className="dish-type-row" key={type} style={{ marginBottom: "30px" }}>
           <h2>{type}</h2>
-          <div className="dishes-row" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))", gap: "15px" }}>
+          <div className="dishes-row">
             {grouped[type].map((dish) => (
-              <DishCard key={dish.id} dish={dish} isInMenu={true} isOwnerHere={isOwnerHere} deleteDish={deleteDish} 
-              setSelectedDish={setSelectedDish} setIsFormOpen={setIsFormOpen} getDishData={getDishData} highlighted={highlightDishId == dish.id}></DishCard>
+              <div className="dish-n-order-wrapper" key={dish.id}>
+                <DishCard  dish={dish} isInMenu={true} isOwnerHere={isOwnerHere} 
+                deleteDish={deleteDish} setSelectedDish={setSelectedDish} setIsFormOpen={setIsFormOpen} getDishData={getDishData} 
+                clickForOrder={handleClickForOrder} highlighted={highlightDishId == dish.id}></DishCard>
+                <div className={pickedId == dish.id ? "dish-order-window" : "hidden"} key={pickedId == dish.id ? `${dish.id}-open` : `${dish.id}-closed`}>
+                  <section className="section-row" style={{justifyContent: 'flex-start', width: 'fit-content'}}>
+                    <label>Broj porcija:</label>
+                    <input type="number" min='1' defaultValue='1' onChange={(e) => updateDishInOrder(dish.id, { quantity: Number(e.target.value) })} />
+                  </section>
+                  <div>
+                    <h3 className={dish.dishOptionGroups.reduce((has, g) => has || g.type === 'choice', false) == false ? "hidden" : ""}>Izborni dodatak:</h3>
+                    <section className="section-row" style={{justifyContent: 'flex-start'}}>
+                      {dish.dishOptionGroups.map((g) => (
+                        g.type == 'choice' &&
+                        <section key={g.id} className="section-row">
+                        {g.dishOptions.map((o) => (
+                          <section key={o.id} className="section-row">
+                            <input type="radio" name={`radio-${g.id}`} onChange={(e) => 
+                              updateGroupsInOrder(dish.id, g.id, o, e.target.checked, g.type)}/>
+                            <label>{o.name} +<strong>{o.price}</strong>RSD</label>
+                          </section>
+                        ))}
+                        </section>
+                      ))}
+                    </section>
+                  </div>
+                  <div>
+                    <h3 className={dish.dishOptionGroups.reduce((has, g) => has || g.type === 'independent', false) == false ? "hidden" : ""}>Nezavisni dodaci</h3>
+                    <section className="section-row" style={{justifyContent: 'flex-start'}}>
+                      {dish.dishOptionGroups.map((g) => (
+                        g.type == 'independent' && 
+                        <section key={g.id} className="section-row">
+                        {g.dishOptions.map((o) => (
+                          <section key={o.id} className="section-row">
+                            <input type="checkbox" name={`checkbox-${g.id}`} onChange={(e) => 
+                              updateGroupsInOrder(dish.id, g.id, o, e.target.checked, g.type)}/>
+                            <label>{o.name} +<strong>{o.price}</strong>RSD</label>
+                          </section>
+                        ))}
+                        </section>
+                      ))}
+                    </section>
+                  </div>
+                  <button onClick={() => {
+                    if (!window.confirm(`Dodaj u korpu?`)) return;
+                    updateDishInOrder(dish.id, { id: dish.id + "_", isOrdered: true }) //Adding a stamp
+                    setPickedId("");
+                  }} className="createButton">Dodaj</button>
+                </div>
+              </div>
             ))}
           </div>
         </div>
       ))}
+      <button className="buttons edit-btn" onClick={e => console.log(order.filter(o => o.isOrdered))}>Poruci</button>
 
       {isFormOpen && (
         <DishForm

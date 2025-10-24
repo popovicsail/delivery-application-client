@@ -23,7 +23,6 @@ export default function AccountPanel({
   setEditingAddress,
   handleAddAddress,
   handleUpdateAddress,
-  isCustomer,
   isAdmin,
   isCourier,
   vouchers
@@ -34,57 +33,34 @@ export default function AccountPanel({
     <div className={`account-panel ${isAdmin ? "admin" : ""}`}>
       <aside className="sidebar">
         <ul>
-          <li
-            className={isActive("profil-view")}
-            onClick={() => setActiveTab("profil-view")}
-          >
-            Profil
-          </li>
-
+          <li className={isActive("profil-view")} onClick={() => setActiveTab("profil-view")}>Profil</li>
           {isCustomer && (
-            <li
-              className={isActive("izmeni-podatke-form")}
-              onClick={() => setActiveTab("izmeni-podatke-form")}
-            >
-              Izmeni podatke
+            <li className={isActive("izmeni-podatke-form")} 
+            onClick={() => setActiveTab("izmeni-podatke-form")}>Izmeni podatke
             </li>
-          )}
+            )}
+            {isCustomer && (
+            <li className={isActive("alergen-view")}
+            onClick={() => setActiveTab("alergen-view")}>Alergeni
+            </li>
+            )}
+            {isCustomer && (
+            <li className={isActive("adrese-view")}
+            onClick={() => setActiveTab("adrese-view")}>Adrese
+            </li>
+            )}
 
-          {isCustomer && (
-            <li
-              className={isActive("alergen-view")}
-              onClick={() => setActiveTab("alergen-view")}
-            >
-              Alergeni
+            {isCourier && (
+            <li className={isActive("courier-view")}
+            onClick={() => setActiveTab("courier-view")}>Kurir
             </li>
-          )}
+            )}
 
-          {isCustomer && (
-            <li
-              className={isActive("adrese-view")}
-              onClick={() => setActiveTab("adrese-view")}
-            >
-              Adrese
+            {isCustomer && (
+            <li className={isActive("voucher-list")}
+            onClick={() => setActiveTab("voucher-list")}>Vouchers
             </li>
-          )}
-
-          {isCourier && (
-            <li
-              className={isActive("courier-view")}
-              onClick={() => setActiveTab("courier-view")}
-            >
-              Kurir
-            </li>
-          )}
-
-          {isCustomer && (
-            <li
-              className={isActive("voucher-list")}
-              onClick={() => setActiveTab("voucher-list")}
-            >
-              Vouchers
-            </li>
-          )}
+            )}
         </ul>
       </aside>
 
@@ -101,9 +77,8 @@ export default function AccountPanel({
           />
         )}
 
-        {isCustomer && (
-          <AllergensContainer active={isActive("alergen-view")} />
-        )}
+        {isCustomer && <AllergensContainer 
+        active={isActive("alergen-view")} />}
 
         {isCustomer && (
           <AddressView
@@ -120,18 +95,9 @@ export default function AccountPanel({
           />
         )}
 
-        {isCourier && (
-          <CourierTabContainer
-          profile={profile}
-          active={isActive("courier-view")} />
-        )}
+        {isCourier && (<CourierTabContainer active={isActive("courier-view")} />)}
 
-        {!isAdmin && isCustomer && (
-          <VoucherList
-            vouchers={vouchers}
-            active={isActive("voucher-list")}
-          />
-        )}
+        {!isAdmin && isCustomer && (<VoucherList vouchers={vouchers} active={isActive("voucher-list")}/>)}
       </main>
     </div>
   );
