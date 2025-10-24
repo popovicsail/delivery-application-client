@@ -393,7 +393,6 @@ export default function ProfilePage() {
       handleAddAddress={handleAddAddress}
       handleUpdateAddress={handleUpdateAddress}
       vouchers={vouchers}
-      isCustomer={isCustomer}
     />
   );
 }
