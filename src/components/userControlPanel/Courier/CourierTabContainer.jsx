@@ -3,11 +3,12 @@ import { getMySchedules, updateMySchedules } from "../../../services/courier.ser
 import CourierTabView from "./CourierTabView";
 import WeeklyScheduleReview from "./steps/WeeklyScheduleReview.jsx"; // nova komponenta
 
-export default function CourierTabContainer({ active }) {
+export default function CourierTabContainer({ active, profile }) {
+  
   const [existing, setExisting] = useState([]);
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(true);
-  const roles = sessionStorage.getItem("roles") || "";
+  const roles = profile?.roles || [];
 
   useEffect(() => {
     if (!roles.includes("Courier")) return;
