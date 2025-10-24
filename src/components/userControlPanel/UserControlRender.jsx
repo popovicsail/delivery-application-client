@@ -21,7 +21,7 @@ export default function ProfilePage() {
   const [editingAddress, setEditingAddress] = useState(null);
   const [profilePictureFile, setProfilePictureFile] = useState(null);
   const [vouchers, setVouchers] = useState(null);
-
+  sessionStorage.setItem('roles', user);
   const isCustomer = user?.roles?.some(r => r.toLowerCase().includes("customer"));
   const isCourier = user?.roles?.some(r => r.toLowerCase().includes("courier"));
   const isAdmin = user?.roles?.some(r => r.toLowerCase().includes("administrator"));
@@ -393,7 +393,6 @@ export default function ProfilePage() {
       handleAddAddress={handleAddAddress}
       handleUpdateAddress={handleUpdateAddress}
       vouchers={vouchers}
-      isCustomer={isCustomer}
     />
   );
 }

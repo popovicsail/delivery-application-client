@@ -41,7 +41,7 @@ export default function CourierTabView({ existing = [], onConfirm }) {
   const canProceedFromStep2 = dailyValid && weeklyValid;
 
   const payload = selectedDates.map((d) => ({
-    date: d,
+    date: new Date(d).toISOString().split("T")[0],
     workStart: timesByDate[d]?.start,
     workEnd: timesByDate[d]?.end,
   }));
