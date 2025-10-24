@@ -1,3 +1,4 @@
+@use "sass:color";
 @use 'main.scss' as *;
 
 $sidebar-width: 220px;
@@ -36,9 +37,9 @@ $border-color: #ddd;
         color: $text-color;
         transition: background-color 0.2s ease;
 
-        &:hover {
-          background-color: lighten($primary, 40%);
-        }
+       &:hover {
+        background-color: color.scale($primary, $lightness: 40%);
+      }
 
         &.active {
           background-color: $primary;

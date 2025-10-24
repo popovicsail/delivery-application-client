@@ -80,6 +80,12 @@ const Header = () => {
               {roles.includes("Owner") && (
                 <li id={current === "/restaurantsOwner" ? "current" : ""}><Link to="/restaurantsOwner">Moji Restorani</Link></li>
               )}
+              
+              <li>
+                <Link to="/survey">
+                  Feedback
+                </Link>
+              </li>
 
               <li><Link to="/login" onClick={handleLogout}>Odjavite se</Link></li>
             </>
