@@ -5,11 +5,6 @@ export default function StepReviewConfirm({ payload, totals, onBack, onConfirm }
     <div className="wizard-step">
       <h4>Korak 3: Pregled i potvrda</h4>
 
-      {/* 🔔 Obaveštenje */}
-      <div className="alert alert-warning" style={{ marginBottom: "1rem" }}>
-        ⚠️ Jednom kada potvrdite nedeljni raspored, on se više ne može menjati.
-      </div>
-
       {payload.length === 0 ? (
         <p>Nema izabranih dana.</p>
       ) : (

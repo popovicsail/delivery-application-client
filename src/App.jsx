@@ -15,6 +15,7 @@ import ProfilePage from "../src/components/userControlPanel/UserControlRender.js
 import MenuPage from "./pages/Menus/MenuPage.jsx";
 import RestaurantsSearch from "./pages/RestaurantsSearch.jsx";
 import DishesSearch from "./pages/DishesSearch.jsx";
+import FeedbackSurvey from "./pages/Feedback/FeedbackSurvey.jsx";
 
 const App = () => {
   return(
@@ -35,6 +36,7 @@ const App = () => {
           <Route path="/restaurantsSearch" element = {<RestaurantsSearch />}/>
           <Route path="/DishesSearch" element = {<DishesSearch />}/>
           <Route path="/menuId/:menuId" element ={<MenuPage />} />
+          <Route path="/survey" element ={<FeedbackSurvey />} />
         </Routes>
     </BrowserRouter>
     </div>

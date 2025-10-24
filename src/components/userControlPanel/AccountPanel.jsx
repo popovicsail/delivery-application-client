@@ -4,7 +4,6 @@ import EditUserForm from "./EditUserForm";
 import AllergensContainer from "./AllergensContainer";
 import AddressView from "./AddressView";
 import CourierTabContainer from "./Courier/CourierTabContainer.jsx";
-import CourierTabView from "./Courier/CourierTabView";
 import VoucherList from "../customerComponents/VoucherList";
 
 export default function AccountPanel({
@@ -26,11 +25,9 @@ export default function AccountPanel({
   handleUpdateAddress,
   isAdmin,
   isCourier,
-  isCustomer,
   vouchers
 }) {
   const isActive = (tab) => (activeTab === tab ? "active" : "");
-  const roles = sessionStorage.getItem("roles") || "";
 
   return (
     <div className={`account-panel ${isAdmin ? "admin" : ""}`}>
@@ -95,7 +92,7 @@ export default function AccountPanel({
             handleAddAddress={handleAddAddress}
             handleUpdateAddress={handleUpdateAddress}
             active={isActive("adrese-view")}
-          />        
+          />
         )}
 
         {isCourier && (<CourierTabContainer active={isActive("courier-view")} />)}

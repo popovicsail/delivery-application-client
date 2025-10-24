@@ -21,7 +21,7 @@ export default function ProfilePage() {
   const [editingAddress, setEditingAddress] = useState(null);
   const [profilePictureFile, setProfilePictureFile] = useState(null);
   const [vouchers, setVouchers] = useState(null);
-
+  sessionStorage.setItem('roles', user);
   const isCustomer = user?.roles?.some(r => r.toLowerCase().includes("customer"));
   const isCourier = user?.roles?.some(r => r.toLowerCase().includes("courier"));
   const isAdmin = user?.roles?.some(r => r.toLowerCase().includes("administrator"));
@@ -48,7 +48,9 @@ export default function ProfilePage() {
         try {
           setLoading(true);
           const allergens = await userService.getAllergens();
-          setAlergens(allergens.map((a) => ({ ...a, selected: false })));
+          const vouchers = await userService.getMyVouchers();
+          setAlergens(allergens.map((a) => ({ ...a, selected: false })));    
+          setVouchers(vouchers)
         } catch (error) {
           if (error.response) {
             if (error.response.status === 404) {
