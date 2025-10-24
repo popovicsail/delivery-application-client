@@ -3,7 +3,7 @@ import api from "./api";
 export interface Feedback {
   user: string;
   date: string;
-  ratings: number[];
+  rating: number[];
   comment: string;
 }
 
@@ -14,8 +14,13 @@ export const feedbackService = {
   },
 
   getAllFeedbacks: async (): Promise<Feedback[]> => {
-    const res = await fetch("/api/Feedback/all");
-    if (!res.ok) throw new Error("Greška pri učitavanju feedbacka");
-    return res.json();
+    const response = await api.get(`/Feedback/user`);
+    return response.data;
   },
+
+  submitFeedback: async (data:Feedback[]): Promise<Feedback[]> => {
+    const response = await api.post(`feedback`, data);
+
+    return response.data;
+  } 
 };
