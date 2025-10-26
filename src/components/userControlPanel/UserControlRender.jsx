@@ -49,7 +49,7 @@ export default function ProfilePage() {
           setLoading(true);
           const allergens = await userService.getAllergens();
           const vouchers = await userService.getMyVouchers();
-          setAlergens(allergens.map((a) => ({ ...a, selected: false })));    
+          setAlergens(allergens.map((a) => ({ ...a, selected: false })));
           setVouchers(vouchers)
         } catch (error) {
           if (error.response) {
