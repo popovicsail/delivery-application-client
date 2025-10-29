@@ -76,7 +76,6 @@ export const RegisterForm = () => {
   
 
   if (loading) return <div id="loadingSpinner" className="spinner"></div>;
-  if (error) return <p style={{ color: 'red' }}>{error}</p>;
   return (
     <form className="formaDodaj" onSubmit={handleSubmit}>
       <section className="form-section">

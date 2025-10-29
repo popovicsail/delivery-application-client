@@ -2,16 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import "../styles/main.scss";
 
-const DishCard = ({ dish, highlighted, isInMenu, isOwnerHere, deleteDish, setSelectedDish, setIsFormOpen, getDishData, clickForOrder }) => {
+const DishCard = ({ dish, highlighted, isInMenu, isOwnerHere, deleteDish, setSelectedDish, setIsFormOpen, clickForOrder }) => {
   const navigate = useNavigate();
   const myAllergens = JSON.parse(sessionStorage.getItem('myAllergens'))
-  /*function processed() {
-    let line = dish.allergens.map(a => a.name).join(', ')
-    if (line.length > 26) {
-      return line.substring(0, 26) + "..."
-    }
-    return line
-  }*/
 
   return (
     <div onClick={e => (isInMenu ? clickForOrder(dish.id, {
@@ -20,7 +13,7 @@ const DishCard = ({ dish, highlighted, isInMenu, isOwnerHere, deleteDish, setSel
       quantity: '',
       isOrdered: false,
       dishOptionGroups: []
-    }) : navigate(`/menuId/${dish.menuId}`, { state: { highlightDishId: dish.id } }))} className="dish-card dish-card-hover" id={highlighted ? "highlighted-dish" : ""}>
+    }) : navigate(`/menuId/${dish.menuId}`, { state: { highlightDishId: dish.id } }))} className={`dish-card ${!isOwnerHere && "dish-card-hover"}`} id={highlighted ? "highlighted-dish" : ""}>
       <div className="dish-info">
         <div className="dish-info-wrapper">
           <h2 className="dish-name" title={dish.name}>{dish.name}</h2>
@@ -31,7 +24,7 @@ const DishCard = ({ dish, highlighted, isInMenu, isOwnerHere, deleteDish, setSel
         {(dish.allergens && dish.allergens.length > 0) &&
           <ul>
             {dish.allergens.map(a => (
-              <li title={a.name} style={((myAllergens && myAllergens.includes(a.id)) ? {color: 'red'} : {color: 'black'})} key={a.name}>{a.name}</li>
+              <li title={a.name} style={((myAllergens && myAllergens.includes(a.id)) ? {color: 'red'} : {color: 'black'})} key={a.id}>{a.name}</li>
             ))}
           </ul>
           }
@@ -40,7 +33,7 @@ const DishCard = ({ dish, highlighted, isInMenu, isOwnerHere, deleteDish, setSel
           <img className="dish-image" src={dish.picture && dish.picture.length > 0 ? dish.picture : "https://www.keralatourism.org/_next/image/?url=http%3A%2F%2F127.0.0.1%2Fktadmin%2Fimg%2Fpages%2Flarge-desktop%2Frice-dishes-1714219146_4b2d13389d18792a8c3d.webp&w=3840&q=75"} alt="slika" />
           {isOwnerHere && (
             <section className="section-row">
-                <button className="edit-btn buttons" onClick={() => { setSelectedDish(dish); setIsFormOpen(true); getDishData(dish.id);}}>Izmeni jelo</button>
+                <button className="edit-btn buttons" onClick={() => { setSelectedDish(dish); setIsFormOpen(true);}}>Izmeni jelo</button>
                 <button className="delete-btn buttons" onClick={() => deleteDish(dish.id)}>Izbriši jelo</button>
             </section>
           )}
