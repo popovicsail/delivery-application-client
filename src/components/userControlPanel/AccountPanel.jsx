@@ -5,6 +5,7 @@ import AllergensContainer from "./AllergensContainer";
 import AddressView from "./AddressView";
 import CourierTabContainer from "./Courier/CourierTabContainer.jsx";
 import VoucherList from "../customerComponents/VoucherList";
+import RestaurantOrders from "./Owner/RestaurantOrders.jsx";
 
 export default function AccountPanel({
   activeTab,
@@ -25,6 +26,7 @@ export default function AccountPanel({
   handleUpdateAddress,
   isAdmin,
   isCourier,
+  isOwner,
   vouchers,
   isCustomer,
 }) {
@@ -61,6 +63,15 @@ export default function AccountPanel({
             <li className={isActive("voucher-list")}
             onClick={() => setActiveTab("voucher-list")}>Vouchers
             </li>
+            )}
+
+            {isOwner && (
+              <li
+                className={isActive("owner-orders")}
+                onClick={() => setActiveTab("owner-orders")}
+              >
+                Porudžbine restorana
+              </li>
             )}
         </ul>
       </aside>
@@ -99,6 +110,8 @@ export default function AccountPanel({
         {isCourier && (<CourierTabContainer active={isActive("courier-view")} />)}
 
         {!isAdmin && isCustomer && (<VoucherList vouchers={vouchers} active={isActive("voucher-list")}/>)}
+
+        {isOwner && (<RestaurantOrders user={user} active={isActive("owner-orders")}/>)}
       </main>
     </div>
   );

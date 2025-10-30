@@ -22,6 +22,7 @@ const MenuPage = () => {
   const [isDishGroupOpen, setIsDishGroupOpen] = useState(false);
   const [pickedId, setPickedId] = useState('');
   const [order, setOrder] = useState([]);
+  const [restaurantId, setRestaurantId] = useState(null);
   const [quantities, setQuantities] = useState({});
   const { items ,addToCart, updateItem, updateGroups } = useCart();
   const navigate = useNavigate();
@@ -108,7 +109,9 @@ const MenuPage = () => {
     const fetchMenu = async () => {
       try {
         const data = await dishService.getMenuByid(menuId);
+        console.log("Menu data:", data);
         setDishes(data.dishes);
+        setRestaurantId(data.restaurantId);
       } catch (error) {
         if (error.response) {
           if (error.response.status === 404) {
@@ -128,34 +131,39 @@ const MenuPage = () => {
         setLoading(false);
       }
     };
-    const fetchRestaurant = async () => {
-      const permit = JSON.parse(sessionStorage.getItem("permitRequest"));
-      if (!permit || permit != true) return;
-      try {
-        const response = await getMenuPermissionAsync(menuId);
-        setIsOwnerHere(response == true);
-      } catch (error) {
-        if (error.response) {
-          if (error.response.status === 404) {
-            setError("Jelo sa ovim id-em ne postoji ili pogresna ruta.");
-          } else if (error.response.status === 401) {
-            setError("Ova ruta je rezervisana samo za vlasnike restorana.");
-          } else if (error.response.status === 500) {
-            setError("Greska na serveru. Pokusajte kasnije.");
-          } else {
-            setError(`Greska: ${error.response.status}`);
-          }
-        } else if (error.request) {
-          setError("Nema odgovora sa servera.");
-        } else {
-          setError("Doslo je do greske.");
-        }
-        console.error("Greška pri slanju zahteva za permisije:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+
     fetchMenu();
+  }, [menuId]);
+
+  const fetchRestaurant = async () => {
+    const permit = JSON.parse(sessionStorage.getItem("permitRequest"));
+    if (!permit || permit != true) return;
+    try {
+      const response = await getMenuPermissionAsync(menuId);
+      console.log("Permission response:", response);
+      setIsOwnerHere(response == true);
+    } catch (error) {
+      if (error.response) {
+        if (error.response.status === 404) {
+          setError("Jelo sa ovim id-em ne postoji ili pogresna ruta.");
+        } else if (error.response.status === 401) {
+          setError("Ova ruta je rezervisana samo za vlasnike restorana.");
+        } else if (error.response.status === 500) {
+          setError("Greska na serveru. Pokusajte kasnije.");
+        } else {
+          setError(`Greska: ${error.response.status}`);
+        }
+      } else if (error.request) {
+        setError("Nema odgovora sa servera.");
+      } else {
+        setError("Doslo je do greske.");
+      }
+      console.error("Greška pri slanju zahteva za permisije:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
     fetchRestaurant();
   }, []);
 
@@ -415,15 +423,17 @@ const MenuPage = () => {
   
                   {/* Dugme za dodavanje */}
                   <button
-                  onClick={() => {
-                    const qty = quantities[dish.id] || 1;
-                    addToCart({ ...dish, quantity: qty }, dish.restaurantId);
-                    setPickedId("");
-                  }}
-                  className="createButton"
-                >
-                  Dodaj
-                </button>
+                    onClick={() => {
+                      const qty = quantities[dish.id] || 1;
+                      addToCart(
+                        { ...dish, quantity: qty, restaurantId }, 
+                      );
+                      setPickedId("");
+                    }}
+                    className="createButton"
+                  >
+                    Dodaj
+                  </button>
                 </div>
               </div>
             ))}

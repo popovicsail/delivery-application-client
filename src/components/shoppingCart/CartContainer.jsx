@@ -57,7 +57,8 @@ useEffect(() => {
       customerId: profile.id,
       addressId: selectedAddressId,
       voucherId: selectedVoucherId || null,
-      items: orderedItems
+      items: orderedItems,
+      restaurantId : orderedItems.length > 0 ? items[0].restaurantId : null
     };
 
     console.log("Order payload:", payload);

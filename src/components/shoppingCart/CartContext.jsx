@@ -7,7 +7,7 @@ export function CartProvider({ children }) {
   const [items, setItems] = useState([]);
   const [selectedVoucherId, setSelectedVoucherId] = useState(null);
 
-  const addToCart = (dish) => {
+  const addToCart = (dish,) => {
     const exists = items.some(i => i.originalId === dish.id);
     if (exists) return;
 
@@ -17,10 +17,13 @@ export function CartProvider({ children }) {
       originalId: dish.id,
       quantity: dish.quantity || 1,
       dishOptionGroups: [],
-      isOrdered: true
+      isOrdered: true,
+      restaurantId: dish.restaurantId
     };
 
     setItems(prev => [...prev, newItem]);
+    console.log("Dodavanje u korpu:", dish); // Proverite vrednosti dish.quantity
+  // Logika za dodavanje u korpu
   };
 
   const updateItem = (dishId, updatedData) => {
