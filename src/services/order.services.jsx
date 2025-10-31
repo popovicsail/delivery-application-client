@@ -7,7 +7,11 @@ export const getByRestaurant = async (restaurantId) => {
 }
 
 
-export const updateOrderStatus = async (orderId, newStatus) => {
-    const response = await api.put(`orders/${orderId}/status`, newStatus,{ headers: { "Content-Type": "application/json" } });
+export const updateOrderStatus = async (orderId, newStatus, prepTime) => {
+    const response = await api.put(
+      `orders/${orderId}/status`,
+      { newStatus, prepTime }, // jedan objekat
+      { headers: { "Content-Type": "application/json" } }
+    );
     return response.data;
-}
+  };

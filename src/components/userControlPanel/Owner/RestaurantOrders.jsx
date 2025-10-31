@@ -9,6 +9,8 @@ export default function OwnerOrders({active }) {
   const [selectedRestaurant, setSelectedRestaurant] = useState("");
   const [orders, setOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [showPrepTimeModal, setShowPrepTimeModal] = useState(false);
+  const [prepTime, setPrepTime] = useState(20); // default 20 min
 
   // povuci restorane vlasnika
   useEffect(() => {
@@ -44,7 +46,7 @@ export default function OwnerOrders({active }) {
 
   const acceptOrder = async (id) => {
     try {
-      const response = await orderService.updateOrderStatus(id,1);
+      const response = await orderService.updateOrderStatus(id,1,prepTime);
       console.log("API Response:", response);
   
       setSelectedOrder((prev) => ({ ...prev, status: "Prihvacena" }));
@@ -54,7 +56,24 @@ export default function OwnerOrders({active }) {
         )
       );
 
-      
+  
+    } catch (error) {
+      console.error("Greška pri ažuriranju statusa:", error);
+    }
+  };
+
+
+  const markAsReadyForPickup = async (id) => {
+    try {
+      const response = await orderService.updateOrderStatus(id, 3); 
+      console.log("API Response:", response);
+  
+      setSelectedOrder((prev) => ({ ...prev, status: "CekaSeNaPreuzimanje" }));
+      setOrders((prevOrders) =>
+        prevOrders.map((o) =>
+          o.id === id ? { ...o, status: "CekaSeNaPreuzimanje" } : o
+        )
+      );
     } catch (error) {
       console.error("Greška pri ažuriranju statusa:", error);
     }
@@ -137,6 +156,7 @@ export default function OwnerOrders({active }) {
               <p><strong>Adresa:</strong> {selectedOrder.deliveryAddress}</p>
               <p><strong>Status:</strong> {selectedOrder.status}</p>
               <p><strong>Ukupno:</strong> {selectedOrder.totalPrice} RSD</p>
+              <p><strong>Vreme pripreme:</strong> {selectedOrder.timeToPrepare} min</p>
 
               <h4>Stavke:</h4>
               <ul>
@@ -147,8 +167,40 @@ export default function OwnerOrders({active }) {
                 ))}
               </ul>
 
+              {showPrepTimeModal && (
+                <div className="modal-overlay">
+                  <div className="modal">
+                    <h3>Unesite vreme spremanja</h3>
+                    <input
+                      type="number"
+                      value={prepTime}
+                      onChange={(e) => setPrepTime(Number(e.target.value))}
+                      min="5"
+                      max="120"
+                    />
+                    <span> minuta</span>
+                    <div className="modal-actions">
+                      <button onClick={() => {
+                        acceptOrder(selectedOrder.orderId);
+                      }}>
+                        ✅ Potvrdi
+                      </button>
+                      <button onClick={() => setShowPrepTimeModal(false)}>
+                        ❌ Otkaži
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
                 {selectedOrder.status === "NaCekanju" && (
-                    <button key={selectedOrder.orderId} className= "accept-btn" onClick={() => acceptOrder(selectedOrder.orderId)}>
+                    <button
+                      key={selectedOrder.orderId}
+                      className="accept-btn"
+                      onClick={() => {
+                        setShowPrepTimeModal(true);
+                      }}
+                    >
                         Prihvati porudžbinu
                     </button>
                 )}
@@ -156,6 +208,15 @@ export default function OwnerOrders({active }) {
                     <button key={selectedOrder.orderId} className= "refuse-btn" onClick={() => refuseOrder(selectedOrder.orderId)}>
                         Odbij porudžbinu
                     </button>
+                )}
+
+                {selectedOrder.status === "Prihvacena" && (
+                  <button
+                    className="ready-btn"
+                    onClick={() => markAsReadyForPickup(selectedOrder.orderId)}
+                  >
+                    ✅ Spremno za preuzimanje
+                  </button>
                 )}
             </>
           )}
