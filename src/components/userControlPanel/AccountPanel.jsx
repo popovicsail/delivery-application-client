@@ -25,6 +25,7 @@ export default function AccountPanel({
   handleUpdateAddress,
   isAdmin,
   isCourier,
+  isCustomer,
   vouchers
 }) {
   const isActive = (tab) => (activeTab === tab ? "active" : "");
