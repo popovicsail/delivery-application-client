@@ -4,6 +4,7 @@ import EditUserForm from "./EditUserForm";
 import AllergensContainer from "./AllergensContainer";
 import AddressView from "./AddressView";
 import CourierTabContainer from "./Courier/CourierTabContainer.jsx";
+import CourierDeliveries from "./Courier/CourierDeliveries.jsx";
 import VoucherList from "../customerComponents/VoucherList";
 import RestaurantOrders from "./Owner/RestaurantOrders.jsx";
 
@@ -59,6 +60,12 @@ export default function AccountPanel({
             </li>
             )}
 
+            {isCourier && (
+            <li className={isActive("courier-delivery")}
+            onClick={() => setActiveTab("courier-delivery")}>Dostave
+            </li>
+            )}
+
             {isCustomer && (
             <li className={isActive("voucher-list")}
             onClick={() => setActiveTab("voucher-list")}>Vouchers
@@ -108,6 +115,7 @@ export default function AccountPanel({
         )}
 
         {isCourier && (<CourierTabContainer active={isActive("courier-view")} />)}
+        {isCourier && (<CourierDeliveries active={isActive("courier-delivery")} />)}
 
         {!isAdmin && isCustomer && (<VoucherList vouchers={vouchers} active={isActive("voucher-list")}/>)}
 

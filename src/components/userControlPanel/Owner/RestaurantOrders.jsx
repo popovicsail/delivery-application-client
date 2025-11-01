@@ -2,24 +2,23 @@ import React, { useEffect, useState } from "react";
 import * as restaurantService from "../../../services/restaurant.services.jsx";
 import * as orderService from "../../../services/order.services.jsx";
 
-export default function OwnerOrders({active }) {
-
-
+export default function OwnerOrders({ active }) {
   const [restaurants, setRestaurants] = useState([]);
   const [selectedRestaurant, setSelectedRestaurant] = useState("");
   const [orders, setOrders] = useState([]);
-  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [selectedOrderId, setSelectedOrderId] = useState(null); // pristup 2: samo ID
   const [showPrepTimeModal, setShowPrepTimeModal] = useState(false);
-  const [prepTime, setPrepTime] = useState(20); // default 20 min
+  const [prepTime, setPrepTime] = useState(20);
+  const [refreshKey, setRefreshKey] = useState(0);
+  const [showCompleted, setShowCompleted] = useState(false); // filter toggle
 
-  // povuci restorane vlasnika
+  // Fetch restaurants
   useEffect(() => {
     if (active === "active") {
       (async () => {
         try {
-          const data = await restaurantService.getMyRestaurants(); // ako već vraća JSON
+          const data = await restaurantService.getMyRestaurants();
           setRestaurants(data);
-          console.log("Dohvaćeni restorani:", data);
         } catch (err) {
           console.error("Greška pri dohvatanju restorana:", err);
         }
@@ -27,71 +26,60 @@ export default function OwnerOrders({active }) {
     }
   }, [active]);
 
-  // povuci porudžbine za izabrani restoran
+  // Fetch orders for selected restaurant + auto refresh every 10s
   useEffect(() => {
+    let interval;
     if (selectedRestaurant) {
-      (async () => {
+      const fetchOrders = async () => {
         try {
           const data = await orderService.getByRestaurant(selectedRestaurant);
           setOrders(data);
-            console.log("Dohvaćene porudžbine:", data);
         } catch (err) {
           console.error("Greška pri dohvatanju porudžbina:", err);
         }
-      })();
+      };
+
+      fetchOrders(); // initial
+      interval = setInterval(fetchOrders, 10000);
     } else {
       setOrders([]);
     }
-  }, [selectedRestaurant]);
 
-  const acceptOrder = async (id) => {
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [selectedRestaurant, refreshKey]);
+
+  // Selected order from the same list the table uses
+  const filteredOrders = showCompleted
+    ? orders
+    : orders.filter(o => o.status !== "Zavrsena");
+
+  const selectedOrder = filteredOrders.find(o => o.orderId === selectedOrderId);
+
+  // Actions (use orderId consistently)
+  const acceptOrder = async (orderId) => {
     try {
-      const response = await orderService.updateOrderStatus(id,1,prepTime);
-      console.log("API Response:", response);
-  
-      setSelectedOrder((prev) => ({ ...prev, status: "Prihvacena" }));
-      setOrders((prevOrders) =>
-        prevOrders.map((o) =>
-          o.id === id ? { ...o, status: "Prihvacena" } : o
-        )
-      );
-
-  
+      await orderService.updateOrderStatus(orderId, 1, prepTime);
+      setRefreshKey(prev => prev + 1);
     } catch (error) {
       console.error("Greška pri ažuriranju statusa:", error);
     }
   };
 
-
-  const markAsReadyForPickup = async (id) => {
+  const markAsReadyForPickup = async (orderId) => {
     try {
-      const response = await orderService.updateOrderStatus(id, 3); 
-      console.log("API Response:", response);
-  
-      setSelectedOrder((prev) => ({ ...prev, status: "CekaSeNaPreuzimanje" }));
-      setOrders((prevOrders) =>
-        prevOrders.map((o) =>
-          o.id === id ? { ...o, status: "CekaSeNaPreuzimanje" } : o
-        )
-      );
+      await orderService.updateOrderStatus(orderId, 3);
+      setRefreshKey(prev => prev + 1);
     } catch (error) {
       console.error("Greška pri ažuriranju statusa:", error);
     }
   };
 
-  const refuseOrder = async (id) => {
+  const refuseOrder = async (orderId) => {
     try {
-      const response = await orderService.updateOrderStatus(id,2);
-      console.log("API Response:", response);
-  
-      setSelectedOrder((prev) => ({ ...prev, status: "Odbijena" }));
-      setOrders((prevOrders) =>
-        prevOrders.map((o) =>
-          o.id === id ? { ...o, status: "Odbijena" } : o
-        )
-      );
-
-      
+      await orderService.updateOrderStatus(orderId, 2);
+      setRefreshKey(prev => prev + 1);
     } catch (error) {
       console.error("Greška pri ažuriranju statusa:", error);
     }
@@ -108,49 +96,62 @@ export default function OwnerOrders({active }) {
               <div className="restaurant-select">
                 <label htmlFor="restaurantSelect">Izaberite restoran:</label>
                 <select
-                    id="restaurantSelect"
-                    value={selectedRestaurant}
-                    onChange={(e) => setSelectedRestaurant(e.target.value)}
+                  id="restaurantSelect"
+                  value={selectedRestaurant}
+                  onChange={(e) => setSelectedRestaurant(e.target.value)}
                 >
-                    <option value="">-- Odaberite restoran --</option>
-                    {restaurants.map(r => (
+                  <option value="">-- Odaberite restoran --</option>
+                  {restaurants.map(r => (
                     <option key={r.id} value={r.id}>{r.name}</option>
-                    ))}
+                  ))}
                 </select>
-            </div>
+              </div>
 
               {selectedRestaurant && (
-                <table className="orders-table">
-                  <thead>
-                    <tr>
-                      <th>Kupac</th>
-                      <th>Adresa</th>
-                      <th>Status</th>
-                      <th>Ukupno</th>
-                      <th>Akcija</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {orders.map(o => (
-                      <tr key={o.id}>
-                        <td>{o.customerName}</td>
-                        <td>{o.deliveryAddress}</td>
-                        <td>{o.status}</td>
-                        <td>{o.totalPrice} RSD</td>
-                        <td>
-                          <button onClick={() => setSelectedOrder(o)}>
-                            Detalji
-                          </button>
-                        </td>
+                <>
+                  <div className="filter-toggle">
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={showCompleted}
+                        onChange={() => setShowCompleted(prev => !prev)}
+                      />
+                      Prikaži i završene porudžbine
+                    </label>
+                  </div>
+
+                  <table className="orders-table">
+                    <thead>
+                      <tr>
+                        <th>Kupac</th>
+                        <th>Adresa</th>
+                        <th>Status</th>
+                        <th>Ukupno</th>
+                        <th>Akcija</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {filteredOrders.map(o => (
+                        <tr key={o.orderId}>
+                          <td>{o.customerName}</td>
+                          <td>{o.deliveryAddress}</td>
+                          <td>{o.status}</td>
+                          <td>{o.totalPrice} RSD</td>
+                          <td>
+                            <button onClick={() => setSelectedOrderId(o.orderId)}>
+                              Detalji
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </>
               )}
             </>
           ) : (
             <>
-              <button className = "button" onClick={() => setSelectedOrder(null)}>← Nazad</button>
+              <button className="button" onClick={() => setSelectedOrderId(null)}>← Nazad</button>
               <h3>Detalji porudžbine</h3>
               <p><strong>Kupac:</strong> {selectedOrder.customerName}</p>
               <p><strong>Adresa:</strong> {selectedOrder.deliveryAddress}</p>
@@ -182,6 +183,7 @@ export default function OwnerOrders({active }) {
                     <div className="modal-actions">
                       <button onClick={() => {
                         acceptOrder(selectedOrder.orderId);
+                        setShowPrepTimeModal(false);
                       }}>
                         ✅ Potvrdi
                       </button>
@@ -193,31 +195,31 @@ export default function OwnerOrders({active }) {
                 </div>
               )}
 
-                {selectedOrder.status === "NaCekanju" && (
-                    <button
-                      key={selectedOrder.orderId}
-                      className="accept-btn"
-                      onClick={() => {
-                        setShowPrepTimeModal(true);
-                      }}
-                    >
-                        Prihvati porudžbinu
-                    </button>
-                )}
-                {selectedOrder.status === "NaCekanju" && (
-                    <button key={selectedOrder.orderId} className= "refuse-btn" onClick={() => refuseOrder(selectedOrder.orderId)}>
-                        Odbij porudžbinu
-                    </button>
-                )}
-
-                {selectedOrder.status === "Prihvacena" && (
+              {selectedOrder.status === "NaCekanju" && (
+                <>
                   <button
-                    className="ready-btn"
-                    onClick={() => markAsReadyForPickup(selectedOrder.orderId)}
+                    className="accept-btn"
+                    onClick={() => setShowPrepTimeModal(true)}
                   >
-                    ✅ Spremno za preuzimanje
+                    Prihvati porudžbinu
                   </button>
-                )}
+                  <button
+                    className="refuse-btn"
+                    onClick={() => refuseOrder(selectedOrder.orderId)}
+                  >
+                    Odbij porudžbinu
+                  </button>
+                </>
+              )}
+
+              {selectedOrder.status === "Prihvacena" && (
+                <button
+                  className="ready-btn"
+                  onClick={() => markAsReadyForPickup(selectedOrder.orderId)}
+                >
+                  ✅ Spremno za preuzimanje
+                </button>
+              )}
             </>
           )}
         </>

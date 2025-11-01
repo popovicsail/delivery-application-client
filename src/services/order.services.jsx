@@ -15,3 +15,8 @@ export const updateOrderStatus = async (orderId, newStatus, prepTime) => {
     );
     return response.data;
   };
+
+export const getByCourier = async (courierId) => {
+    const response = await api.get(`orders/courier/${courierId}`);
+    return response.data;
+}
