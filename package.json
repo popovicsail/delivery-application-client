@@ -16,6 +16,7 @@
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.63.0",
     "react-router-dom": "^7.9.1",
+    "react-select": "^5.10.2",
     "sass": "^1.93.1"
   },
   "devDependencies": {

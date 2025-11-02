@@ -40,7 +40,7 @@ export default function OwnerOrders({ active }) {
       };
 
       fetchOrders(); // initial
-      interval = setInterval(fetchOrders, 10000);
+      interval = setInterval(fetchOrders, 5000);
     } else {
       setOrders([]);
     }

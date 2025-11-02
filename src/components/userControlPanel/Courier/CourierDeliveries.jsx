@@ -10,19 +10,28 @@ export default function CourierDeliveries({ active, courierId }) {
   const myProfile = JSON.parse(sessionStorage.getItem("myProfile"));
   const userId = myProfile?.user.courierId;
 
-  // povuci dostave
-  useEffect(() => {
-    if (active === "active") {
-      (async () => {
-        try {
-          const data = await orderService.getByCourier(userId);
-          setOrders(data);
-        } catch (err) {
-          console.error("Greška pri dohvatanju dostava:", err);
-        }
-      })();
-    }
-  }, [active, userId, refreshKey]);
+  // povuci dostave sa pollingom na 5s
+useEffect(() => {
+  let interval;
+
+  if (active === "active" && userId) {
+    const fetchOrders = async () => {
+      try {
+        const data = await orderService.getByCourier(userId);
+        setOrders(data);
+      } catch (err) {
+        console.error("Greška pri dohvatanju dostava:", err);
+      }
+    };
+
+    fetchOrders(); // odmah povuci jednom
+    interval = setInterval(fetchOrders, 5000); // ponavljaj na 5 sekundi
+  }
+
+  return () => {
+    if (interval) clearInterval(interval); // očisti interval kad se tab zatvori ili promeni
+  };
+}, [active, userId, refreshKey]);
 
   // akcije
   const pickUpDelivery = async (id) => {

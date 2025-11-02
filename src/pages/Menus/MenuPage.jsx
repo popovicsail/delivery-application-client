@@ -14,9 +14,9 @@ const MenuPage = () => {
   const { menuId } = useParams();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
   const [selectedDish, setSelectedDish] = useState(null);
   const [dishes, setDishes] = useState([]);
-  const [newDishId, setNewDishId] = useState([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isOwnerHere, setIsOwnerHere] = useState(false);
   const [isDishGroupOpen, setIsDishGroupOpen] = useState(false);
@@ -165,7 +165,7 @@ const MenuPage = () => {
   };
   useEffect(() => {
     fetchRestaurant();
-  }, []);
+  }, [refreshKey]);
 
   const grouped = dishes.reduce((a, dish) => {
     if (!a[dish.type]) a[dish.type] = [];
@@ -180,21 +180,27 @@ const MenuPage = () => {
     formData.append("Price", dish.price)
     formData.append("Description", dish.description)
     formData.append("MenuId", menuId)
+    if (dish.allergens && dish.allergens.length > 0 ) {
+      dish.allergens.forEach((a, i) => {
+        formData.append(`AllergenIds[${i}]`, a.value);
+      });
+    }
     if (dish.picture) {
-      formData.append("file", dish.picture[0]);
+      formData.append("Picture", dish.picture[0]);
     }
     try {
       if (dish.id) {
       formData.append("Id", dish.id)
       await dishService.update(dish.id, formData);
+      //setSelectedDish(dish)
+      setIsDishGroupOpen(true);
 
       const data = await dishService.getAll();
       setDishes(data);
       } else {
         const created = await dishService.create(formData);
         setDishes((prev) => [...prev, created]);
-
-        setNewDishId(created.id);
+        //setSelectedDish(dish)
         setIsDishGroupOpen(true);
       }
     } catch (error) {
@@ -220,11 +226,6 @@ const MenuPage = () => {
       setLoading(false);
     }
   };
-
-  const getDishData = async (id) =>{
-    const data = await dishService.getById(id);
-    console.log("data", data)
-  }
 
   const deleteDish = async (id) => {
     if (!window.confirm("Da li ste sigurni da zelite da uklonite jelo?")) {
@@ -298,26 +299,11 @@ const MenuPage = () => {
           <div className="dishes-row">
             {grouped[type].map((dish) => (
               <div className="dish-n-order-wrapper" key={dish.id}>
-                <DishCard
-                  dish={dish}
-                  isInMenu={true}
-                  isOwnerHere={isOwnerHere}
-                  deleteDish={deleteDish}
-                  setSelectedDish={setSelectedDish}
-                  setIsFormOpen={setIsFormOpen}
-                  getDishData={getDishData}
-                  clickForOrder={handleClickForOrder}
-                  highlighted={highlightDishId === dish.id}
-                />
-  
-                <div
-                  className={pickedId === dish.id ? "dish-order-window" : "hidden"}
-                >
-                  {/* Količina */}
-                  <section
-                    className="section-row"
-                    style={{ justifyContent: "flex-start", width: "fit-content" }}
-                  >
+                <DishCard  dish={dish} isInMenu={true} isOwnerHere={isOwnerHere} 
+                deleteDish={deleteDish} setSelectedDish={setSelectedDish} setIsFormOpen={setIsFormOpen} 
+                clickForOrder={handleClickForOrder} highlighted={highlightDishId == dish.id}></DishCard>
+                <div className={(!isOwnerHere &&pickedId == dish.id) ? "dish-order-window" : "hidden"} key={pickedId == dish.id ? `${dish.id}-open` : `${dish.id}-closed`}>
+                  <section className="section-row" style={{justifyContent: 'flex-start', width: 'fit-content'}}>
                     <label>Broj porcija:</label>
                     <input
                       type="number"
@@ -420,8 +406,6 @@ const MenuPage = () => {
                       )}
                     </section>
                   </div>
-  
-                  {/* Dugme za dodavanje */}
                   <button
                     onClick={() => {
                       const qty = quantities[dish.id] || 1;
@@ -440,34 +424,22 @@ const MenuPage = () => {
           </div>
         </div>
       ))}
-  
-      {/* Dugmad ispod */}
-      <button
-        className="buttons edit-btn"
-        onClick={() => console.log("Porudžbina:", items)}
-      >
-        Poruči
-      </button>
-      <button
-        className="buttons view-cart-btn"
-        onClick={() => navigate("/cart")}
-      >
-        🛒 Vidi korpu
-      </button>
-  
+      <button className={isOwnerHere ? "hidden" : "menu-order-btn buttons edit-btn"} 
+       onClick={() => navigate("/cart")}>Poruči{(order && order.filter(o => o.isOrdered).length > 0) && `(${order.filter(o => o.isOrdered).length})`}</button>
+
       {isFormOpen && (
         <DishForm
-          jelo={selectedDish}
+          dish={selectedDish}
           onClose={() => setIsFormOpen(false)}
           onSave={handleSave}
         />
       )}
       {isDishGroupOpen && (
-        <DishGroupForm
-          dishId={newDishId}
-          onClose={() => setIsDishGroupOpen(false)}
-        />
-      )}
+      <DishGroupForm
+        dish={selectedDish}
+        onClose={(freshDish) => {setIsDishGroupOpen(false); setRefreshKey(refreshKey + 1)}}
+      />
+    )}
     </div>
   );
 };

@@ -72,4 +72,13 @@ export const dishService = {
     const response = await api.post("/dishOptionGroups", extra);
     return response.data;
   },
+
+  updateGroup: async (data, id) => {
+    const response = await api.put(`/dishOptionGroups/${id}`, data)
+    return response.data;
+  },
+
+  deleteGroup: async (id) => {
+    await api.delete(`/dishOptionGroups/${id}`);
+  }
 };
