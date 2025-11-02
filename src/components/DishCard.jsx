@@ -2,18 +2,19 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import "../styles/main.scss";
 
-const DishCard = ({ dish, highlighted, isInMenu, isOwnerHere, deleteDish, setSelectedDish, setIsFormOpen, clickForOrder }) => {
+const DishCard = ({ dish, highlighted, isInMenu, isOwnerHere, isCustomer, deleteDish, setSelectedDish, setIsFormOpen, clickForOrder }) => {
   const navigate = useNavigate();
   const myAllergens = JSON.parse(sessionStorage.getItem('myAllergens'))
 
   return (
-    <div onClick={e => (isInMenu ? clickForOrder(dish.id, {
+    <div onClick={e => (isInMenu && isCustomer ? clickForOrder(dish.id, {
       id: dish.id,
       price: dish.price,
       quantity: '',
       isOrdered: false,
       dishOptionGroups: []
-    }) : navigate(`/menuId/${dish.menuId}`, { state: { highlightDishId: dish.id } }))} className={`dish-card ${!isOwnerHere && "dish-card-hover"}`} id={highlighted ? "highlighted-dish" : ""}>
+    }) : !isInMenu ? navigate(`/menuId/${dish.menuId}`, { state: { highlightDishId: dish.id } }) : {})} 
+    className={`dish-card ${(!isInMenu || isCustomer) && "dish-card-hover"}`} id={highlighted ? "highlighted-dish" : ""}>
       <div className="dish-info">
         <div className="dish-info-wrapper">
           <h2 className="dish-name" title={dish.name}>{dish.name}</h2>

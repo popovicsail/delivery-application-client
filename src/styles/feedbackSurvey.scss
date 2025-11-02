@@ -75,11 +75,11 @@
     background-color: #fcf5e8;
     color: $primary-color;
     resize: vertical;
-    transition: 0.2s all;
 
     &:focus {
       outline: none;
       border: 2px solid #b96d34;
+      padding: calc(10px - 1px) calc(10px - 1px);
       box-shadow: 0 0 5px rgba(185, 109, 52, 0.5);
     }
   }

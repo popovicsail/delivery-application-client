@@ -1,6 +1,7 @@
 @use "sass:color";
 
 $primary-color: #222;
+$primary-card-font-color: #3a2e1f;
 @mixin container-column {
   display: flex;
   flex-direction: column;
@@ -56,6 +57,7 @@ a, th {
 }
 
 .over-layer-base {
+  overflow-y: scroll;
   position: fixed;
   top: 0;
   left: 0;
@@ -74,6 +76,12 @@ a, th {
   justify-content: center;
   align-items: center;
   gap: 1rem;
+  margin: 0.4rem 0;
+}
+
+.section-row-start {
+  display: flex;
+  align-items: center;
   margin: 0.4rem 0;
 }
 
@@ -203,6 +211,11 @@ img {
   width: 1.9rem;
   border-radius: 6px;
   background-color: #554734;
+}
+
+#to-create-restaurant {
+  margin: 0.7rem;
+  align-self: flex-start;
 }
 
 .naslov{
@@ -335,9 +348,11 @@ img {
 // Tabela - generalni stilovi
 
 table {
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   text-align: center;
-  border-radius: 10px;
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
   border:none;
   overflow: hidden;
   thead {
@@ -354,11 +369,18 @@ table {
     }
   }
 
-  tr {
-    td {
-      border: 1px solid $primary-color;
-      padding: 0.6rem 1.2rem;
-      text-align: center;
+  tbody {
+    tr {
+      td {
+        border-bottom: 1px solid $primary-color;
+        border-right: 1px solid $primary-color;
+        padding: 0.6rem 1.2rem;
+        text-align: center;
+      }
+
+      td:first-child {
+        border-left: 1px solid $primary-color
+      }
     }
   }
 }
@@ -817,15 +839,11 @@ table {
   background-color: rgb(245, 232, 203);
   border-radius: 10px;
   box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.151), 4px 3px 10px 0 rgba(0, 0, 0, 0.158);
-
-  >section {
-    gap: 0;
-  }
   
-  div {
-    width: fit-content;
-    >section {
-      justify-content: flex-start;
+  section {
+    gap: 1rem;
+    div {
+      width: fit-content;
       >section {
         margin: 0;
         justify-content: flex-start;
@@ -977,6 +995,8 @@ table {
   transform: translateY(4px);
 }
 
+//DISH FORM
+
 .dish-form-container {
   @include form-box-styles; 
   padding: 30px;
@@ -1001,5 +1021,136 @@ table {
         width: 100%;
       }
     }
+  }
+}
+
+
+//WORKERS-OWNER(restaurant)
+
+#worker-cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4rem;
+}
+
+
+//WORKER-CARDS
+
+.worker-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  border-radius: 6px;
+  width: 12vw;
+  padding: 0.5rem 0.9rem;
+  padding-top: 0;
+  color: $primary-card-font-color;
+  background-color: rgb(240, 246, 247);
+  box-shadow: 7px 5px 10px 0 rgba(0, 0, 0, 0.116);
+
+  //DODATI BOX SHADOW
+
+  img {
+    margin: 1rem 0;
+    width: 5rem;
+    height: auto;
+    border: 0;
+    border-radius: 20px;
+  }
+
+  h3 {
+    margin: 0;
+    font-weight: lighter;
+  }
+
+  .section-row-start {
+    gap: 0.2rem;
+    width: 100%;
+  
+    p {
+      margin: 0;
+      font-size: smaller;
+      color: #858585;
+    }
+  }
+  
+  .section-row-start.worker-card-btn-row {
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0;
+    padding-top: 2vh;
+  
+    button {
+      padding: 0.3rem 2rem;
+      transition: 0.2s all;
+    }
+  }
+
+  .worker-job {
+    color: cadetblue;
+  }
+}
+
+
+#workers-restaurant-select-container {
+  margin-bottom: 2rem;
+  div {
+    margin-top: 1rem;
+  }
+  label {
+    margin-right: 0.5rem;
+    color: rgb(4, 36, 29);
+  }
+
+  select {
+    width: 8vw;
+    height: 3vh;
+    border: 1px solid rgb(255, 255, 255);
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+    padding-left: 1vh;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+  
+}
+
+.worker-activity {
+    padding: 0.3rem 0.5rem;
+    border-bottom-right-radius: 7px;
+    border-bottom-left-radius: 7px;
+    transition: 0.2s all;
+    p {
+      margin: 0;
+      color: #363636;
+    }
+}
+
+.worker-active {
+  background-color: rgb(162, 243, 70);
+  &:hover {
+    background-color: color.adjust(rgb(162, 243, 70), $lightness: 20%);
+    cursor: pointer;
+  }
+}
+
+.worker-inactive {
+  background-color: rgb(196, 196, 196);
+  &:hover {
+    background-color: color.adjust(rgb(196, 196, 196), $lightness: 20%);
+    cursor: pointer;
+  }
+}
+
+.worker-suspended {
+  background-color: rgb(202, 53, 53);
+  p {
+    color: rgb(255, 255, 255);
+  }
+  &:hover {
+    background-color: color.adjust(rgb(202, 53, 53), $lightness: 20%);
+    cursor: pointer;
   }
 }

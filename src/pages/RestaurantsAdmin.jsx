@@ -86,6 +86,9 @@ const RestaurantsAdmin = () => {
   return(
     <div id="restaurants-admin-container">
       <h3>Administrativni prikaz restorana</h3>
+      <div>
+      <button id="to-create-restaurant" className="buttons create-btn" type="button" onClick={(e) => navigate("/createRestaurant")}>Kreiraj restoran</button>
+
       <table>
         <thead>
           <tr>
@@ -114,6 +117,7 @@ const RestaurantsAdmin = () => {
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 }

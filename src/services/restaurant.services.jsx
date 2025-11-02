@@ -52,3 +52,39 @@ export const createRestaurant = async (data) => {
     
     return response.data;
 }
+
+export const getMyWorkers = async (id) => {
+    const response = await api.get("restaurants/" + id + "/workers");
+
+    return response.data;
+}
+
+export const registerWorker = async (data) => {
+    const response = await api.post("restaurants/" + data.restaurantId + "/workers", data);
+
+    return response.data;
+}
+
+export const updateWorker = async (data, workerId) => {
+    const response = await api.put("workers/" + workerId, data);
+
+    return response.data;
+}
+
+export const suspendWorker = async (id) => {
+    const response = await api.put("workers/" + id + "/suspend");
+
+    return response.data;
+}
+
+export const unsuspendWorker = async (id) => {
+    const response = await api.put("workers/" + id + "/unsuspend");
+
+    return response.data;
+}
+
+export const getOneWorker = async (id) => {
+    const response = await api.get("workers/" + id);
+
+    return response.data;
+}

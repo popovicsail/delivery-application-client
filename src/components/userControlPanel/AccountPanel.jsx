@@ -5,6 +5,7 @@ import AllergensContainer from "./AllergensContainer";
 import AddressView from "./AddressView";
 import CourierTabContainer from "./Courier/CourierTabContainer.jsx";
 import VoucherList from "../customerComponents/VoucherList";
+import WorkersRestaurant from "../../pages/WorkersRestaurant.jsx";
 
 export default function AccountPanel({
   activeTab,
@@ -24,6 +25,7 @@ export default function AccountPanel({
   handleAddAddress,
   handleUpdateAddress,
   isAdmin,
+  isOwner,
   isCourier,
   isCustomer,
   vouchers
@@ -59,16 +61,23 @@ export default function AccountPanel({
 
             {isCustomer && (
             <li className={isActive("voucher-list")}
-            onClick={() => setActiveTab("voucher-list")}>Vouchers
+            onClick={() => setActiveTab("voucher-list")}>Vaučeri
+            </li>
+            )}
+
+            {isOwner && (
+            <li className={isActive("workers-restaurant")}
+            onClick={() => setActiveTab("workers-restaurant")}>Radnici
             </li>
             )}
         </ul>
       </aside>
 
       <main className="content">
-        <ProfileView profile={profile} active={isActive("profil-view")} />
+        {activeTab == "profil-view" && 
+        <ProfileView profile={profile} active={isActive("profil-view")} />}
 
-        {isCustomer && (
+        {isCustomer && activeTab == "izmeni-podatke-form" && (
           <EditUserForm
             user={user}
             active={isActive("izmeni-podatke-form")}
@@ -78,10 +87,10 @@ export default function AccountPanel({
           />
         )}
 
-        {isCustomer && <AllergensContainer 
+        {isCustomer && activeTab == "alergen-view" && <AllergensContainer 
         active={isActive("alergen-view")} />}
 
-        {isCustomer && (
+        {isCustomer && activeTab == "adrese-view" && (
           <AddressView
             currentAddress={currentAddress}
             handleEditAddress={handleEditAddress}
@@ -96,9 +105,11 @@ export default function AccountPanel({
           />
         )}
 
-        {isCourier && (<CourierTabContainer active={isActive("courier-view")} />)}
+        {isCourier && activeTab == "courier-view" && (<CourierTabContainer active={isActive("courier-view")} />)}
 
-        {!isAdmin && isCustomer && (<VoucherList vouchers={vouchers} active={isActive("voucher-list")}/>)}
+        {!isAdmin && isCustomer && activeTab == "voucher-list" && (<VoucherList vouchers={vouchers} active={isActive("voucher-list")}/>)}
+
+        {isOwner && activeTab == "workers-restaurant" && (<WorkersRestaurant isOwner={isOwner} />)}
       </main>
     </div>
   );

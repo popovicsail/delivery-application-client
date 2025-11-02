@@ -25,6 +25,7 @@ export default function ProfilePage() {
   const isCustomer = user?.roles?.some(r => r.toLowerCase().includes("customer"));
   const isCourier = user?.roles?.some(r => r.toLowerCase().includes("courier"));
   const isAdmin = user?.roles?.some(r => r.toLowerCase().includes("administrator"));
+  const isOwner = user?.roles?.some(r => r.toLowerCase().includes("owner"));
 
   // 🔄 Učitavanje podataka
   useEffect(() => {
@@ -378,6 +379,7 @@ export default function ProfilePage() {
       user={user}
       isCustomer={isCustomer}
       isAdmin={isAdmin}
+      isOwner={isOwner}
       isCourier={isCourier}
       handleSubmit={handleSubmit}
       setProfilePictureFile={setProfilePictureFile}

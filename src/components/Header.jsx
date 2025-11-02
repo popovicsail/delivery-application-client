@@ -72,7 +72,6 @@ const Header = () => {
                 <>
                   <li id={current === "/admin" ? "current" : ""}><Link to="/admin">Admin Panel</Link></li>
                   <li id={current === "/restaurantsAdmin" ? "current" : ""}><Link to="/restaurantsAdmin">Restorani</Link></li>
-                  <li id={current === "/createRestaurant" ? "current" : ""}><Link to="/createRestaurant">Kreiraj</Link></li>
                 </>
               )}
 
