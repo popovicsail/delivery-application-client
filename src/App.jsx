@@ -16,10 +16,13 @@ import MenuPage from "./pages/Menus/MenuPage.jsx";
 import RestaurantsSearch from "./pages/RestaurantsSearch.jsx";
 import DishesSearch from "./pages/DishesSearch.jsx";
 import FeedbackSurvey from "./pages/Feedback/FeedbackSurvey.jsx";
+import CartContainer from "./components/shoppingCart/CartContainer.jsx";
+import { CartProvider } from "./components/shoppingCart/CartContext.jsx";
 
 const App = () => {
   return(
     <div id="main-container">
+     <CartProvider>
       <BrowserRouter>
         <Header />
         <Routes>
@@ -35,10 +38,12 @@ const App = () => {
           <Route path="/createRestaurant" element = {<CreateRestaurant />}/>
           <Route path="/restaurantsSearch" element = {<RestaurantsSearch />}/>
           <Route path="/DishesSearch" element = {<DishesSearch />}/>
+          <Route path="/cart" element={<CartContainer/>}/>
           <Route path="/menuId/:menuId" element ={<MenuPage />} />
           <Route path="/survey" element ={<FeedbackSurvey />} />
         </Routes>
     </BrowserRouter>
+    </CartProvider> 
     </div>
   );
 }

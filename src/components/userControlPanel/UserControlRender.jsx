@@ -25,6 +25,7 @@ export default function ProfilePage() {
   const isCustomer = user?.roles?.some(r => r.toLowerCase().includes("customer"));
   const isCourier = user?.roles?.some(r => r.toLowerCase().includes("courier"));
   const isAdmin = user?.roles?.some(r => r.toLowerCase().includes("administrator"));
+  const isOwner = user?.roles?.some(r => r.toLowerCase().includes("owner"));
 
   // 🔄 Učitavanje podataka
   useEffect(() => {
@@ -49,7 +50,7 @@ export default function ProfilePage() {
           setLoading(true);
           const allergens = await userService.getAllergens();
           const vouchers = await userService.getMyVouchers();
-          setAlergens(allergens.map((a) => ({ ...a, selected: false })));    
+          setAlergens(allergens.map((a) => ({ ...a, selected: false })));
           setVouchers(vouchers)
         } catch (error) {
           if (error.response) {
@@ -395,6 +396,7 @@ export default function ProfilePage() {
       handleAddAddress={handleAddAddress}
       handleUpdateAddress={handleUpdateAddress}
       vouchers={vouchers}
+      isOwner={isOwner}
     />
   );
 }

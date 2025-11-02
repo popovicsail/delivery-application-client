@@ -4,7 +4,9 @@ import EditUserForm from "./EditUserForm";
 import AllergensContainer from "./AllergensContainer";
 import AddressView from "./AddressView";
 import CourierTabContainer from "./Courier/CourierTabContainer.jsx";
+import CourierDeliveries from "./Courier/CourierDeliveries.jsx";
 import VoucherList from "../customerComponents/VoucherList";
+import RestaurantOrders from "./Owner/RestaurantOrders.jsx";
 
 export default function AccountPanel({
   activeTab,
@@ -25,8 +27,9 @@ export default function AccountPanel({
   handleUpdateAddress,
   isAdmin,
   isCourier,
+  isOwner,
+  vouchers,
   isCustomer,
-  vouchers
 }) {
   const isActive = (tab) => (activeTab === tab ? "active" : "");
 
@@ -57,10 +60,25 @@ export default function AccountPanel({
             </li>
             )}
 
+            {isCourier && (
+            <li className={isActive("courier-delivery")}
+            onClick={() => setActiveTab("courier-delivery")}>Dostave
+            </li>
+            )}
+
             {isCustomer && (
             <li className={isActive("voucher-list")}
             onClick={() => setActiveTab("voucher-list")}>Vouchers
             </li>
+            )}
+
+            {isOwner && (
+              <li
+                className={isActive("owner-orders")}
+                onClick={() => setActiveTab("owner-orders")}
+              >
+                Porudžbine restorana
+              </li>
             )}
         </ul>
       </aside>
@@ -97,8 +115,11 @@ export default function AccountPanel({
         )}
 
         {isCourier && (<CourierTabContainer active={isActive("courier-view")} />)}
+        {isCourier && (<CourierDeliveries active={isActive("courier-delivery")} />)}
 
         {!isAdmin && isCustomer && (<VoucherList vouchers={vouchers} active={isActive("voucher-list")}/>)}
+
+        {isOwner && (<RestaurantOrders user={user} active={isActive("owner-orders")}/>)}
       </main>
     </div>
   );
