@@ -7,6 +7,7 @@ import RestaurantsAdmin from "./pages/RestaurantsAdmin.jsx";
 import RestaurantsOwner from "./pages/RestaurantsOwner.jsx";
 import RestaurantForm from "./pages/RestaurantForm.jsx";
 import CreateRestaurant from "./pages/CreateRestaurant.jsx";
+import WorkersRestaurant from "./pages/WorkersRestaurant.jsx";
 import { RegisterForm } from "./components/RegisterForm.jsx";
 import { LoginForm } from "./components/LoginForm.jsx";
 import AdminPage from "./components/adminPage/AdminPanelRender.jsx";
@@ -36,6 +37,7 @@ const App = () => {
           <Route path="/restaurantsOwner" element = {<RestaurantsOwner />}/>
           <Route path="/restaurantForm/:id" element = {<RestaurantForm />}/>
           <Route path="/createRestaurant" element = {<CreateRestaurant />}/>
+          <Route path="/workersRestaurant/:id" element = {<WorkersRestaurant />}/>
           <Route path="/restaurantsSearch" element = {<RestaurantsSearch />}/>
           <Route path="/DishesSearch" element = {<DishesSearch />}/>
           <Route path="/cart" element={<CartContainer/>}/>

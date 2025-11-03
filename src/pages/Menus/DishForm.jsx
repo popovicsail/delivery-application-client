@@ -159,7 +159,9 @@ const DishForm = ({ dish, onClose, onSave }) => {
             <label style={{ marginBottom: '5px' }}>Izaberite sliku jela:</label>
             <input type="file" placeholder="Izaberite" {...register('picture')}/>
             {dish?.picture && (
-              <img src={dish.picture} alt="Preview" style={{ maxWidth: '150px', marginTop: '10px' }}/>
+              <div>
+                <img src={dish.picture} alt="Preview" style={{ height: '150px', width: 'auto', marginTop: '10px' }}/>
+              </div>
             )}
           </div>
 

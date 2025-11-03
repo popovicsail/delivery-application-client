@@ -379,6 +379,7 @@ export default function ProfilePage() {
       user={user}
       isCustomer={isCustomer}
       isAdmin={isAdmin}
+      isOwner={isOwner}
       isCourier={isCourier}
       handleSubmit={handleSubmit}
       setProfilePictureFile={setProfilePictureFile}

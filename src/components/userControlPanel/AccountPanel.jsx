@@ -6,6 +6,7 @@ import AddressView from "./AddressView";
 import CourierTabContainer from "./Courier/CourierTabContainer.jsx";
 import CourierDeliveries from "./Courier/CourierDeliveries.jsx";
 import VoucherList from "../customerComponents/VoucherList";
+import WorkersRestaurant from "../../pages/WorkersRestaurant.jsx";
 import RestaurantOrders from "./Owner/RestaurantOrders.jsx";
 
 export default function AccountPanel({
@@ -26,6 +27,7 @@ export default function AccountPanel({
   handleAddAddress,
   handleUpdateAddress,
   isAdmin,
+  isOwner,
   isCourier,
   isOwner,
   vouchers,
@@ -68,7 +70,13 @@ export default function AccountPanel({
 
             {isCustomer && (
             <li className={isActive("voucher-list")}
-            onClick={() => setActiveTab("voucher-list")}>Vouchers
+            onClick={() => setActiveTab("voucher-list")}>Vaučeri
+            </li>
+            )}
+
+            {isOwner && (
+            <li className={isActive("workers-restaurant")}
+            onClick={() => setActiveTab("workers-restaurant")}>Radnici
             </li>
             )}
 
@@ -84,9 +92,10 @@ export default function AccountPanel({
       </aside>
 
       <main className="content">
-        <ProfileView profile={profile} active={isActive("profil-view")} />
+        {activeTab == "profil-view" && 
+        <ProfileView profile={profile} active={isActive("profil-view")} />}
 
-        {isCustomer && (
+        {isCustomer && activeTab == "izmeni-podatke-form" && (
           <EditUserForm
             user={user}
             active={isActive("izmeni-podatke-form")}
@@ -96,10 +105,10 @@ export default function AccountPanel({
           />
         )}
 
-        {isCustomer && <AllergensContainer 
+        {isCustomer && activeTab == "alergen-view" && <AllergensContainer 
         active={isActive("alergen-view")} />}
 
-        {isCustomer && (
+        {isCustomer && activeTab == "adrese-view" && (
           <AddressView
             currentAddress={currentAddress}
             handleEditAddress={handleEditAddress}
@@ -114,11 +123,14 @@ export default function AccountPanel({
           />
         )}
 
-        {isCourier && (<CourierTabContainer active={isActive("courier-view")} />)}
+        {isCourier && activeTab == "courier-view" && (<CourierTabContainer active={isActive("courier-view")} />)}
+
+        {!isAdmin && isCustomer && activeTab == "voucher-list" && (<VoucherList vouchers={vouchers} active={isActive("voucher-list")}/>)}
+
+        {isOwner && activeTab == "workers-restaurant" && (<WorkersRestaurant isOwner={isOwner} />)}
+        
         {isCourier && (<CourierDeliveries active={isActive("courier-delivery")} />)}
-
-        {!isAdmin && isCustomer && (<VoucherList vouchers={vouchers} active={isActive("voucher-list")}/>)}
-
+        
         {isOwner && (<RestaurantOrders user={user} active={isActive("owner-orders")}/>)}
       </main>
     </div>

@@ -3,7 +3,7 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { dishService } from "../../services/dishes.services.jsx";
 
 const DishGroupForm = ({ dish, onClose }) => {
-  const [groups, setGroups] = useState(dish.dishOptionGroups || []);
+  const [groups, setGroups] = useState(dish && dish.dishOptionGroups || []);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [currentGroup, setCurrentGroup] = useState(null);
@@ -22,8 +22,7 @@ const DishGroupForm = ({ dish, onClose }) => {
 
   const saveGroup = async (data, addNew = false, groupId) => {
     try {
-      const dishId = dish.id;
-      let payload = { ...data, dishId };
+      let payload = { ...data, dishId: dish && dish.id };
       if (groupId) {
         payload = {...payload, id: groupId};
         const group = await dishService.updateGroup(payload, groupId);
@@ -169,23 +168,23 @@ const DishGroupForm = ({ dish, onClose }) => {
                 </div>
               ))}
               <section className="section-row" style={{justifyContent:'start'}}>
-              <button className="add-btn" type="button" onClick={() => append({ name: '', price: '' })}
-              >+
-              </button>
-              <button type="button" className="buttons create-btn move-up-4" style={{margin: 0}}
-                onClick={handleSubmit((data) => {
-                  saveGroup(data, true, currentGroup ? currentGroup.id : null); setCurrentGroup(null);}
-                )}
-              >
-                Sačuvaj grupu
-              </button>
-              <button type="button" className={currentGroup ? "buttons delete-btn move-up-4" : "hidden"} style={{margin: 0}}
-                onClick={() => {
-                  deleteGroup(currentGroup.id); setCurrentGroup(null); 
-                }}
-              >
-                Ukloni grupu
-              </button>
+                <button className="add-btn" type="button" onClick={() => append({ name: '', price: '' })}
+                >+
+                </button>
+                <button type="button" className="buttons create-btn move-up-4" style={{margin: 0}}
+                  onClick={handleSubmit((data) => {
+                    saveGroup(data, true, currentGroup ? currentGroup.id : null); setCurrentGroup(null);}
+                  )}
+                >
+                  Sačuvaj grupu
+                </button>
+                <button type="button" className={currentGroup ? "buttons delete-btn move-up-4" : "hidden"} style={{margin: 0}}
+                  onClick={() => {
+                    deleteGroup(currentGroup.id); setCurrentGroup(null); 
+                  }}
+                >
+                  Ukloni grupu
+                </button>
               </section>
             </div>
             <div style={{ display: 'flex', gap: '10px', height:'fit-content' }}>
