@@ -5,6 +5,8 @@ import DishGroupForm from "./DishGroupForm.jsx";
 import { dishService } from "../../services/dishes.services.jsx";
 import { getMenuPermissionAsync } from "../../services/user.services.jsx";
 import DishCard from "../../components/DishCard.jsx";
+import { useCart } from "../../components/shoppingCart/CartContext.jsx";
+import { useNavigate } from "react-router-dom";
 
 const MenuPage = () => {
   const location = useLocation();
@@ -26,6 +28,11 @@ const MenuPage = () => {
     const roles = sessionStorage.getItem('myProfile') && JSON.parse(sessionStorage.getItem('myProfile')).user.roles;
     setIsCustomer(roles && roles?.includes('Customer'));
   }, []);
+  const [restaurantId, setRestaurantId] = useState(null);
+  const [quantities, setQuantities] = useState({});
+  const { items ,addToCart, updateItem, updateGroups } = useCart();
+  const navigate = useNavigate();
+  
 
   const handleClickForOrder = (id, dish) => {
     setPickedId((prev) => (prev == id ? "" : id));
@@ -108,7 +115,9 @@ const MenuPage = () => {
     const fetchMenu = async () => {
       try {
         const data = await dishService.getMenuByid(menuId);
+        console.log("Menu data:", data);
         setDishes(data.dishes);
+        setRestaurantId(data.restaurantId);
       } catch (error) {
         if (error.response) {
           if (error.response.status === 404) {
@@ -128,34 +137,39 @@ const MenuPage = () => {
         setLoading(false);
       }
     };
-    const fetchRestaurant = async () => {
-      const permit = JSON.parse(sessionStorage.getItem("permitRequest"));
-      if (!permit || permit != true) return;
-      try {
-        const response = await getMenuPermissionAsync(menuId);
-        setIsOwnerHere(response == true);
-      } catch (error) {
-        if (error.response) {
-          if (error.response.status === 404) {
-            setError("Jelo sa ovim id-em ne postoji ili pogresna ruta.");
-          } else if (error.response.status === 401) {
-            setError("Ova ruta je rezervisana samo za vlasnike restorana.");
-          } else if (error.response.status === 500) {
-            setError("Greska na serveru. Pokusajte kasnije.");
-          } else {
-            setError(`Greska: ${error.response.status}`);
-          }
-        } else if (error.request) {
-          setError("Nema odgovora sa servera.");
-        } else {
-          setError("Doslo je do greske.");
-        }
-        console.error("Greška pri slanju zahteva za permisije:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+
     fetchMenu();
+  }, [menuId]);
+
+  const fetchRestaurant = async () => {
+    const permit = JSON.parse(sessionStorage.getItem("permitRequest"));
+    if (!permit || permit != true) return;
+    try {
+      const response = await getMenuPermissionAsync(menuId);
+      console.log("Permission response:", response);
+      setIsOwnerHere(response == true);
+    } catch (error) {
+      if (error.response) {
+        if (error.response.status === 404) {
+          setError("Jelo sa ovim id-em ne postoji ili pogresna ruta.");
+        } else if (error.response.status === 401) {
+          setError("Ova ruta je rezervisana samo za vlasnike restorana.");
+        } else if (error.response.status === 500) {
+          setError("Greska na serveru. Pokusajte kasnije.");
+        } else {
+          setError(`Greska: ${error.response.status}`);
+        }
+      } else if (error.request) {
+        setError("Nema odgovora sa servera.");
+      } else {
+        setError("Doslo je do greske.");
+      }
+      console.error("Greška pri slanju zahteva za permisije:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
     fetchRestaurant();
   }, [refreshKey]);
 
@@ -258,11 +272,16 @@ const MenuPage = () => {
   if (error) return <p style={{ color: 'red' }}>{error}</p>;
   return (
     <div style={{ padding: "20px" }}>
-      <h1 style={{ fontSize: "28px", marginBottom: "0", fontStyle: 'italic' }}>Glavni Menu</h1>
-      
+      <h1 style={{ fontSize: "28px", marginBottom: "0", fontStyle: "italic" }}>
+        Glavni Menu
+      </h1>
+  
       {isOwnerHere && (
-        <button 
-          onClick={() => { setSelectedDish(null); setIsFormOpen(true);}}
+        <button
+          onClick={() => {
+            setSelectedDish(null);
+            setIsFormOpen(true);
+          }}
           style={{
             marginBottom: "20px",
             padding: "8px 14px",
@@ -272,11 +291,13 @@ const MenuPage = () => {
             color: "white",
             cursor: "pointer",
             fontWeight: "bold",
-            transition: "background 0.3s", }}>
+            transition: "background 0.3s",
+          }}
+        >
           + Dodaj jelo
         </button>
       )}
-
+  
       {Object.keys(grouped).map((type) => (
         <div className="dish-type-row" key={type} style={{ marginBottom: "30px" }}>
           <h2>{type}</h2>
@@ -289,7 +310,14 @@ const MenuPage = () => {
                 <div className={(isCustomer && pickedId == dish.id) ? "dish-order-window" : "hidden"} key={pickedId == dish.id ? `${dish.id}-open` : `${dish.id}-closed`}>
                   <section className="section-row" style={{justifyContent: 'flex-start', width: 'fit-content'}}>
                     <label>Broj porcija:</label>
-                    <input type="number" min='1' defaultValue='1' onChange={(e) => updateDishInOrder(dish.id, { quantity: Number(e.target.value) })} />
+                    <input
+                      type="number"
+                      min="1"
+                      value={quantities[dish.id] || 1}
+                      onChange={(e) =>
+                        setQuantities({ ...quantities, [dish.id]: Number(e.target.value) })
+                      }
+                    />
                   </section>
                     {//<h3 className={dish.dishOptionGroups.reduce((has, g) => has || g.type === 'choice', false) == false ? "hidden" : ""}>Izborni dodatak:</h3>
                     }
@@ -340,8 +368,8 @@ const MenuPage = () => {
           </div>
         </div>
       ))}
-      <button className={!isCustomer ? "hidden" : "menu-order-btn buttons edit-btn"} 
-      onClick={e => console.log(order.filter(o => o.isOrdered))}>Poruči{(order && order.filter(o => o.isOrdered).length > 0) && `(${order.filter(o => o.isOrdered).length})`}</button>
+      <button className={isOwnerHere ? "hidden" : "menu-order-btn buttons edit-btn"} 
+       onClick={() => navigate("/cart")}>Poruči{(order && order.filter(o => o.isOrdered).length > 0) && `(${order.filter(o => o.isOrdered).length})`}</button>
 
       {isFormOpen && (
         <DishForm

@@ -4,8 +4,10 @@ import EditUserForm from "./EditUserForm";
 import AllergensContainer from "./AllergensContainer";
 import AddressView from "./AddressView";
 import CourierTabContainer from "./Courier/CourierTabContainer.jsx";
+import CourierDeliveries from "./Courier/CourierDeliveries.jsx";
 import VoucherList from "../customerComponents/VoucherList";
 import WorkersRestaurant from "../../pages/WorkersRestaurant.jsx";
+import RestaurantOrders from "./Owner/RestaurantOrders.jsx";
 
 export default function AccountPanel({
   activeTab,
@@ -27,8 +29,9 @@ export default function AccountPanel({
   isAdmin,
   isOwner,
   isCourier,
+  isOwner,
+  vouchers,
   isCustomer,
-  vouchers
 }) {
   const isActive = (tab) => (activeTab === tab ? "active" : "");
 
@@ -59,6 +62,12 @@ export default function AccountPanel({
             </li>
             )}
 
+            {isCourier && (
+            <li className={isActive("courier-delivery")}
+            onClick={() => setActiveTab("courier-delivery")}>Dostave
+            </li>
+            )}
+
             {isCustomer && (
             <li className={isActive("voucher-list")}
             onClick={() => setActiveTab("voucher-list")}>Vaučeri
@@ -69,6 +78,15 @@ export default function AccountPanel({
             <li className={isActive("workers-restaurant")}
             onClick={() => setActiveTab("workers-restaurant")}>Radnici
             </li>
+            )}
+
+            {isOwner && (
+              <li
+                className={isActive("owner-orders")}
+                onClick={() => setActiveTab("owner-orders")}
+              >
+                Porudžbine restorana
+              </li>
             )}
         </ul>
       </aside>
@@ -110,6 +128,10 @@ export default function AccountPanel({
         {!isAdmin && isCustomer && activeTab == "voucher-list" && (<VoucherList vouchers={vouchers} active={isActive("voucher-list")}/>)}
 
         {isOwner && activeTab == "workers-restaurant" && (<WorkersRestaurant isOwner={isOwner} />)}
+        
+        {isCourier && (<CourierDeliveries active={isActive("courier-delivery")} />)}
+        
+        {isOwner && (<RestaurantOrders user={user} active={isActive("owner-orders")}/>)}
       </main>
     </div>
   );

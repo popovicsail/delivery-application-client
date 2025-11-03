@@ -110,3 +110,8 @@ export async function getMyVouchers() {
   const response = await api.get("/customers/my-vouchers");
   return response.data;
 }
+
+export async function createOderder(orderData) {
+  const response = await api.post("/Orders", orderData);
+  return response.data;
+}
