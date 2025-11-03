@@ -1,91 +1,84 @@
-import React, { useState, useEffect, use } from "react";
-import CartView from "./CartView";
+import React, { useEffect, useState } from "react";
+import { Button } from "@mui/material";
+import CartModal from "./CartModal"; // pretpostavljam da je u istom folderu
 import { useCart } from "./CartContext";
-import { useNavigate } from "react-router-dom";
+import MenuPage from "../../pages/Menus/MenuPage.jsx";
 import * as userService from "../../services/user.services.jsx";
-import { CartProvider } from "./CartContext.jsx";
 
-export default function CartContainer({ customerId, addressId}) {
-  const { items, removeFromCart, total, selectedVoucherId, setSelectedVoucherId, clearCart } = useCart();
-  const [profile, setProfile] = useState({});
-  const [addresses, setAdresses] = useState([]);
+export default function CartContainer({
+  onCreateItems,
+  onUpdateDetails,
+  onConfirmOrder,
+  orderId
+}) {
+  const {
+    items,
+    total,
+    removeFromCart,
+    selectedVoucherId,
+    setSelectedVoucherId
+  } = useCart();
+
   const [selectedAddressId, setSelectedAddressId] = useState(null);
-  const [vouchers, setVouchers] = useState([]);
-  const customer = profile.id;
-  const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [step, setStep] = useState(1);
+  const [addresses, setAddresses] = useState([]);
+  const [vouchersState, setVouchersState] = useState([]);
 
+  const nextStep = () => setStep(prev => Math.min(prev + 1, 3));
+  const prevStep = () => setStep(prev => Math.max(prev - 1, 1));
 
-  useEffect(() => {
-    // Fetch vouchers for the customer
-    async function fetchVouchers() {
-      try {
-        const data = await userService.getMyVouchers(customerId);
-        setVouchers(data);
-      } catch (error) {
-        console.error("Error fetching vouchers:", error);
-      }
-    }
-
-    fetchVouchers();
-  }, [customerId]);
-
-useEffect(() => {
-  async function fetchAdress() {
-    try {
-      const data = await userService.getMyAddresses(customerId);
-      const dataProfile = await userService.getProfile(customerId);
-      setProfile(dataProfile);
-      setAdresses(data);
-      console.log("Fetched addresses:", data);
-    } catch (error) {
-      console.error("Error fetching addresses:", error);
-    }
-  }
-
-  fetchAdress();
-}, [customerId]);
-
-
-  const submitOrder = async () => {
-    const orderedItems = items.map(i => ({
-      dishId: i.originalId || i.id.replace("_", ""),
-      quantity: i.quantity,
-      dishOptionGroups: i.dishOptionGroups || []
-    }));
-
-    const payload = {
-      customerId: profile.id,
-      addressId: selectedAddressId,
-      voucherId: selectedVoucherId || null,
-      items: orderedItems,
-      restaurantId : orderedItems.length > 0 ? items[0].restaurantId : null
-    };
-
-    console.log("Order payload:", payload);
-
-    try {
-      const data = await userService.createOderder({...payload
-      });
-      clearCart();
-      navigate("/index");
-    } catch (err) {
-      console.error(err);
-      alert("Nešto nije u redu.");
-    }
+  const openModal = () => {
+    setIsModalOpen(true);
+    setStep(1);
   };
 
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setStep(1);
+  };
+
+useEffect(() => {
+    const fetchAddressesAndVouchers = async () => {
+      try {
+        const addrs = await userService.getMyAddresses();
+        const vouchs = await userService.getMyVouchers();
+        setAddresses(addrs);
+        setVouchersState(vouchs);
+      } catch (error) {
+        console.error("Greška pri učitavanju adresa i vaučera:", error);
+      }
+    };
+
+    fetchAddressesAndVouchers();
+  }, []);
+
   return (
-    <CartView
-      items={items}
-      total={total}
-      removeFromCart={removeFromCart}
-      selectedVoucherId={selectedVoucherId}
-      setSelectedVoucherId={setSelectedVoucherId}
-      vouchers={vouchers}
-      addresses={addresses}
-      selectedAddressId={selectedAddressId}
-      setSelectedAddressId={setSelectedAddressId}
-      onSubmit={submitOrder}
-    />
+    <>
+      <Button variant="outlined" onClick={openModal}>
+        🛒 Poruči
+      </Button>
+
+      <CartModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        step={step}
+        nextStep={nextStep}
+        prevStep={prevStep}
+        items={items}
+        total={total}
+        removeFromCart={removeFromCart}
+        selectedVoucherId={selectedVoucherId}
+        setSelectedVoucherId={setSelectedVoucherId}
+        addresses={addresses}
+        selectedAddressId={selectedAddressId}
+        setSelectedAddressId={setSelectedAddressId}
+        vouchers={vouchersState}
+        orderId={orderId}
+        onCreateItems={onCreateItems}
+        onUpdateDetails={onUpdateDetails}
+        onConfirmOrder={onConfirmOrder}
+      />
+    </>
   );
 }

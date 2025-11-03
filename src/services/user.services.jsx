@@ -111,7 +111,3 @@ export async function getMyVouchers() {
   return response.data;
 }
 
-export async function createOderder(orderData) {
-  const response = await api.post("/Orders", orderData);
-  return response.data;
-}

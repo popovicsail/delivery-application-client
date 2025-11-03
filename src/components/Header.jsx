@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { getProfile } from "../services/user.services.jsx";
-import "../styles/main.scss";
 import { logout } from "../services/auth.services.jsx";
+import { Button } from "@mui/material"; // MUI dugme
+import "../styles/main.scss";
 
-const Header = () => {
+const Header = ({ onOpenCartModal }) => {
   const [roles, setRoles] = useState([]);
   const [profileImage, setProfileImage] = useState(null);
   const [fullName, setFullName] = useState("");
@@ -28,7 +29,7 @@ const Header = () => {
         setRoles([]);
         setProfileImage(null);
         setFullName("");
-      }, []);
+      });
   }, []);
 
   const handleLogout = () => {
@@ -47,7 +48,7 @@ const Header = () => {
       {isAuthenticated && (
         <Link to="/controlPanel" className="header-profile-box">
           <img
-            src={profileImage}   // direktno koristiš string iz backenda
+            src={profileImage}
             alt="Profilna slika"
             className="header-profile-image"
           />
@@ -68,6 +69,7 @@ const Header = () => {
           ) : (
             <>
               <li id={current === "/dishesSearch" ? "current" : ""}><Link to="/dishesSearch">Pretraga Jela</Link></li>
+
               {roles.includes("Administrator") && (
                 <>
                   <li id={current === "/admin" ? "current" : ""}><Link to="/admin">Admin Panel</Link></li>
@@ -79,13 +81,8 @@ const Header = () => {
               {roles.includes("Owner") && (
                 <li id={current === "/restaurantsOwner" ? "current" : ""}><Link to="/restaurantsOwner">Moji Restorani</Link></li>
               )}
-              
-              <li>
-                <Link to="/survey">
-                  Feedback
-                </Link>
-              </li>
 
+              <li><Link to="/survey">Feedback</Link></li>
               <li><Link to="/login" onClick={handleLogout}>Odjavite se</Link></li>
             </>
           )}

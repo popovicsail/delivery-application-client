@@ -60,7 +60,7 @@ export default function OwnerOrders({ active }) {
   // Actions (use orderId consistently)
   const acceptOrder = async (orderId) => {
     try {
-      await orderService.updateOrderStatus(orderId, 1, prepTime);
+      await orderService.updateOrderStatus(orderId, 2, prepTime);
       setRefreshKey(prev => prev + 1);
     } catch (error) {
       console.error("Greška pri ažuriranju statusa:", error);
@@ -69,7 +69,7 @@ export default function OwnerOrders({ active }) {
 
   const markAsReadyForPickup = async (orderId) => {
     try {
-      await orderService.updateOrderStatus(orderId, 3);
+      await orderService.updateOrderStatus(orderId, 4);
       setRefreshKey(prev => prev + 1);
     } catch (error) {
       console.error("Greška pri ažuriranju statusa:", error);
@@ -78,7 +78,7 @@ export default function OwnerOrders({ active }) {
 
   const refuseOrder = async (orderId) => {
     try {
-      await orderService.updateOrderStatus(orderId, 2);
+      await orderService.updateOrderStatus(orderId, 3);
       setRefreshKey(prev => prev + 1);
     } catch (error) {
       console.error("Greška pri ažuriranju statusa:", error);

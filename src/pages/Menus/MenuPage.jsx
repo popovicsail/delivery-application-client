@@ -7,8 +7,9 @@ import { getMenuPermissionAsync } from "../../services/user.services.jsx";
 import DishCard from "../../components/DishCard.jsx";
 import { useCart } from "../../components/shoppingCart/CartContext.jsx";
 import { useNavigate } from "react-router-dom";
+import CartContainer from "../../components/shoppingCart/CartContainer.jsx";
 
-const MenuPage = () => {
+const MenuPage = ({ onOpenCartModal }) => {
   const location = useLocation();
   const highlightDishId = location.state?.highlightDishId;
   const { menuId } = useParams();
@@ -26,7 +27,7 @@ const MenuPage = () => {
   const [quantities, setQuantities] = useState({});
   const { items ,addToCart, updateItem, updateGroups } = useCart();
   const navigate = useNavigate();
-  
+
 
   const handleClickForOrder = (id, dish) => {
     setPickedId((prev) => (prev == id ? "" : id));
@@ -424,9 +425,6 @@ const MenuPage = () => {
           </div>
         </div>
       ))}
-      <button className={isOwnerHere ? "hidden" : "menu-order-btn buttons edit-btn"} 
-       onClick={() => navigate("/cart")}>Poruči{(order && order.filter(o => o.isOrdered).length > 0) && `(${order.filter(o => o.isOrdered).length})`}</button>
-
       {isFormOpen && (
         <DishForm
           dish={selectedDish}
