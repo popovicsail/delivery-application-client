@@ -1,3 +1,5 @@
+@use "main.scss" as *;
+
 .cart {
   background-color: #fdfdfd;
   border: 1px solid #ddd;
@@ -87,5 +89,12 @@
     &:hover {
       background-color: #1677cc;
     }
+  }
+
+  button.buttons,
+  button.delete-btn {
+    background-color: red;
+    width: fit-content;
+    font-size: 1rem;
   }
 }

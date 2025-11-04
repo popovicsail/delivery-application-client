@@ -31,7 +31,7 @@ const DishCard = ({ dish, highlighted, isInMenu, isOwnerHere, isCustomer, delete
           }
         </div>
         <div className="dish-image-wrapper">
-          <img className="dish-image" src={dish.picture && dish.picture.length > 0 ? dish.picture : "https://www.keralatourism.org/_next/image/?url=http%3A%2F%2F127.0.0.1%2Fktadmin%2Fimg%2Fpages%2Flarge-desktop%2Frice-dishes-1714219146_4b2d13389d18792a8c3d.webp&w=3840&q=75"} alt="slika" />
+          <img className="dish-image" src={dish.picture && dish.picture.length > 0 ? dish.picture : "https://www.keralatourism.org/_next/image/?url=http%3A%2F%2F127.0.0.1%2Fktadmin%2Fimg%2Fpages%2Flarge-desktop%2Frice-dishes-1714219146_4b2d13389d18792a8c3d.webp&w=3840&q=75"} alt="" />
           {isOwnerHere && (
             <section className="section-row">
                 <button className="edit-btn buttons" onClick={() => { setSelectedDish(dish); setIsFormOpen(true);}}>Izmeni jelo</button>

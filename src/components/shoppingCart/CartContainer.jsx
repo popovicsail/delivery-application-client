@@ -17,6 +17,10 @@ export default function CartContainer() {
   const handleRemoveFromCart = async (id) => {
     if (!window.confirm(`Da li ste sigurni da zelite da uklonite stavku?`)) return;
     try {
+      if (draftOrder && draftOrder.items && draftOrder.items.length < 2) {
+        handleDeleteOrder(draftOrder.id);
+        return;
+      }
       setLoading(true);
       const response = await deleteItem(id);
       setRefreshKey((prev) => prev + 1);
