@@ -18,12 +18,10 @@ import RestaurantsSearch from "./pages/RestaurantsSearch.jsx";
 import DishesSearch from "./pages/DishesSearch.jsx";
 import FeedbackSurvey from "./pages/Feedback/FeedbackSurvey.jsx";
 import CartContainer from "./components/shoppingCart/CartContainer.jsx";
-import { CartProvider } from "./components/shoppingCart/CartContext.jsx";
 
 const App = () => {
   return(
     <div id="main-container">
-     <CartProvider>
       <BrowserRouter>
         <Header />
         <Routes>
@@ -45,7 +43,6 @@ const App = () => {
           <Route path="/survey" element ={<FeedbackSurvey />} />
         </Routes>
     </BrowserRouter>
-    </CartProvider> 
     </div>
   );
 }

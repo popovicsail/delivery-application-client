@@ -29,7 +29,6 @@ export default function AccountPanel({
   isAdmin,
   isOwner,
   isCourier,
-  isOwner,
   vouchers,
   isCustomer,
 }) {

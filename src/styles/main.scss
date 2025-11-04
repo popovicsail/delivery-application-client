@@ -226,6 +226,7 @@ img {
 
 //HEADER
 .header {
+    position: relative;
     background-color: #222;
     color: white;
     padding: 1rem;
@@ -264,6 +265,21 @@ img {
   font-size: 1.1rem;
   font-weight: bold;
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.header-cart {
+  position: absolute;
+  top: 0;
+  right: 0;
+  text-decoration: none;
+  p {
+    font-size: 1.5rem;
+    margin: 1rem;
+    color: white;
+    &:hover {
+    color: color.adjust(white, $lightness: -30%);
+    }
+  }
 }
   
 .nav-list {

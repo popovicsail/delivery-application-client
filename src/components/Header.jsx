@@ -55,6 +55,12 @@ const Header = () => {
         </Link>
       )}
 
+      {roles.includes("Customer") && (
+        <Link to="/cart" className="header-cart">
+          <p>🛒Korpa</p>
+        </Link>
+      )}
+
       <nav>
         <ul className="nav-list">
           <li id={current === "/home" ? "current" : ""}><Link to="/home">Početna</Link></li>

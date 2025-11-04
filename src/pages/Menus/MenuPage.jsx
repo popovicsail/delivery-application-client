@@ -1,17 +1,17 @@
 import React, { useState, useEffect, use } from "react";
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import DishForm from "./DishForm.jsx";
 import DishGroupForm from "./DishGroupForm.jsx";
 import { dishService } from "../../services/dishes.services.jsx";
 import { getMenuPermissionAsync } from "../../services/user.services.jsx";
+import { createOrder } from "../../services/order.services.jsx";
 import DishCard from "../../components/DishCard.jsx";
-import { useCart } from "../../components/shoppingCart/CartContext.jsx";
-import { useNavigate } from "react-router-dom";
 
 const MenuPage = () => {
   const location = useLocation();
   const highlightDishId = location.state?.highlightDishId;
   const { menuId } = useParams();
+  const [restaurantId, setRestaurantId] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
@@ -23,16 +23,14 @@ const MenuPage = () => {
   const [isDishGroupOpen, setIsDishGroupOpen] = useState(false);
   const [pickedId, setPickedId] = useState('');
   const [order, setOrder] = useState([]);
+  const navigate = useNavigate();
+  
+  const myAllergens = JSON.parse(sessionStorage.getItem('myAllergens'))
 
   useEffect(() => {
     const roles = sessionStorage.getItem('myProfile') && JSON.parse(sessionStorage.getItem('myProfile')).user.roles;
     setIsCustomer(roles && roles?.includes('Customer'));
   }, []);
-  const [restaurantId, setRestaurantId] = useState(null);
-  const [quantities, setQuantities] = useState({});
-  const { items ,addToCart, updateItem, updateGroups } = useCart();
-  const navigate = useNavigate();
-  
 
   const handleClickForOrder = (id, dish) => {
     setPickedId((prev) => (prev == id ? "" : id));
@@ -51,73 +49,106 @@ const MenuPage = () => {
   };
 
   const updateGroupsInOrder = (dishId, groupId, option, checked, groupType) => {
-  setOrder(prevOrder =>
-    prevOrder.map(dish => {
-      if (dish.id !== dishId) return dish;
+    setOrder(prevOrder =>
+      prevOrder.map(dish => {
+        if (dish.id !== dishId) return dish;
 
-      // check if this group already exists
-      const groupExists = dish.dishOptionGroups.some(g => g.id === groupId);
+        // check if this group already exists
+        const groupExists = dish.dishOptionGroups.some(g => g.id === groupId);
 
-      let updatedGroups;
+        let updatedGroups;
 
-      if (groupExists) {
-        // update existing group
-        updatedGroups = dish.dishOptionGroups.map(group => {
-          if (group.id !== groupId) return group;
+        if (groupExists) {
+          // update existing group
+          updatedGroups = dish.dishOptionGroups.map(group => {
+            if (group.id !== groupId) return group;
 
-          if (groupType === "choice") {
-            // Only one option allowed
-            return {
-              ...group,
-              dishOptions: [{ id: option.id, price: option.price }]
-            };
-          }
-
-          // For independent (checkbox)
-          if (checked) {
-            // Add if not already there
-            if (!group.dishOptions.some(opt => opt.id === option.id)) {
+            if (groupType === "choice") {
+              // Only one option allowed
               return {
                 ...group,
-                dishOptions: [...group.dishOptions, { id: option.id, price: option.price }]
+                dishOptions: [{ id: option.id, price: option.price }]
               };
             }
-            return group;
-          } else {
-            // Remove if unchecked
-            return {
-              ...group,
-              dishOptions: group.dishOptions.filter(opt => opt.id !== option.id)
-            };
-          }
-        });
-      } else {
-        // create new group if missing
-        updatedGroups = [
-          ...dish.dishOptionGroups,
-          {
-            id: groupId,
-            type: groupType,
-            dishOptions: checked ? [{ id: option.id, price: option.price }] : []
-          }
-        ];
-      }
 
-      return {
-        ...dish,
-        dishOptionGroups: updatedGroups
-      };
-    })
-  );
-};
+            // For independent (checkbox)
+            if (checked) {
+              // Add if not already there
+              if (!group.dishOptions.some(opt => opt.id === option.id)) {
+                return {
+                  ...group,
+                  dishOptions: [...group.dishOptions, { id: option.id, price: option.price }]
+                };
+              }
+              return group;
+            } else {
+              // Remove if unchecked
+              return {
+                ...group,
+                dishOptions: group.dishOptions.filter(opt => opt.id !== option.id)
+              };
+            }
+          });
+        } else {
+          // create new group if missing
+          updatedGroups = [
+            ...dish.dishOptionGroups,
+            {
+              id: groupId,
+              type: groupType,
+              dishOptions: checked ? [{ id: option.id, price: option.price }] : []
+            }
+          ];
+        }
+
+        return {
+          ...dish,
+          dishOptionGroups: updatedGroups
+        };
+      })
+    );
+  };
+  
+  const saveOrder = async () => {
+    const filtered = order.filter((o) => o.isOrdered);
+    const unstamped = filtered.map((o) => ({...o, id: o.id.replace('_', '')}));
+    const payload = {restaurantId: restaurantId, items: unstamped};
+    try {
+      setLoading(true);
+      const response = await createOrder(payload);
+      setError('');
+      alert('Porudzbina je dodata u korpu');
+      navigate('/cart');
+    } catch (error) {
+      if (error.response) {
+        if (error.response.status === 400) {
+          setError('Niste uneli validne podatke.');
+        } else if (error.response.status === 404) {
+          setError('Pogresna ruta.');
+        } else if (error.response.status === 401) {
+          setError('Ova stranica je rezervisana samo za prijavljene kupce.');
+        } else if (error.response.status === 500) {
+          setError('Greska na serveru. Pokusajte kasnije.');
+        } else {
+          setError(`Greska: ${error.response.status}`);
+        }
+      } else if (error.request) {
+        setError('Nema odgovora sa servera.');
+      } else {
+        setError('Doslo je do greske.');
+      }
+      console.error('Greska:', error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     const fetchMenu = async () => {
       try {
         const data = await dishService.getMenuByid(menuId);
-        console.log("Menu data:", data);
-        setDishes(data.dishes);
         setRestaurantId(data.restaurantId);
+        setDishes(data.dishes);
       } catch (error) {
         if (error.response) {
           if (error.response.status === 404) {
@@ -137,39 +168,34 @@ const MenuPage = () => {
         setLoading(false);
       }
     };
-
-    fetchMenu();
-  }, [menuId]);
-
-  const fetchRestaurant = async () => {
-    const permit = JSON.parse(sessionStorage.getItem("permitRequest"));
-    if (!permit || permit != true) return;
-    try {
-      const response = await getMenuPermissionAsync(menuId);
-      console.log("Permission response:", response);
-      setIsOwnerHere(response == true);
-    } catch (error) {
-      if (error.response) {
-        if (error.response.status === 404) {
-          setError("Jelo sa ovim id-em ne postoji ili pogresna ruta.");
-        } else if (error.response.status === 401) {
-          setError("Ova ruta je rezervisana samo za vlasnike restorana.");
-        } else if (error.response.status === 500) {
-          setError("Greska na serveru. Pokusajte kasnije.");
+    const fetchRestaurant = async () => {
+      const permit = JSON.parse(sessionStorage.getItem("permitRequest"));
+      if (!permit || permit != true) return;
+      try {
+        const response = await getMenuPermissionAsync(menuId);
+        setIsOwnerHere(response == true);
+      } catch (error) {
+        if (error.response) {
+          if (error.response.status === 404) {
+            setError("Jelo sa ovim id-em ne postoji ili pogresna ruta.");
+          } else if (error.response.status === 401) {
+            setError("Ova ruta je rezervisana samo za vlasnike restorana.");
+          } else if (error.response.status === 500) {
+            setError("Greska na serveru. Pokusajte kasnije.");
+          } else {
+            setError(`Greska: ${error.response.status}`);
+          }
+        } else if (error.request) {
+          setError("Nema odgovora sa servera.");
         } else {
-          setError(`Greska: ${error.response.status}`);
+          setError("Doslo je do greske.");
         }
-      } else if (error.request) {
-        setError("Nema odgovora sa servera.");
-      } else {
-        setError("Doslo je do greske.");
+        console.error("Greška pri slanju zahteva za permisije:", error);
+      } finally {
+        setLoading(false);
       }
-      console.error("Greška pri slanju zahteva za permisije:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-  useEffect(() => {
+    };
+    fetchMenu();
     fetchRestaurant();
   }, [refreshKey]);
 
@@ -272,16 +298,11 @@ const MenuPage = () => {
   if (error) return <p style={{ color: 'red' }}>{error}</p>;
   return (
     <div style={{ padding: "20px" }}>
-      <h1 style={{ fontSize: "28px", marginBottom: "0", fontStyle: "italic" }}>
-        Glavni Menu
-      </h1>
-  
+      <h1 style={{ fontSize: "28px", marginBottom: "0", fontStyle: 'italic' }}>Glavni Menu</h1>
+      
       {isOwnerHere && (
-        <button
-          onClick={() => {
-            setSelectedDish(null);
-            setIsFormOpen(true);
-          }}
+        <button 
+          onClick={() => { setSelectedDish(null); setIsFormOpen(true);}}
           style={{
             marginBottom: "20px",
             padding: "8px 14px",
@@ -291,13 +312,11 @@ const MenuPage = () => {
             color: "white",
             cursor: "pointer",
             fontWeight: "bold",
-            transition: "background 0.3s",
-          }}
-        >
+            transition: "background 0.3s", }}>
           + Dodaj jelo
         </button>
       )}
-  
+
       {Object.keys(grouped).map((type) => (
         <div className="dish-type-row" key={type} style={{ marginBottom: "30px" }}>
           <h2>{type}</h2>
@@ -310,17 +329,8 @@ const MenuPage = () => {
                 <div className={(isCustomer && pickedId == dish.id) ? "dish-order-window" : "hidden"} key={pickedId == dish.id ? `${dish.id}-open` : `${dish.id}-closed`}>
                   <section className="section-row" style={{justifyContent: 'flex-start', width: 'fit-content'}}>
                     <label>Broj porcija:</label>
-                    <input
-                      type="number"
-                      min="1"
-                      value={quantities[dish.id] || 1}
-                      onChange={(e) =>
-                        setQuantities({ ...quantities, [dish.id]: Number(e.target.value) })
-                      }
-                    />
+                    <input type="number" min='1' defaultValue='1' onChange={(e) => updateDishInOrder(dish.id, { quantity: Number(e.target.value) })} />
                   </section>
-                    {//<h3 className={dish.dishOptionGroups.reduce((has, g) => has || g.type === 'choice', false) == false ? "hidden" : ""}>Izborni dodatak:</h3>
-                    }
                     <section className="section-row" style={{justifyContent: 'flex-start'}}>
                       {dish.dishOptionGroups.map((g) => (
                         g.type == 'choice' &&
@@ -338,8 +348,6 @@ const MenuPage = () => {
                         </div>
                       ))}
                     </section>
-                    {//<h3 className={dish.dishOptionGroups.reduce((has, g) => has || g.type === 'independent', false) == false ? "hidden" : ""}>Nezavisni dodaci</h3>
-                    }
                     <section className="section-row" style={{justifyContent: 'flex-start'}}>
                       {dish.dishOptionGroups.map((g) => (
                         g.type == 'independent' && 
@@ -358,7 +366,14 @@ const MenuPage = () => {
                       ))}
                     </section>
                   <button onClick={() => {
-                    if (!window.confirm(`Dodaj u korpu?`)) return;
+                    const isAllergic = dish.allergens.some((a) => (myAllergens && myAllergens.includes(a.id)))
+                    if (isAllergic) {
+                      window.alert(`Vi ste alergicni na ovaj proizvod, da li ste sigurni da zelite da ga dodate?`);
+                      return;
+                    }
+                    else {
+                      if (!window.confirm(`Dodaj u korpu?`)) return;
+                    }
                     updateDishInOrder(dish.id, { id: dish.id + "_", isOrdered: true }) //Adding a stamp
                     setPickedId("");
                   }} className="create-button">Dodaj</button>
@@ -368,8 +383,8 @@ const MenuPage = () => {
           </div>
         </div>
       ))}
-      <button className={isOwnerHere ? "hidden" : "menu-order-btn buttons edit-btn"} 
-       onClick={() => navigate("/cart")}>Poruči{(order && order.filter(o => o.isOrdered).length > 0) && `(${order.filter(o => o.isOrdered).length})`}</button>
+      <button className={!isCustomer ? "hidden" : "menu-order-btn buttons edit-btn"} 
+      onClick={e => saveOrder()}>Poruči{(order && order.filter(o => o.isOrdered).length > 0) && `(${order.filter(o => o.isOrdered).length})`}</button>
 
       {isFormOpen && (
         <DishForm
