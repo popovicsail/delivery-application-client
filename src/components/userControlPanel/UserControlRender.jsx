@@ -397,7 +397,6 @@ export default function ProfilePage() {
       handleAddAddress={handleAddAddress}
       handleUpdateAddress={handleUpdateAddress}
       vouchers={vouchers}
-      isOwner={isOwner}
     />
   );
 }

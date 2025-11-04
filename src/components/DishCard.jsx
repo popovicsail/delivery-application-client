@@ -10,7 +10,7 @@ const DishCard = ({ dish, highlighted, isInMenu, isOwnerHere, isCustomer, delete
     <div onClick={e => (isInMenu && isCustomer ? clickForOrder(dish.id, {
       id: dish.id,
       price: dish.price,
-      quantity: '',
+      quantity: 1,
       isOrdered: false,
       dishOptionGroups: []
     }) : !isInMenu ? navigate(`/menuId/${dish.menuId}`, { state: { highlightDishId: dish.id } }) : {})} 

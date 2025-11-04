@@ -36,7 +36,7 @@ useEffect(() => {
   // akcije
   const pickUpDelivery = async (id) => {
     try {
-      await orderService.updateOrderStatus(id, 4);
+      await orderService.updateOrderStatus(id, 5);
       setRefreshKey(prev => prev + 1);
     } catch (err) {
       console.error("Greška pri preuzimanju dostave:", err);
@@ -45,7 +45,7 @@ useEffect(() => {
 
   const startDelivery = async (id) => {
     try {
-      await orderService.updateOrderStatus(id, 5);
+      await orderService.updateOrderStatus(id, 6);
       setRefreshKey(prev => prev + 1);
     } catch (err) {
       console.error("Greška pri pokretanju dostave:", err);
@@ -54,7 +54,7 @@ useEffect(() => {
 
   const completeDelivery = async (id) => {
     try {
-      await orderService.updateOrderStatus(id, 6);
+      await orderService.updateOrderStatus(id, 7);
       setRefreshKey(prev => prev + 1);
     } catch (err) {
       console.error("Greška pri završavanju dostave:", err);
@@ -87,7 +87,7 @@ useEffect(() => {
             </thead>
             <tbody>
               {activeOrders.map((o) => (
-                <tr key={o.id}>
+                <tr key={o.orderId}>
                   <td>{o.restaurant.name}</td>
                   <td>{o.deliveryAddress}</td>
                   <td>{o.status}</td>
