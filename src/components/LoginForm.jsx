@@ -46,14 +46,13 @@ export const LoginForm = () => {
       navigate("/home");
       window.location.reload();
     } catch (error) {
-      const err = error || {};
-      if (err.response) {
-        if (err.response.status === 401) {
+      if (error.response) {
+        if (error.response.status === 401 || error.response.status === 400) {
           alert("Neispravno korisničko ime ili lozinka.");
         }
         else {
-          alert(`Greška: ${err.message || "Nešto nije u redu."}`);
-          console.error("Login error:", err);
+          alert(`Greška: ${error.message || "Nešto nije u redu."}`);
+          console.error("Login error:", error);
         }
       }
     } 

@@ -142,7 +142,7 @@ const RestaurantsSearch = () => {
           </section>
           <section className="section-row time-specific-section-row">
             <label>Prikazi i zatvorene?</label>
-            <input type="checkbox" checked={(filters.closedToo == "false") || (filters.closedToo == false) ? false : true} name="closedToo" onChange={handleFilterChange} />
+            <input type="checkbox" checked={(filters.closedToo == "false") || (filters.closedToo == false) ? false : true} name="closedToo" onChange={handleFilterChange} disabled={filters.openingTime || filters.closingTime}/>
           </section>
           <h4>Sortiraj</h4>
           <select value={sort} onChange={e => setSort(Number(e.target.value))} name="sortSelect">

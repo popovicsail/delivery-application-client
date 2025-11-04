@@ -105,7 +105,7 @@ export default function FeedbackSurvey() {
           </div>
           <textarea
             placeholder="Ostavite komentar (opciono)"
-            value={answers[index].comment}
+            value={answers.find(a => a.questionId === question.id)?.comment}
             onChange={(e) => handleCommentChange(index, e.target.value)}
           />
         </div>

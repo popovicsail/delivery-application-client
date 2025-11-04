@@ -21,6 +21,14 @@ export default function CartView({
     }, 0);
   }*/
 
+  const handleSubmitCases = () => {
+    if(!selectedAddress && alert('Niste popunili adresu!'));
+    if(!selectedAddress) return;
+    onSubmit({voucherId: selectedVoucher ? selectedVoucher.id : null, addressId: selectedAddress ? selectedAddress.id : null}, draftOrder.id); 
+    setSelectedVoucher(null); 
+    setSelectedAddress(null);
+  }
+
   const discount = selectedVoucher ? selectedVoucher.discountAmount : 0;
   const finalTotal = Math.max((draftOrder ? draftOrder.totalPrice : 0) - discount, 0);
 
@@ -43,7 +51,7 @@ export default function CartView({
 
       <label>
       Adresa za dostavu:
-          <select
+          <select required={true}
               value={selectedAddress && selectedAddress.id || ""}
               onChange={(e) => setSelectedAddress(addresses?.find(v => v.id === e.target.value) || null)}
           >
@@ -80,10 +88,16 @@ export default function CartView({
             Popust ({selectedVoucher.name}): -{discount} RSD
           </p>
         )}
-        <h3>Za plaćanje: {finalTotal} RSD</h3>
+        <section className="section-row" style={{justifyContent: 'space-between'}}>
+          <h3>Za plaćanje: {finalTotal} RSD</h3>
+          <button className="buttons delete-btn" type="button" onClick={e => cancelOrder(draftOrder ? draftOrder.id : null)}>🛇 Otkazi</button>
+        </section>
       </div>
 
-      <button onClick={(e) => {onSubmit({voucherId: selectedVoucher && selectedVoucher.id, addressId: selectedAddress && selectedAddress.id}, draftOrder.id); setSelectedVoucher(null); setSelectedAddress(null);}} className="order-btn">
+      <button onClick={(e) => {
+        if (!draftOrder || (draftOrder.items.length < 1)) return;
+        handleSubmitCases()
+        }}className="order-btn">
         Pošalji porudžbinu
       </button>
     </div>

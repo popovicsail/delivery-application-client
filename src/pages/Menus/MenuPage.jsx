@@ -143,58 +143,60 @@ const MenuPage = () => {
     }
   };
 
+  const fetchMenu = async () => {
+    try {
+      const data = await dishService.getMenuByid(menuId);
+      setRestaurantId(data.restaurantId);
+      setDishes(data.dishes);
+    } catch (error) {
+      if (error.response) {
+        if (error.response.status === 404) {
+          setError("Menu sa ovim id-em ne postoji ili pogresna ruta.");
+        } else if (error.response.status === 500) {
+          setError("Greska na serveru. Pokusajte kasnije.");
+        } else {
+          setError(`Greska: ${error.response.status}`);
+        }
+      } else if (error.request) {
+        setError("Nema odgovora sa servera.");
+      } else {
+        setError("Doslo je do greske.");
+      }
+      console.error("Greška pri slanju zahteva za permisije:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchRestaurant = async () => {
+    const permit = JSON.parse(sessionStorage.getItem("permitRequest"));
+    if (!permit || permit != true) return;
+    try {
+      const response = await getMenuPermissionAsync(menuId);
+      setIsOwnerHere(response == true);
+    } catch (error) {
+      if (error.response) {
+        if (error.response.status === 404) {
+          setError("Jelo sa ovim id-em ne postoji ili pogresna ruta.");
+        } else if (error.response.status === 401) {
+          setError("Ova ruta je rezervisana samo za vlasnike restorana.");
+        } else if (error.response.status === 500) {
+          setError("Greska na serveru. Pokusajte kasnije.");
+        } else {
+          setError(`Greska: ${error.response.status}`);
+        }
+      } else if (error.request) {
+        setError("Nema odgovora sa servera.");
+      } else {
+        setError("Doslo je do greske.");
+      }
+      console.error("Greška pri slanju zahteva za permisije:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchMenu = async () => {
-      try {
-        const data = await dishService.getMenuByid(menuId);
-        setRestaurantId(data.restaurantId);
-        setDishes(data.dishes);
-      } catch (error) {
-        if (error.response) {
-          if (error.response.status === 404) {
-            setError("Menu sa ovim id-em ne postoji ili pogresna ruta.");
-          } else if (error.response.status === 500) {
-            setError("Greska na serveru. Pokusajte kasnije.");
-          } else {
-            setError(`Greska: ${error.response.status}`);
-          }
-        } else if (error.request) {
-          setError("Nema odgovora sa servera.");
-        } else {
-          setError("Doslo je do greske.");
-        }
-        console.error("Greška pri slanju zahteva za permisije:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    const fetchRestaurant = async () => {
-      const permit = JSON.parse(sessionStorage.getItem("permitRequest"));
-      if (!permit || permit != true) return;
-      try {
-        const response = await getMenuPermissionAsync(menuId);
-        setIsOwnerHere(response == true);
-      } catch (error) {
-        if (error.response) {
-          if (error.response.status === 404) {
-            setError("Jelo sa ovim id-em ne postoji ili pogresna ruta.");
-          } else if (error.response.status === 401) {
-            setError("Ova ruta je rezervisana samo za vlasnike restorana.");
-          } else if (error.response.status === 500) {
-            setError("Greska na serveru. Pokusajte kasnije.");
-          } else {
-            setError(`Greska: ${error.response.status}`);
-          }
-        } else if (error.request) {
-          setError("Nema odgovora sa servera.");
-        } else {
-          setError("Doslo je do greske.");
-        }
-        console.error("Greška pri slanju zahteva za permisije:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchMenu();
     fetchRestaurant();
   }, [refreshKey]);
@@ -226,8 +228,8 @@ const MenuPage = () => {
       await dishService.update(dish.id, formData);
       setIsDishGroupOpen(true);
 
-      const data = await dishService.getAll();
-      setDishes(data);
+      const data = await dishService.getMenuByid(menuId);
+      fetchMenu();
       } else {
         const created = await dishService.create(formData);
         setDishes((prev) => [...prev, created]);

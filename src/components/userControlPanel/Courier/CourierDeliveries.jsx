@@ -123,7 +123,7 @@ useEffect(() => {
                 <ul>
                   {selectedOrder.items.map((item) => (
                     <li key={item.id}>
-                      {item.dishName} x {item.quantity} = {item.price} RSD
+                      {item.name} x {item.quantity} = {item.price} RSD
                     </li>
                   ))}
                 </ul>
