@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "../styles/main.scss";
 import { useNavigate } from "react-router-dom";
-import { login } from "../services/auth.services"
+import { login, googleLogin } from "../services/auth.services"
 import { getMyAllergens, getProfile } from "../services/user.services"
+import { GoogleLogin } from '@react-oauth/google';
 
 export const LoginForm = () => {
   const navigate = useNavigate();
@@ -12,7 +13,6 @@ export const LoginForm = () => {
   const [isValid, setIsValid] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const [loading, setLoading] = useState(false);
- 
 
   useEffect(() => {
     const valid = username.trim().length > 2 && password.length >= 8;
@@ -26,42 +26,70 @@ export const LoginForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+    setLoading(true);
+
     try {
-      setLoading(true);
-      await login(username, password);
+      await login(username, password)
+      await handleSuccessfulLogin();
+    }
+    catch (error) {
+      setLoading(false);
+      if (error.response) {
+        if (error.response.status === 401 || error.response.status === 400) {
+          alert("Neispravno korisnično ime ili lozinka.");
+        } else {
+          alert(`ERROR: ${error.message || "Nešto nije u redu, pokušajte ponovo"}`);
+        }
+      }
+    }
+  }
+
+
+  const handleGoogleSubmit = async (response) => {
+    setLoading(true);
+    console.log(response.credential)
+
+    try {
+      const reponse = await googleLogin(response.credential)
+
+      await handleSuccessfulLogin();
+
+    } catch (error) {
+      setLoading(false);
+      alert(`ERROR: ${error.message || "Nešto nije u redu, pokušajte ponovo"}`);
+    }
+  }
+
+  const handleSuccessfulLogin = async () => {
+    try {
       const user = await getProfile();
-      sessionStorage.setItem("myProfile", JSON.stringify({user}));
+      sessionStorage.setItem("myProfile", JSON.stringify(user))
+
       if (user.roles && user.roles.includes('Customer')) {
         const allergens = await getMyAllergens();
         if (allergens && allergens.length > 0) {
-          const list = allergens.reduce((l, a) => (l.push(a), l), [])
-          sessionStorage.setItem("myAllergens", JSON.stringify(list));
+          sessionStorage.setItem("myAllergens", JSON.stringify(allergens))
         }
       }
-      setUsername(user.userName)
-      setLoggedIn(true);
+
       setLoading(false);
-      alert(`Dobrodošao, ${username}!`);
+      alert(`Dobrodošao, ${user.userName}!`);
       navigate("/home");
       window.location.reload();
-    } catch (error) {
-      if (error.response) {
-        if (error.response.status === 401 || error.response.status === 400) {
-          alert("Neispravno korisničko ime ili lozinka.");
-        }
-        else {
-          alert(`Greška: ${error.message || "Nešto nije u redu."}`);
-          console.error("Login error:", error);
-        }
-      }
-    } 
-    finally {
-        setLoading(false);
-    }
-  };
 
-  if (loading) return <div id="loadingSpinner" className="spinner"></div>;
+    } catch (error) {
+      setLoading(false);
+      alert(`Greška pri preuzimanju profila: ${error.message}`);
+      console.error("Profile/Allergen error:", error);
+    }
+
+  }
+
+
+  if (loading) {
+    return <div id="loadingSpinner" className="spinner"></div>;
+  }
+
   return (
     <form className="formaLogin" onSubmit={handleSubmit}>
       <section className="form-section">
@@ -94,6 +122,16 @@ export const LoginForm = () => {
       <div id="form-feedback" style={{ marginTop: "1rem", fontWeight: "bold", color: isValid ? "green" : "red" }}>
         {feedback}
       </div>
+
+      <section className="form-section" style={{ display: 'flex', justifyContent: 'center' }}>
+        <GoogleLogin
+          onSuccess={handleGoogleSubmit}
+          useOneTap={false}
+          theme="outline"
+          shape="rectangular"
+          text="signin_with"
+        />
+      </section>
     </form>
   );
 
@@ -123,4 +161,4 @@ export const LoginForm = () => {
       buttonLogin.style.display = 'none';
     }
   }
-};
+}

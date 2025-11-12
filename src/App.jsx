@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route, BrowserRouter } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import "./styles/main.scss";
 import Header from "./components/Header.jsx";
 import Home from "./components/Home.jsx";
@@ -21,28 +21,26 @@ import CartContainer from "./components/shoppingCart/CartContainer.jsx";
 
 const App = () => {
   return(
-    <div id="main-container">
-      <BrowserRouter>
-        <Header />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/register" element = {<RegisterForm />} />
-          <Route path="/login" element = {<LoginForm />} />
-          <Route path="/admin" element = {<AdminPage />} />
-          <Route path="/adminCreate" element ={<UserForm />} />
-          <Route path="/controlPanel" element ={<ProfilePage />} />
-          <Route path="/restaurantsAdmin" element = {<RestaurantsAdmin />}/>
-          <Route path="/restaurantsOwner" element = {<RestaurantsOwner />}/>
-          <Route path="/restaurantForm/:id" element = {<RestaurantForm />}/>
-          <Route path="/createRestaurant" element = {<CreateRestaurant />}/>
-          <Route path="/workersRestaurant/:id" element = {<WorkersRestaurant />}/>
-          <Route path="/restaurantsSearch" element = {<RestaurantsSearch />}/>
-          <Route path="/DishesSearch" element = {<DishesSearch />}/>
-          <Route path="/cart" element={<CartContainer/>}/>
-          <Route path="/menuId/:menuId" element ={<MenuPage />} />
-          <Route path="/survey" element ={<FeedbackSurvey />} />
-        </Routes>
-    </BrowserRouter>
+    <div id="main-container">     
+      <Header />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/register" element = {<RegisterForm />} />
+        <Route path="/login" element = {<LoginForm />} />
+        <Route path="/admin" element = {<AdminPage />} />
+        <Route path="/adminCreate" element ={<UserForm />} />
+        <Route path="/controlPanel" element ={<ProfilePage />} />
+        <Route path="/restaurantsAdmin" element = {<RestaurantsAdmin />}/>
+        <Route path="/restaurantsOwner" element = {<RestaurantsOwner />}/>
+        <Route path="/restaurantForm/:id" element = {<RestaurantForm />}/>
+        <Route path="/createRestaurant" element = {<CreateRestaurant />}/>
+        <Route path="/workersRestaurant/:id" element = {<WorkersRestaurant />}/>
+        <Route path="/restaurantsSearch" element = {<RestaurantsSearch />}/>
+        <Route path="/DishesSearch" element = {<DishesSearch />}/>
+        <Route path="/cart" element={<CartContainer/>}/>
+        <Route path="/menuId/:menuId" element ={<MenuPage />} />
+        <Route path="/survey" element ={<FeedbackSurvey />} />
+      </Routes>
     </div>
   );
 }

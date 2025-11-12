@@ -9,6 +9,7 @@
     "build": "vite build"
   },
   "dependencies": {
+    "@react-oauth/google": "^0.12.2",
     "axios": "^1.12.2",
     "chart.js": "^4.5.1",
     "react": "^19.0.0",
