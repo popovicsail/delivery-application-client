@@ -81,6 +81,7 @@ export default function CartContainer() {
     try {
       setLoading(true);
       const response = await updateUserData(data, id);
+
       setRefreshKey((prev) => prev + 1);
       setError('');
       alert('Porudzbina je zavrsena');
@@ -132,9 +133,16 @@ export default function CartContainer() {
       try {
         const data = await getMyDraft();
         setDraftOrder(data);
-        console.log('Fetched cart items', data);
+
+        if (data && data.id) {
+          localStorage.setItem("orderId", data.id);
+          console.log("Fetched cart items", data);
+        } else {
+          console.warn("Draft order not found or missing ID.");
+        }
+        
       } catch (error) {
-        console.error('Error fetching cart items:', error);
+        console.error("Error fetching cart items:", error);
       }
     }
 
