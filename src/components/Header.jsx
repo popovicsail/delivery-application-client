@@ -63,7 +63,7 @@ const Header = () => {
 
       <nav>
         <ul className="nav-list">
-          <li id={current === "/home" ? "current" : ""}><Link to="/home">Početna</Link></li>
+          <li id={current === "/" ? "current" : ""}><Link to="/">Početna</Link></li>
           <li id={current === "/restaurantsSearch" ? "current" : ""}><Link to="/restaurantsSearch">Pretraga Restorana</Link></li>
 
           {!isAuthenticated ? (
