@@ -8,7 +8,8 @@ import CourierDeliveries from "./Courier/CourierDeliveries.jsx";
 import VoucherList from "../customerComponents/VoucherList";
 import WorkersRestaurant from "../../pages/WorkersRestaurant.jsx";
 import RestaurantOrders from "./Owner/RestaurantOrders.jsx";
-
+import DeliveryHistory from "./Ratings&Tracker/DeliveryHistory.jsx";
+import OrderFlow from "./Ratings&Tracker/DeliverTracking&Review/OrderFlow.jsx";
 export default function AccountPanel({
   activeTab,
   setActiveTab,
@@ -87,6 +88,36 @@ export default function AccountPanel({
                 Porudžbine restorana
               </li>
             )}
+
+            {isCustomer && (
+              <li
+                className={isActive("prati-dostavu")}
+                onClick={() => setActiveTab("prati-dostavu")}
+              >
+                Prati dostavu
+              </li>
+            )}
+            
+            {isCourier && (
+              <li
+                className={isActive("istorija-kurir")}
+                onClick={() => setActiveTab("istorija-kurir")}
+              >
+                🚴 Istorija dostava
+              </li>
+            )}
+
+            {isCustomer && (
+              <li
+                className={isActive("istorija-dostava")}
+                onClick={() => setActiveTab("istorija-dostava")}
+              >
+                🚴 Istorija dostava
+              </li>
+            )}
+
+
+            
         </ul>
       </aside>
 
@@ -131,6 +162,29 @@ export default function AccountPanel({
         {isCourier && (<CourierDeliveries active={isActive("courier-delivery")} />)}
         
         {isOwner && (<RestaurantOrders user={user} active={isActive("owner-orders")}/>)}
+        
+         {/* ✅ novi wizard za praćenje i ocenjivanje */}
+        {isCustomer && activeTab === "prati-dostavu" && (
+          <OrderFlow order={user?.lastOrder} />
+        )}
+
+        {isCustomer && activeTab === "istorija-dostava" && (
+          <DeliveryHistory 
+            active={isActive("istorija-dostava")} 
+            role="customer" 
+            userId={user?.id} 
+          />
+        )}
+
+        {isCourier && activeTab === "istorija-kurir" && (
+          <DeliveryHistory 
+            active={isActive("istorija-kurir")} 
+            role="courier" 
+            userId={user?.courierId} 
+          />
+        )}
+
+
       </main>
     </div>
   );

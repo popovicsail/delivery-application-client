@@ -18,7 +18,7 @@ useEffect(() => {
     const fetchOrders = async () => {
       try {
         const data = await orderService.getByCourier(userId);
-        setOrders(data);
+        setOrders(data.item1);
       } catch (err) {
         console.error("Greška pri dohvatanju dostava:", err);
       }
