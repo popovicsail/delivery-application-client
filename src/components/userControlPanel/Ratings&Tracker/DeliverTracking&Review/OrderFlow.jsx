@@ -1,33 +1,38 @@
 import React, { useEffect, useState } from "react";
-import DeliveryTracking from "./steps/DeliveryTrackings.jsx"; // komponenta za praćenje statusa
+import DeliveryTracking from "./steps/DeliveryTrackings.jsx";
 import RatingForm from "./steps/RatingForm.jsx";
 import "../../../../styles/orderFlow.scss";
-import * as RatingService from "../../../../services/rating.services.jsx";
 
 export default function OrderFlow() {
   const [step, setStep] = useState(1);
-  const [order, setOrder] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [refreshKey, setRefreshKey] = useState(0); // dodato za ručni refresh
-  const orderId = localStorage.getItem("orderId");
+  const [orderId, setOrderId] = useState(localStorage.getItem("orderId"));
+  const [courierId, setCourierId] = useState(localStorage.getItem("courierId"));
+  const [restaurantId, setRestaurantId] = useState(localStorage.getItem("restaurantId"));
 
+  // Resetuj flow kad se sve završi
   useEffect(() => {
-    const fetchOrder = async () => {
-      try {
-        const customerOrder = await RatingService.getCustomerOrder(orderId);
-        setOrder(customerOrder);
-      } catch (err) {
-        console.error("Greška pri dobavljanju porudžbine:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
+    if (step === 4) {
+      const timeout = setTimeout(() => {
+        localStorage.removeItem("orderId");
+        localStorage.removeItem("courierId");
+        localStorage.removeItem("restaurantId");
+        setOrderId(null);
+        setCourierId(null);
+        setRestaurantId(null);
+        setStep(1);
+      }, 5000); // 3 sekunde pauze pre resetovanja
 
-    fetchOrder();
-  }, [orderId]);
+      return () => clearTimeout(timeout);
+    }
+  }, [step]);
 
-  if (loading) {
-    return <p>⏳ Učitavam porudžbinu...</p>;
+  // Ako nema orderId, prikazuj poruku da se čeka nova porudžbina
+  if (!orderId) {
+    return (
+      <div className="order-rating-wizard">
+        <p>🕓 Čekamo novu porudžbinu...</p>
+      </div>
+    );
   }
 
   return (
@@ -41,22 +46,13 @@ export default function OrderFlow() {
 
       {/* Step content */}
       {step === 1 && (
-        <>
-          <DeliveryTracking
-            order={order}
-            onCompleted={() => setStep(2)}
-            refreshKey={refreshKey} // prosleđujemo refreshKey
-          />
-          <button onClick={() => setRefreshKey(prev => prev + 1)}>
-            🔄 Ručno osveži status
-          </button>
-        </>
+        <DeliveryTracking onCompleted={() => setStep(2)} />
       )}
 
       {step === 2 && (
         <RatingForm
-          orderId={order.id}
-          targetId={order.courierId}
+          orderId={orderId}
+          targetId={courierId}
           targetType="courier"
           onSuccess={() => setStep(3)}
         />
@@ -64,8 +60,8 @@ export default function OrderFlow() {
 
       {step === 3 && (
         <RatingForm
-          orderId={order.id}
-          targetId={order.restaurantId}
+          orderId={orderId}
+          targetId={restaurantId}
           targetType="restaurant"
           onSuccess={() => setStep(4)}
         />

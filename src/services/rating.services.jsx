@@ -24,7 +24,7 @@ export async function getAverageRating(targetId, targetType) {
 
 // Kreiranje nove ocene
 export async function createRating(formData) {
-  const response = await api.post("/api/ratings", formData, {
+  const response = await api.post("/ratings", formData, {
     headers: { "Content-Type": "multipart/form-data" }
   });
   return response.data; // očekuje { ratingId }
