@@ -20,10 +20,22 @@ export const updateOrderStatus = async (orderId, newStatus, prepTime) => {
     return response.data;
   };
 
-export const getByCourier = async (courierId) => {
-    const response = await api.get(`orders/courier/${courierId}`);
+  export const getByCourier = async (courierId, from, to, page = 1, pageSize = 10) => {
+    const params = { page, pageSize };
+    if (from) params.from = new Date(from).toISOString(); // "2025-11-18T00:00:00.000Z"
+    if (to) params.to = new Date(to).toISOString();
+    
+  
+    const response = await api.get(`orders/courier/${courierId}`, { params });
+    return response.data; // { items, totalCount }
+  };
+  
+
+export const getByCustomer = async (customerId) => {
+    const response = await api.get(`orders/customer/${customerId}/deliveries-history`);
     return response.data;
 }
+
 
 export const createOrder = async (data) => {
     const response = await api.post(`orders/items`, data);

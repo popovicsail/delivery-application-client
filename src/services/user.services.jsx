@@ -99,6 +99,7 @@ export async function deleteAddress(id) {
   return response.data;
 }
 
+
 //PERMITS
 
 export async function getMenuPermissionAsync(menuId) {

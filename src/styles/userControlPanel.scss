@@ -416,6 +416,8 @@ $border-color: #ddd;
 }
 
 
+
+
 .orders-table {
   width: 100%;
   border-collapse: collapse;
@@ -464,6 +466,51 @@ $border-color: #ddd;
   }
 }
 
+.pagination {
+  margin-top: 1rem;
+
+  button {
+    margin-right: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: #6c757d;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+
+    &:hover {
+      background: #5a6268;
+    }
+  }
+}
+
+.filters {
+  margin-bottom: 1rem;
+
+  label {
+    margin-right: 1rem;
+  }
+
+  input{
+    margin-left: 10px;
+    border-radius: 5px;
+    width: 150px;
+  }
+
+  button {
+    margin-right: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: #6c757d;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+
+    &:hover {
+      background: #5a6268;
+    }
+  }
+}
 // detalji porudžbine
 .order-details {
   background: #fff;
