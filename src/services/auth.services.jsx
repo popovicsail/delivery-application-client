@@ -33,6 +33,33 @@ export const googleLogin = async (googleToken) => {
 }
 
 
+export const activateAccount = async (email, token) => {
+  const response = await api.get("/auth/activate-account", {
+    params: {
+      email: email,
+      token: token
+    },
+  });
+
+  return response.data;
+};
+
+
+export const forgotPassword = async (email) => {
+  const response = await api.post("/auth/forgot-password", { email });
+  return response.data;
+};
+
+export const resetPassword = async (email, token, newPassword, confirmPassword) => {
+  const response = await api.post("/auth/reset-password", {
+    email,
+    token,
+    newPassword,
+    confirmPassword,
+  });
+  return response.data;
+};
+
 export const logout = () => {
   sessionStorage.clear();
 };

@@ -18,6 +18,11 @@ import RestaurantsSearch from "./pages/RestaurantsSearch.jsx";
 import DishesSearch from "./pages/DishesSearch.jsx";
 import FeedbackSurvey from "./pages/Feedback/FeedbackSurvey.jsx";
 import CartContainer from "./components/shoppingCart/CartContainer.jsx";
+import ChatSupport from "./components/ChatSupport.jsx"
+import ActivateAccountPage from "./pages/ActivateAccountPage.jsx";
+import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
+import { ResetPasswordPage } from './pages/ResetPasswordPage';
+import ChatWidget from "./components/widgets/SupportChatWidget.jsx";
 
 const App = () => {
   return(
@@ -40,7 +45,13 @@ const App = () => {
         <Route path="/cart" element={<CartContainer/>}/>
         <Route path="/menuId/:menuId" element ={<MenuPage />} />
         <Route path="/survey" element ={<FeedbackSurvey />} />
+        <Route path="/support-chat" element={<ChatSupport />} />
+        <Route path="activate-account" element={<ActivateAccountPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
+        
       </Routes>
+      <ChatWidget />
     </div>
   );
 }

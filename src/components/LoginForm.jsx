@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../styles/main.scss";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { login, googleLogin } from "../services/auth.services"
 import { getMyAllergens, getProfile } from "../services/user.services"
 import { GoogleLogin } from '@react-oauth/google';
@@ -121,6 +121,10 @@ export const LoginForm = () => {
 
       <div id="form-feedback" style={{ marginTop: "1rem", fontWeight: "bold", color: isValid ? "green" : "red" }}>
         {feedback}
+      </div>
+
+      <div style={{ marginTop: '1rem', textAlign: 'center' }}>
+        <Link to="/forgot-password">Forgot your password?</Link>
       </div>
 
       <section className="form-section" style={{ display: 'flex', justifyContent: 'center' }}>

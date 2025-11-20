@@ -50,16 +50,12 @@ export const RegisterForm = () => {
   
     try {
       const response = await userService.createUser(payload);
-  
 
-      const token = response?.data?.token;
-      if (token) {
-        sessionStorage.setItem("token", token);
-        navigate("/home");
-        window.location.reload();
-      } else {
-        setErrors(["Registracija je prošla, ali token nije vraćen."]);
-      }
+      setLoading(false);
+
+      alert("Registration successful. Please check your email to confirm your account!")
+
+      navigate('/login')
     } catch (error) {
       const backendErrors = error?.response?.data;
       if (Array.isArray(backendErrors)) {
