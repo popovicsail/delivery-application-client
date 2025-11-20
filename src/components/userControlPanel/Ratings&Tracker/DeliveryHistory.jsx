@@ -36,7 +36,7 @@ export default function DeliveryHistory({ active }) {
     } else if (role === "Courier") {
       data = await getByCourier(userId, from || null, to || null, page, pageSize);
       // ovde backend vraća direktno niz
-      setOrders(data.item1 || []);
+      setOrders(data.items || []);
       setTotalCount(data.totalCount || 0);
     }
   };
