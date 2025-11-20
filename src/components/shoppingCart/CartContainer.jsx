@@ -81,7 +81,6 @@ export default function CartContainer() {
     try {
       setLoading(true);
       const response = await updateUserData(data, id);
-
       setRefreshKey((prev) => prev + 1);
       setError('');
       alert('Porudzbina je zavrsena');

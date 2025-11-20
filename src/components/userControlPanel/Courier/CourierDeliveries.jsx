@@ -31,7 +31,7 @@ export default function CourierDeliveries({ active, courierId }) {
       const fetchOrders = async () => {
         try {
           const data = await orderService.getByCourier(userId);
-          setOrders(data.item1);
+          setOrders(data.items);
         } catch (err) {
           console.error("Greška pri dohvatanju dostava:", err);
         }

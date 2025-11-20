@@ -5,7 +5,7 @@ export default function DeliveryTracking({ onCompleted }) {
   const [status, setStatus] = useState("Loading");
   const [eta, setEta] = useState(null);
   const [items, setItems] = useState([]);
-  const orderId = localStorage.getItem("orderId");
+  const orderId = localStorage.getItem("orderId"); // ostaje samo za orderId
 
   const statusLabels = {
     Draft: "Draft",
@@ -37,26 +37,28 @@ export default function DeliveryTracking({ onCompleted }) {
     try {
       const customerOrder = await RatingService.getCustomerOrder(orderId);
 
+      // ostali ID‑evi i dalje se čuvaju u localStorage
       localStorage.setItem("restaurantId", customerOrder.restaurant.id);
       localStorage.setItem("courierId", customerOrder.courierId);
       localStorage.setItem("customerId", customerOrder.customerId);
 
-      console.log("Osvežen status:", customerOrder?.status);
-      setStatus(customerOrder?.status ?? "Loading");
+      const newStatus = customerOrder?.status ?? "Loading";
+      setStatus(newStatus);
+      setItems(customerOrder?.items ?? []);
 
-      if (!localStorage.getItem("eta") && customerOrder?.timeToPrepare) {
-        const now = new Date();
-        const etaCalc = new Date(now.getTime() + customerOrder.timeToPrepare * 60000);
-        localStorage.setItem("eta", etaCalc.toISOString());
+      // Reset u NaCekanju ili Zavrsena
+      if (newStatus === "NaCekanju" || newStatus === "Zavrsena") {
+        setEta(null);
+      } else if (customerOrder?.createdAt && customerOrder?.timeToPrepare) {
+        // Uvek računaj ETA na osnovu CreatedAt + timeToPrepare
+        const createdAt = new Date(customerOrder.createdAt);
+        const etaCalc = new Date(
+          createdAt.getTime() + customerOrder.timeToPrepare * 60000
+        );
         setEta(etaCalc);
-      } else {
-        const etaStored = localStorage.getItem("eta");
-        if (etaStored) {
-          setEta(new Date(etaStored));
-        }
       }
 
-      setItems(customerOrder?.items ?? []);
+      console.log("Osvežen status:", newStatus);
     } catch (err) {
       console.error("Greška pri osvežavanju statusa:", err);
     }
@@ -85,11 +87,18 @@ export default function DeliveryTracking({ onCompleted }) {
       <h4>📦 Status porudžbine</h4>
       <p>
         Trenutni status: <strong>{statusLabels[status] ?? status}</strong>
+        {status === "NaCekanju" && " ⏳"}
+        {status === "Prihvacena" && " ✅"}
+        {status === "Odbijena" && " ❌"}
+        {status === "CekaSePreuzimanje" && " 📦"}
+        {status === "Preuzeto" && " 🛵"}
+        {status === "DostavaUToku" && " 🚚"}
+        {status === "Zavrsena" && " 🎉"}
       </p>
 
-      {eta && (
+      {status !== "NaCekanju" && eta && (
         <p>
-          ⏰ Procena dostave: <strong>{formatTime24h(eta)}</strong>
+          Procena dostave: <strong>{formatTime24h(eta)} ⏰</strong>
         </p>
       )}
 
