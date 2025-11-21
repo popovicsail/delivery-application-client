@@ -28,7 +28,7 @@ const MenuPage = () => {
   const myAllergens = JSON.parse(sessionStorage.getItem('myAllergens'))
 
   useEffect(() => {
-    const roles = sessionStorage.getItem('myProfile') && JSON.parse(sessionStorage.getItem('myProfile')).user.roles;
+    const roles = sessionStorage.getItem('myProfile') && JSON.parse(sessionStorage.getItem('myProfile')).roles;
     setIsCustomer(roles && roles?.includes('Customer'));
   }, []);
 

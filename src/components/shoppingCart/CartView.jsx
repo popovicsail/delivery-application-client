@@ -94,6 +94,8 @@ export default function CartView({
         </section>
       </div>
 
+      
+
       <button onClick={(e) => {
         if (!draftOrder || (draftOrder.items.length < 1)) return;
         handleSubmitCases()
