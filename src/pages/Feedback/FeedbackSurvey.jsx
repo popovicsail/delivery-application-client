@@ -5,8 +5,7 @@ import { feedbackService } from "../../services/feedbackService";
 
 const myProfileJson = sessionStorage.getItem("myProfile");
 const myProfile = myProfileJson ? JSON.parse(myProfileJson) : null;
-const user = myProfile?.user;
-const roles = user?.roles || [];
+const roles = myProfile?.roles || [];
 
 export default function FeedbackSurvey() {
   const [answers, setAnswers] = useState([])
