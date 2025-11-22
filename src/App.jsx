@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route, BrowserRouter } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import "./styles/main.scss";
 import Header from "./components/Header.jsx";
 import Home from "./components/Home.jsx";
@@ -18,31 +18,40 @@ import RestaurantsSearch from "./pages/RestaurantsSearch.jsx";
 import DishesSearch from "./pages/DishesSearch.jsx";
 import FeedbackSurvey from "./pages/Feedback/FeedbackSurvey.jsx";
 import CartContainer from "./components/shoppingCart/CartContainer.jsx";
+import ChatSupport from "./components/ChatSupport.jsx"
+import ActivateAccountPage from "./pages/ActivateAccountPage.jsx";
+import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
+import { ResetPasswordPage } from './pages/ResetPasswordPage';
+import ChatWidget from "./components/widgets/SupportChatWidget.jsx";
 
 const App = () => {
   return(
-    <div id="main-container">
-      <BrowserRouter>
-        <Header />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/register" element = {<RegisterForm />} />
-          <Route path="/login" element = {<LoginForm />} />
-          <Route path="/admin" element = {<AdminPage />} />
-          <Route path="/adminCreate" element ={<UserForm />} />
-          <Route path="/controlPanel" element ={<ProfilePage />} />
-          <Route path="/restaurantsAdmin" element = {<RestaurantsAdmin />}/>
-          <Route path="/restaurantsOwner" element = {<RestaurantsOwner />}/>
-          <Route path="/restaurantForm/:id" element = {<RestaurantForm />}/>
-          <Route path="/createRestaurant" element = {<CreateRestaurant />}/>
-          <Route path="/workersRestaurant/:id" element = {<WorkersRestaurant />}/>
-          <Route path="/restaurantsSearch" element = {<RestaurantsSearch />}/>
-          <Route path="/DishesSearch" element = {<DishesSearch />}/>
-          <Route path="/cart" element={<CartContainer/>}/>
-          <Route path="/menuId/:menuId" element ={<MenuPage />} />
-          <Route path="/survey" element ={<FeedbackSurvey />} />
-        </Routes>
-    </BrowserRouter>
+    <div id="main-container">     
+      <Header />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/register" element = {<RegisterForm />} />
+        <Route path="/login" element = {<LoginForm />} />
+        <Route path="/admin" element = {<AdminPage />} />
+        <Route path="/adminCreate" element ={<UserForm />} />
+        <Route path="/controlPanel" element ={<ProfilePage />} />
+        <Route path="/restaurantsAdmin" element = {<RestaurantsAdmin />}/>
+        <Route path="/restaurantsOwner" element = {<RestaurantsOwner />}/>
+        <Route path="/restaurantForm/:id" element = {<RestaurantForm />}/>
+        <Route path="/createRestaurant" element = {<CreateRestaurant />}/>
+        <Route path="/workersRestaurant/:id" element = {<WorkersRestaurant />}/>
+        <Route path="/restaurantsSearch" element = {<RestaurantsSearch />}/>
+        <Route path="/DishesSearch" element = {<DishesSearch />}/>
+        <Route path="/cart" element={<CartContainer/>}/>
+        <Route path="/menuId/:menuId" element ={<MenuPage />} />
+        <Route path="/survey" element ={<FeedbackSurvey />} />
+        <Route path="/support-chat" element={<ChatSupport />} />
+        <Route path="activate-account" element={<ActivateAccountPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
+        
+      </Routes>
+      <ChatWidget />
     </div>
   );
 }
