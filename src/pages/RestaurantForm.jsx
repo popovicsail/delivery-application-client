@@ -13,7 +13,7 @@ const RestaurantForm = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const profile = JSON.parse(sessionStorage.getItem("myProfile"));
-  const roles = profile ? profile.user.roles : [];
+  const roles = profile ? profile.roles : [];
   const { register, handleSubmit, formState, reset, control, watch } = useForm({
     defaultValues: {
     name: '',

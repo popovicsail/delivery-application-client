@@ -7,7 +7,7 @@ export default function AllergensContainer({ active}) {
   const [loading, setLoading] = useState(false);
   const [alergens, setAlergens] = useState([]);
   const myProfile = JSON.parse(sessionStorage.getItem("myProfile"));
-  const roles = myProfile ? myProfile.user.roles : [];
+  const roles = myProfile ? myProfile.roles : [];
 
   // 1. Učitaj sve alergene odmah
   useEffect(() => {

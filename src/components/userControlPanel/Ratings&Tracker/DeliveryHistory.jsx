@@ -16,14 +16,14 @@ export default function DeliveryHistory({ active }) {
   const myProfile = myProfileRaw ? JSON.parse(myProfileRaw) : null;
 
   // normalizacija role
-  const roles = myProfile?.user?.roles;
+  const roles = myProfile?.roles;
   const role = Array.isArray(roles) ? roles[0] : roles;
 
   let userId;
   if (role === "Customer") {
-    userId = myProfile?.user?.customerId;
+    userId = myProfile.customerId;
   } else if (role === "Courier") {
-    userId = myProfile?.user?.courierId;
+    userId = myProfile.courierId;
   }
 
   const fetchHistory = async () => {
