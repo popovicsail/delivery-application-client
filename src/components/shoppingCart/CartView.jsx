@@ -41,7 +41,7 @@ export default function CartView({
       <ul>
         {draftOrder && draftOrder.items.map(item => (
           <li key={item.id}>
-            {item.name} x {item.quantity} = {item.price} RSD
+            {item.name} x {item.quantity} = {draftOrder.totalPrice} RSD
             <button onClick={() => removeFromCart(item.id)}>Ukloni Stavku</button>
           </li>
         ))}
