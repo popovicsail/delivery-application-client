@@ -8,7 +8,7 @@ export default function CourierDeliveries({ active, courierId }) {
   const [refreshKey, setRefreshKey] = useState(0);
 
   const myProfile = JSON.parse(sessionStorage.getItem("myProfile"));
-  const userId = myProfile?.user.courierId;
+  const userId = myProfile?.courierId;
 
   // mapa statusa za lepši ispis
   const statusLabels = {

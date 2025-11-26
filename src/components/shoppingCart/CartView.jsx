@@ -44,7 +44,11 @@ export default function CartView({
       <ul>
         {draftOrder && draftOrder.items.map(item => (
           <li key={item.id}>
-            {item.name} x {item.quantity} = {draftOrder.totalPrice} RSD
+            {item.quantity} x {`${item.name} `}
+            = {(item.dishPrice + item.optionsPrice) * item.quantity - (item.discountRate > 0 && item.discountRate < 1 
+            && new Date(item.discountExpireAt) > new Date() ? item.discountRate * item.dishPrice * item.quantity : 0)}  RSD
+            {item.discountRate > 0 && item.discountRate < 1 
+            && new Date(item.discountExpireAt) > new Date() ? <span style={{textDecoration: 'underline'}}>(<b style={{color: 'red'}}>-{item.discountRate * 100}%</b> <i>POPUST</i>)</span> : ` `}
             <button onClick={() => removeFromCart(item.id)}>Ukloni Stavku</button>
           </li>
         ))}
@@ -124,6 +128,8 @@ export default function CartView({
           <button className="buttons delete-btn" type="button" onClick={e => cancelOrder(draftOrder ? draftOrder.id : null)}>🛇 Otkazi</button>
         </section>
       </div>
+
+      
 
       <button
         disabled={

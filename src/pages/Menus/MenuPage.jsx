@@ -28,7 +28,7 @@ const MenuPage = () => {
   const myAllergens = JSON.parse(sessionStorage.getItem('myAllergens'))
 
   useEffect(() => {
-    const roles = sessionStorage.getItem('myProfile') && JSON.parse(sessionStorage.getItem('myProfile')).user.roles;
+    const roles = sessionStorage.getItem('myProfile') && JSON.parse(sessionStorage.getItem('myProfile')).roles;
     setIsCustomer(roles && roles?.includes('Customer'));
   }, []);
 
@@ -209,11 +209,13 @@ const MenuPage = () => {
 
   const handleSave = async (dish) => {
     const formData = new FormData();
-    formData.append("Name", dish.name)
-    formData.append("Type", dish.type)
-    formData.append("Price", dish.price)
-    formData.append("Description", dish.description)
-    formData.append("MenuId", menuId)
+    formData.append("Name", dish.name);
+    formData.append("Type", dish.type);
+    formData.append("Price", dish.price);
+    formData.append("DiscountAmount", dish.discountAmount);
+    formData.append("DiscountExpireAt", dish.discountExpireAt);
+    formData.append("Description", dish.description);
+    formData.append("MenuId", menuId);
     if (dish.allergens && dish.allergens.length > 0 ) {
       dish.allergens.forEach((a, i) => {
         formData.append(`AllergenIds[${i}]`, a.value);
@@ -224,7 +226,7 @@ const MenuPage = () => {
     }
     try {
       if (dish.id) {
-      formData.append("Id", dish.id)
+      formData.append("Id", dish.id);
       await dishService.update(dish.id, formData);
       setIsDishGroupOpen(true);
 

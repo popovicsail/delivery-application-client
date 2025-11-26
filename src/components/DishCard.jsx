@@ -38,6 +38,11 @@ const DishCard = ({ dish, highlighted, isInMenu, isOwnerHere, isCustomer, delete
                 <button className="delete-btn buttons" onClick={() => deleteDish(dish.id)}>Izbriši jelo</button>
             </section>
           )}
+          {dish.discountRate > 0 && dish.discountRate < 1 && new Date(dish.discountExpireAt) > new Date()
+            &&<div className="dish-discount-badge">
+                <p>{dish.discountRate * 100}% POPUST!</p>
+              </div>
+          }
         </div>
     </div>
   );

@@ -7,7 +7,37 @@ const DishForm = ({ dish, onClose, onSave }) => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [allergens, setAllergens] = useState([]);
-  const { control, register, handleSubmit, reset, formState: { errors } } = useForm();
+  const { control, register, handleSubmit, reset, watch, formState: { errors } } = useForm();
+  const discount = watch('discountAmount');
+  if (dish.discountRate && dish.discountRate > 0) {
+    dish.discountAmount = dish.discountRate * 100;
+  }
+
+  const isFutureDate = (value) => {
+    const selectedDate = new Date(value);
+    const currentDate = new Date();
+
+    return selectedDate > currentDate || 'Datum mora biti u buducnosti';
+  };
+
+  const formatDate = (inputString) => {
+    const date = new Date(inputString);
+    const pad = n => String(n).padStart(2, "0");
+
+    return(
+      date.getFullYear() + "-" +
+      pad(date.getMonth() + 1) + "-" +
+      pad(date.getDate()) + "T" +
+      pad(date.getHours()) + ":" +
+      pad(date.getMinutes())
+    );
+  }
+
+  if (dish.discountExpireAt && new Date(dish.discountExpireAt) > new Date()) {
+    const date = dish.discountExpireAt;
+    dish.discountExpireAt = formatDate(date);
+  }
+  
   
   const fetchAllAllergens = async () => {
     try {
@@ -53,6 +83,8 @@ const DishForm = ({ dish, onClose, onSave }) => {
         price: '',
         picture: '',
         type: '',
+        discountAmount: '',
+        discountExpireAt: '',
         allergens: []
       });
     }
@@ -109,7 +141,7 @@ const DishForm = ({ dish, onClose, onSave }) => {
             )}
           </div>
 
-          <div className="section-row">
+          <div className="section-row" style={{alignItems: 'start'}}>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               <label style={{ marginBottom: '5px' }}>Tip kuhinje:</label>
               <input type="text"
@@ -135,6 +167,36 @@ const DishForm = ({ dish, onClose, onSave }) => {
               {errors.price && (
                 <p style={{ color: 'red', marginTop: '5px' }}>
                   {errors.price.message}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div className="section-row" style={{alignItems: 'start'}}>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <label style={{ marginBottom: '5px' }}>Popust(%):</label>
+              <input type="number"
+                placeholder="Na primer: 20"
+                {...register('discountAmount', { min: { value: 0, message: 'Popust mora biti 0 ili veći' }, 
+                  max: { value: 100, message: 'Popust mora biti manji od 100%' } })}
+              />
+              {errors.discountAmount && (
+                <p style={{ color: 'red', marginTop: '5px' }}>
+                  {errors.discountAmount.message}
+                </p>
+              )}
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <label style={{ marginBottom: '5px' }}>Vazi do:</label>
+              <input type="datetime-local"
+                {...register('discountExpireAt', {
+                  required: discount ? 'Expiration is required when discount is set' : false,
+                  validate: discount ? isFutureDate : undefined,
+                })}
+              />
+              {errors.discountExpireAt && (
+                <p style={{ color: 'red', marginTop: '5px' }}>
+                  {errors.discountExpireAt.message}
                 </p>
               )}
             </div>
