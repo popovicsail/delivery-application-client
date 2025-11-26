@@ -7,7 +7,6 @@ import L from "leaflet";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 
-// ✅ Podesi default marker ikone
 L.Icon.Default.mergeOptions({
   shadowUrl: markerShadow,
 });
@@ -15,6 +14,8 @@ L.Icon.Default.mergeOptions({
 export default function DeliveryTracking({ onCompleted }) {
   const [status, setStatus] = useState("Loading");
   const [eta, setEta] = useState(null);
+  const [readyAt, setReadyAt] = useState(null);
+  const [deliveryMessageLines, setDeliveryMessageLines] = useState([]);
   const [items, setItems] = useState([]);
   const [showMap, setShowMap] = useState(false);
   const [courierLocation, setCourierLocation] = useState(null);
@@ -49,34 +50,29 @@ export default function DeliveryTracking({ onCompleted }) {
     if (!orderId) return;
     try {
       const customerOrder = await RatingService.getCustomerOrder(orderId);
+      localStorage.setItem("courierId", customerOrder.courierId);
       setCustomerOrder(customerOrder);
-
-      if (customerOrder?.restaurant?.id) {
-        localStorage.setItem("restaurantId", customerOrder.restaurant.id);
-      }
-      if (customerOrder?.courierId) {
-        localStorage.setItem("courierId", customerOrder.courierId);
-      }
-      if (customerOrder?.customerId) {
-        localStorage.setItem("customerId", customerOrder.customerId);
-      }
 
       const newStatus = customerOrder?.status ?? "Loading";
       setStatus(newStatus);
       setItems(customerOrder?.items ?? []);
 
-      // ETA
-      if (newStatus === "NaCekanju" || newStatus === "Zavrsena") {
-        setEta(null);
-      } else if (customerOrder?.createdAt && customerOrder?.timeToPrepare) {
-        const createdAt = new Date(customerOrder.createdAt);
-        const etaCalc = new Date(
-          createdAt.getTime() + customerOrder.timeToPrepare * 60000
-        );
-        setEta(etaCalc);
+      if (customerOrder?.estimatedReadyAt) {
+        setReadyAt(new Date(customerOrder.estimatedReadyAt));
       }
 
-      // Ako backend vraća poslednju lokaciju
+      if (customerOrder?.estimatedDeliveryAt) {
+        setEta(new Date(customerOrder.estimatedDeliveryAt));
+      }
+
+      if (customerOrder?.deliveryEstimateMessage) {
+        const lines = customerOrder.deliveryEstimateMessage
+          .split(".")
+          .map((line) => line.trim())
+          .filter((line) => line.length > 0);
+        setDeliveryMessageLines(lines);
+      }
+
       if (customerOrder?.courierLocation) {
         setCourierLocation(customerOrder.courierLocation);
       }
@@ -85,7 +81,6 @@ export default function DeliveryTracking({ onCompleted }) {
     }
   };
 
-  // 1️⃣ Polling statusa (svakih 5 sekundi)
   useEffect(() => {
     if (!orderId) return;
     fetchStatus();
@@ -93,7 +88,6 @@ export default function DeliveryTracking({ onCompleted }) {
     return () => clearInterval(interval);
   }, [orderId]);
 
-  // 2️⃣ SignalR konekcija za real-time lokaciju
   useEffect(() => {
     if (!orderId) return;
 
@@ -107,22 +101,18 @@ export default function DeliveryTracking({ onCompleted }) {
 
     conn.on("ReceiveLocation", (location) => {
       try {
-        console.log("📍 Nova lokacija primljena:", location);
         setCourierLocation({ lat: location.lat, lng: location.lng });
       } catch (err) {
-        console.error("❌ Greška pri obradi lokacije:", err);
+        console.error("Greška pri obradi lokacije:", err);
       }
     });
 
     const startConnection = async () => {
       try {
-        console.log("Pokušavam da povežem SignalR...");
         await conn.start();
-        console.log("✅ SignalR connected");
         await conn.invoke("JoinOrder", orderId);
-        console.log("✅ JoinOrder poslat za", orderId);
       } catch (err) {
-        console.error("❌ Greška pri startovanju SignalR konekcije:", err);
+        console.error("Greška pri startovanju SignalR konekcije:", err);
       }
     };
 
@@ -131,12 +121,11 @@ export default function DeliveryTracking({ onCompleted }) {
 
     return () => {
       conn.stop().catch((err) => {
-        console.error("❌ Greška pri zatvaranju konekcije:", err);
+        console.error("Greška pri zatvaranju konekcije:", err);
       });
     };
   }, [orderId]);
 
-  // 3️⃣ Ako je porudžbina završena
   useEffect(() => {
     if (status === "Zavrsena") {
       onCompleted?.();
@@ -157,10 +146,27 @@ export default function DeliveryTracking({ onCompleted }) {
         {status === "Zavrsena" && " 🎉"}
       </p>
 
-      {status !== "NaCekanju" && eta && (
+      {readyAt &&
+        (status === "Prihvacena" || status === "CekaSePreuzimanje") && (
+          <p>
+            Hrana spremna oko: <strong>{formatTime24h(readyAt)} 🍽️</strong>
+          </p>
+        )}
+
+      {eta && (
         <p>
           Procena dostave: <strong>{formatTime24h(eta)} ⏰</strong>
         </p>
+      )}
+
+      {deliveryMessageLines.length > 0 && (
+        <div className="delivery-message">
+          {deliveryMessageLines.map((line, idx) => (
+            <p key={idx}>
+              • {idx === 1 ? <strong>{line}.</strong> : `${line}.`}
+            </p>
+          ))}
+        </div>
       )}
 
       {items.length > 0 && (
@@ -183,9 +189,8 @@ export default function DeliveryTracking({ onCompleted }) {
             if (connection) {
               try {
                 await connection.invoke("GetCurrentLocation", orderId);
-                console.log("📥 GetCurrentLocation invokacija poslata za", orderId);
               } catch (err) {
-                console.error("❌ Greška pri povlačenju lokacije:", err);
+                console.error("Greška pri povlačenju lokacije:", err);
               }
             }
           }}
@@ -197,8 +202,34 @@ export default function DeliveryTracking({ onCompleted }) {
       {showMap && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <button className="close-btn" onClick={() => setShowMap(false)}>✖</button>
-            <h4>Lokacija kurira</h4>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "1rem",
+              }}
+            >
+              <h4>Lokacija kurira</h4>
+              <div style={{ display: "flex", gap: "0.5rem" }}>
+                <button onClick={() => setShowMap(false)}>✖ Zatvori</button>
+                <button
+                  onClick={async () => {
+                    if (connection) {
+                      try {
+                        await connection.invoke("GetCurrentLocation", orderId);
+                        console.log("🔄 Osvežavanje lokacije kurira...");
+                      } catch (err) {
+                        console.error("Greška pri osvežavanju lokacije:", err);
+                      }
+                    }
+                  }}
+                >
+                  🔄 Osveži lokaciju
+                </button>
+              </div>
+            </div>
+
             {courierLocation ? (
               <MapContainer
                 center={[courierLocation.lat, courierLocation.lng]}
