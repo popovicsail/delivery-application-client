@@ -15,16 +15,6 @@ import RestaurantsSearch from "./pages/RestaurantsSearch.jsx";
 import DishesSearch from "./pages/DishesSearch.jsx";
 import FeedbackSurvey from "./pages/Feedback/FeedbackSurvey.jsx";
 import CartContainer from "./components/shoppingCart/CartContainer.jsx";
-import ChatSupport from "./components/ChatSupport.jsx"
-import ActivateAccountPage from "./pages/ActivateAccountPage.jsx";
-import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
-import { ResetPasswordPage } from './pages/ResetPasswordPage';
-import ChatWidget from "./components/widgets/SupportChatWidget.jsx";
-import OwnerWrapper from "./pages/Owner/OwnerWrapper.jsx";
-import RestaurantOverview from "./pages/RestaurantOverview.jsx";
-import RestaurantWrapper from "./pages/Owner/RestaurantWrapper.jsx";
-import RestaurantForm from "./pages/Owner/RestaurantForm.jsx";
-import RestaurantOfferManage from "./pages/Owner/RestaurantOfferManage.jsx";
 
 const App = () => {
   return(
@@ -54,7 +44,7 @@ const App = () => {
         <Route path="activate-account" element={<ActivateAccountPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
-        
+        <Route path="/statistics" element ={<Statistics />} />
       </Routes>
       <ChatWidget />
     </div>

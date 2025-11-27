@@ -32,7 +32,7 @@ export default function AdminFeedbackDashboard() {
     totalCount: 0,
     totalPages: 1,
     pageNumber: 1,
-    pageSize: 1,
+    pageSize: 5,
   });
   const [loading, setLoading] = useState(true);
 
@@ -84,7 +84,7 @@ export default function AdminFeedbackDashboard() {
           sortOrder: "ASC",
           searchTerm: "",
           pageNumber: 1,
-          pageSize: 1,
+          pageSize: 5,
         });
 
         setFeedbacks(data.items || []);
@@ -203,7 +203,7 @@ export default function AdminFeedbackDashboard() {
   if (loading) return <span>Loading in progress...</span>;
 
   return (
-    <div className="survey-container admin-view">
+    <div className="survey-container">
       <h2>Analitika utisaka korisnika</h2>
 
       <div className="admin-controls">
