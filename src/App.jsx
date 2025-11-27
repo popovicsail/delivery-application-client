@@ -18,6 +18,7 @@ import RestaurantsSearch from "./pages/RestaurantsSearch.jsx";
 import DishesSearch from "./pages/DishesSearch.jsx";
 import FeedbackSurvey from "./pages/Feedback/FeedbackSurvey.jsx";
 import CartContainer from "./components/shoppingCart/CartContainer.jsx";
+import Statistics from "./pages/Statistics.jsx";
 
 const App = () => {
   return(
@@ -41,6 +42,7 @@ const App = () => {
           <Route path="/cart" element={<CartContainer/>}/>
           <Route path="/menuId/:menuId" element ={<MenuPage />} />
           <Route path="/survey" element ={<FeedbackSurvey />} />
+          <Route path="/statistics" element ={<Statistics />} />
         </Routes>
     </BrowserRouter>
     </div>

@@ -1,4 +1,4 @@
-export function toImageUrl(base64, mimeType = "image/png") {
+export function toImageUrl(base64: any, mimeType = "image/png") {
     if (!base64) return null;
   
     // Ako backend već vrati ceo data URI, samo ga prosledi
