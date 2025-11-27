@@ -6,7 +6,6 @@ import AddressView from "./AddressView";
 import CourierTabContainer from "./Courier/CourierTabContainer.jsx";
 import CourierDeliveries from "./Courier/CourierDeliveries.jsx";
 import VoucherList from "../customerComponents/VoucherList";
-import WorkersRestaurant from "../../pages/WorkersRestaurant.jsx";
 import RestaurantOrders from "./Owner/RestaurantOrders.jsx";
 import DeliveryHistory from "./Ratings&Tracker/DeliveryHistory.jsx";
 import OrderFlow from "./Ratings&Tracker/DeliverTracking&Review/OrderFlow.jsx";
@@ -71,12 +70,6 @@ export default function AccountPanel({
             {isCustomer && (
             <li className={isActive("voucher-list")}
             onClick={() => setActiveTab("voucher-list")}>Vaučeri
-            </li>
-            )}
-
-            {isOwner && (
-            <li className={isActive("workers-restaurant")}
-            onClick={() => setActiveTab("workers-restaurant")}>Radnici
             </li>
             )}
 
@@ -156,8 +149,6 @@ export default function AccountPanel({
         {isCourier && activeTab == "courier-view" && (<CourierTabContainer active={isActive("courier-view")} />)}
 
         {!isAdmin && isCustomer && activeTab == "voucher-list" && (<VoucherList vouchers={vouchers} active={isActive("voucher-list")}/>)}
-
-        {isOwner && activeTab == "workers-restaurant" && (<WorkersRestaurant isOwner={isOwner} />)}
         
         {isCourier && (<CourierDeliveries active={isActive("courier-delivery")} />)}
         

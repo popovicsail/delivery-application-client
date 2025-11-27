@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { getMyWorkers, getMyRestaurants, suspendWorker, unsuspendWorker } from "../services/restaurant.services.jsx"
-import "../styles/main.scss";
-import WorkerCard from "../components/WorkerCard.jsx"; 
-import WorkerForm from "../components/WorkerForm.jsx"
-import props from "../props/pp.png"
+import { getMyWorkers, getMyRestaurants, suspendWorker, unsuspendWorker } from "../../services/restaurant.services.jsx"
+import "../../styles/main.scss";
+import WorkerCard from "../../components/WorkerCard.jsx"; 
+import WorkerForm from "../../components/WorkerForm.jsx"
+import props from "../../props/pp.png"
 
-const WorkersRestaurant = ( {isOwner} ) => {
-  const [currentId, setCurrentId] = useState(null);
-  const [restaurants, setRestaurants] = useState([]);
+const RestaurantWorkers = ( {restaurantId} ) => {
   const [workers, setWorkers] = useState([]);
   const [selectedWorker, setSelectedWorker] = useState(null);
   const [component, setComponent] = useState("workers");
@@ -18,7 +16,7 @@ const WorkersRestaurant = ( {isOwner} ) => {
     const loadWorkers = async () => {
       try {
         setLoading(true);
-        const data = await getMyWorkers(currentId || restaurants[0].id);
+        const data = await getMyWorkers(restaurantId);
         setWorkers((prev) => (data && data.length > 0 ? data : []));
         setError('');
       } catch (error) {
@@ -28,35 +26,6 @@ const WorkersRestaurant = ( {isOwner} ) => {
           } else if (error.response.status === 401) {
             setError('Ova stranica je rezervisana samo za vlasnike restorana.');
             } else if (error.response.status === 500) {
-            setError('Greska na serveru. Pokusajte kasnije.');
-          } else {
-            setError(`Greska: ${error.response.status}`);
-          }
-        } else if (error.request) {
-          setError('Nema odgovora sa servera.');
-        } else {
-          setError('Doslo je do greske.');
-        }
-        console.error('Greska:', error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    const loadRestaurants = async () => {
-      try {
-        setLoading(true);
-        const data = await getMyRestaurants();
-        setRestaurants(data || []);
-        setRefreshKey((prev) => prev + 1);
-        setError('');
-      } catch (error) {
-        if (error.response) {
-          if (error.response.status === 404) {
-            setError('Vlasnik sa ovim id-em ne postoji ili ova ruta ne postoji.');
-          } else if (error.response.status === 401) {
-            setError('Ova stranica je rezervisana samo za vlasnike restorana.');
-          } else if (error.response.status === 500) {
             setError('Greska na serveru. Pokusajte kasnije.');
           } else {
             setError(`Greska: ${error.response.status}`);
@@ -131,47 +100,33 @@ const WorkersRestaurant = ( {isOwner} ) => {
         setLoading(false);
       }
     };
-  
-    useEffect(() => {
-      loadRestaurants();
-      if (restaurants && restaurants.length > 0) {
-        loadWorkers();
-      }
-    }, []);
 
     useEffect(() => {
-      if (restaurants && restaurants.length > 0) {
+      if (restaurantId) {
         loadWorkers();
       }
-    }, [refreshKey, currentId]);
+    }, [refreshKey, restaurantId]);
 
 
-  if (!isOwner) {
-    return (
-      <section>
-        <p>Ova sekcija je dostupna samo vlasnicima.</p>
-      </section>
-    );
-  }
   if (loading) return <div id="loadingSpinner" className="spinner"></div>;
   if (error) return <p style={{ color: 'red' }}>{error}</p>;
   return(
     <div id="workers-owner-container">
-      <div id="workers-restaurant-select-container">
-        <label>Radnici za restoran:</label>
-        <select value={currentId || (restaurants && restaurants.length > 0 && restaurants[0].id) || 0} onChange={(e) => setCurrentId(e.target.value)}>
-          {restaurants.map((r) => (
-            <option key={r.id} value={r.id}>{r.name}</option>
-          ))}
-        </select>
-        <div>
-        <button className="buttons create-btn" onClick={() => setComponent("register")} style={{justifySelf: 'end'}}>+ Registruj radnika</button>
-        </div>
+
+      <div className="restaurant-header">
+        <h1>Radnici Restorana</h1>
+
+        <div className="owner-restaurant-create-btn-wrapper">
+          <button className="buttons create-btn" onClick={() => setComponent("register")} style={{justifySelf: 'end'}}>+ Registruj radnika</button>
+        </div> 
       </div>
+
+       
       <div id="worker-cards-container">
-      {workers.map((w) => (
-        <WorkerCard key={w.id} isOwnerHere={true} handleSuspend={handleSuspend} handleUnsuspend={handleUnsuspend} worker={w} setSelectedWorker={setSelectedWorker} setComponent={setComponent}></WorkerCard>
-      ))}
+        {workers.length === 0 && <p>Trenutno nema registrovanih radnika za ovaj restoran.</p>}
+        {workers.map((w) => (
+          <WorkerCard key={w.id} isOwnerHere={true} handleSuspend={handleSuspend} handleUnsuspend={handleUnsuspend} worker={w} setSelectedWorker={setSelectedWorker} setComponent={setComponent}></WorkerCard>
+        ))}
       </div>
       {component == "register" && (
       <WorkerForm setComponent={setComponent} component={component} worker={null} setRefreshKey={setRefreshKey}></WorkerForm>
@@ -183,4 +138,4 @@ const WorkersRestaurant = ( {isOwner} ) => {
   );
 }
 
-export default WorkersRestaurant;
+export default RestaurantWorkers;

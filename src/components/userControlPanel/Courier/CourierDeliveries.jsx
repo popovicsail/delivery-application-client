@@ -49,7 +49,7 @@ export default function CourierDeliveries({ active, courierId }) {
   // akcije
   const pickUpDelivery = async (id) => {
     try {
-      await orderService.updateOrderStatus(id, 5);
+      await orderService.updateOrderStatus(id, "Preuzeto");
       setRefreshKey(prev => prev + 1);
     } catch (err) {
       console.error("Greška pri preuzimanju dostave:", err);
@@ -58,7 +58,7 @@ export default function CourierDeliveries({ active, courierId }) {
 
   const startDelivery = async (id) => {
     try {
-      await orderService.updateOrderStatus(id, 6);
+      await orderService.updateOrderStatus(id, "DostavaUToku");
       setRefreshKey(prev => prev + 1);
     } catch (err) {
       console.error("Greška pri pokretanju dostave:", err);
@@ -67,7 +67,7 @@ export default function CourierDeliveries({ active, courierId }) {
 
   const completeDelivery = async (id) => {
     try {
-      await orderService.updateOrderStatus(id, 7);
+      await orderService.updateOrderStatus(id, "Zavrsena");
       setRefreshKey(prev => prev + 1);
     } catch (err) {
       console.error("Greška pri završavanju dostave:", err);

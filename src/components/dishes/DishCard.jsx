@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
-import "../styles/main.scss";
+import "../../styles/main.scss";
+import statsIco from "../../props/bar-chart.png";
 
 const DishCard = ({ dish, highlighted, isInMenu, isOwnerHere, isCustomer, deleteDish, setSelectedDish, setIsFormOpen, clickForOrder }) => {
   const navigate = useNavigate();
@@ -11,10 +12,11 @@ const DishCard = ({ dish, highlighted, isInMenu, isOwnerHere, isCustomer, delete
       id: dish.id,
       price: dish.price,
       quantity: 1,
+      itemType: 'DISH',
       isOrdered: false,
       dishOptionGroups: []
     }) : !isInMenu ? navigate(`/menuId/${dish.menuId}`, { state: { highlightDishId: dish.id } }) : {})} 
-    className={`dish-card ${(!isInMenu || isCustomer) && "dish-card-hover"}`} id={highlighted ? "highlighted-dish" : ""}>
+    className={`dish-card ${(!isInMenu || isCustomer) ? "dish-card-hover" : ""}`} id={highlighted ? "highlighted-dish" : ""}>
       <div className="dish-info">
         <div className="dish-info-wrapper">
           <h2 className="dish-name" title={dish.name}>{dish.name}</h2>
@@ -31,17 +33,24 @@ const DishCard = ({ dish, highlighted, isInMenu, isOwnerHere, isCustomer, delete
           }
         </div>
         <div className="dish-image-wrapper">
-          <img className="dish-image" src={dish.picture && dish.picture.length > 0 ? dish.picture : "https://www.keralatourism.org/_next/image/?url=http%3A%2F%2F127.0.0.1%2Fktadmin%2Fimg%2Fpages%2Flarge-desktop%2Frice-dishes-1714219146_4b2d13389d18792a8c3d.webp&w=3840&q=75"} alt="" />
+          <img className="dish-image" src={dish.picture && dish.picture.length > 0 ? dish.picture : "https://ik.imagekit.io/munchery/blog/tr:w-768/the-10-dishes-that-define-moroccan-cuisine.jpeg"} alt="" />
+          
           {isOwnerHere && (
             <section className="section-row">
                 <button className="edit-btn buttons" onClick={() => { setSelectedDish(dish); setIsFormOpen(true);}}>Izmeni jelo</button>
                 <button className="delete-btn buttons" onClick={() => deleteDish(dish.id)}>Izbriši jelo</button>
             </section>
           )}
-          {dish.discountRate > 0 && dish.discountRate < 1 && new Date(dish.discountExpireAt) > new Date()
-            &&<div className="dish-discount-badge">
-                <p>{dish.discountRate * 100}% POPUST!</p>
-              </div>
+          {isOwnerHere && (
+            <div className="dish-stats-button">
+              <img src={statsIco} onClick={() => navigate(`/dish/${dish.id}/stats`)} />
+            </div>
+          )}
+
+          {dish.discountRate > 0 && dish.discountRate < 1 && new Date(dish.discountExpireAt) > new Date() &&
+            <div className="dish-discount-badge">
+              <p>{dish.discountRate * 100}% POPUST!</p>
+            </div>
           }
         </div>
     </div>

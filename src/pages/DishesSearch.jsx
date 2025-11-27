@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { dishService } from "../services/dishes.services.jsx"
-import DishCard from "../components/DishCard.jsx";
+import DishCard from "../components/dishes/DishCard.jsx";
 import "../styles/main.scss";
 
 const DishesSearch = () => {
   const [dishes, setDishes] = useState([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [sort, setSort] = useState(0);
+  const [sort, setSort] = useState("NAME_ASC"); //NAME_ASC, NAME_DESC, TYPE_ASC, TYPE_DESC, PRICE_ASC, PRICE_DESC
   const [page, setPage] = useState(1);
   const [pagination, setPagination] = useState({
     count: 0,
@@ -37,7 +37,7 @@ const DishesSearch = () => {
     setFilters((prev => ({
       ...prev, name: '', type: '', minPrice: '', allergicOnAlso: true
     })));
-    setSort(0);
+    setSort("NAME_ASC");
   }
 
   const loadDishes = async () => {
@@ -115,13 +115,13 @@ const DishesSearch = () => {
             <input type="checkbox" checked={(filters.allergicOnAlso == "false") || (filters.allergicOnAlso == false) ? false : true} name="allergicOnAlso" onChange={handleFilterChange} />
           </section>
           <h4>Sortiraj</h4>
-          <select value={sort} onChange={e => setSort(Number(e.target.value))} name="sortSelect">
-            <option value="0">Naziv Rastuce</option>
-            <option value="1">Naziv Opadajuce</option>
-            <option value="2">Tip Rastuce</option>
-            <option value="3">Tip Opadajuce</option>
-            <option value="4">Cena Rastuce</option>
-            <option value="5">Cena Opadajuce</option>
+          <select value={sort} onChange={e => setSort(e.target.value)} name="sortSelect">
+            <option value="NAME_ASC">Naziv Rastuce</option>
+            <option value="NAME_DESC">Naziv Opadajuce</option>
+            <option value="TYPE_ASC">Tip Rastuce</option>
+            <option value="TYPE_DESC">Tip Opadajuce</option>
+            <option value="PRICE_ASC">Cena Rastuce</option>
+            <option value="PRICE_DESC">Cena Opadajuce</option>
           </select>
           <section className="section-row">
             <button className="buttons-form" type="submit" onClick={loadDishes}>Primeni</button>

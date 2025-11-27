@@ -7,9 +7,9 @@ const DishForm = ({ dish, onClose, onSave }) => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [allergens, setAllergens] = useState([]);
-  const { control, register, handleSubmit, reset, watch, formState: { errors } } = useForm();
+  const { control, register, handleSubmit, reset, watch, formState: { errors } } = useForm({});
   const discount = watch('discountAmount');
-  if (dish.discountRate && dish.discountRate > 0) {
+  if (dish && dish.discountRate && dish.discountRate > 0) {
     dish.discountAmount = dish.discountRate * 100;
   }
 
@@ -33,7 +33,7 @@ const DishForm = ({ dish, onClose, onSave }) => {
     );
   }
 
-  if (dish.discountExpireAt && new Date(dish.discountExpireAt) > new Date()) {
+  if (dish && dish.discountExpireAt && new Date(dish.discountExpireAt) > new Date()) {
     const date = dish.discountExpireAt;
     dish.discountExpireAt = formatDate(date);
   }
@@ -80,12 +80,12 @@ const DishForm = ({ dish, onClose, onSave }) => {
       reset({
         name: '',
         description: '',
-        price: '',
-        picture: '',
         type: '',
-        discountAmount: '',
+        price: 0,
+        discountAmount: 0,
         discountExpireAt: '',
-        allergens: []
+        picture: null,
+        allergens: [],
       });
     }
   }, [dish, reset]);
@@ -177,7 +177,7 @@ const DishForm = ({ dish, onClose, onSave }) => {
               <label style={{ marginBottom: '5px' }}>Popust(%):</label>
               <input type="number"
                 placeholder="Na primer: 20"
-                {...register('discountAmount', { min: { value: 0, message: 'Popust mora biti 0 ili veći' }, 
+                {...register('discountAmount', {valueAsNumber: true, min: { value: 0, message: 'Popust mora biti 0 ili veći' }, 
                   max: { value: 100, message: 'Popust mora biti manji od 100%' } })}
               />
               {errors.discountAmount && (

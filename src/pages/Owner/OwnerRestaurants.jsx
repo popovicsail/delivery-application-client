@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { getMyRestaurants, deleteRestaurant } from "../services/restaurant.services.jsx"
-import "../styles/main.scss";
-import RestaurantCard from "../components/RestaurantCard.jsx";
+import { getMyRestaurants, deleteRestaurant } from "../../services/restaurant.services.jsx"
+import "../../styles/main.scss";
+import RestaurantCard from "../../components/RestaurantCard.jsx";
 
-const RestaurantsOwner = () => {
+const OwnerRestaurants = () => {
   const [restaurants, setRestaurants] = useState([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -76,7 +76,6 @@ const RestaurantsOwner = () => {
   if (error) return <p style={{ color: 'red' }}>{error}</p>;
   return(
     <div id="restaurants-owner-container">
-      <h3>Moji restorani</h3>
       <div id="cards-container">
         {restaurants.map((r) => (
           <RestaurantCard key={r.id} isForOwner={true} handleDelete={handleDelete} restaurant={r}></RestaurantCard>
@@ -86,4 +85,4 @@ const RestaurantsOwner = () => {
   );
 }
 
-export default RestaurantsOwner;
+export default OwnerRestaurants;
