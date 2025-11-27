@@ -89,6 +89,12 @@
     &:hover {
       background-color: #1677cc;
     }
+
+    &:disabled {
+      background-color: #ccc;   // posivljeno kad je disabled
+      color: #666;
+      cursor: not-allowed;
+    }
   }
 
   button.buttons,

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { validateAddress } from "../../services/user.services.jsx";
 import "../../styles/CartView.scss";
 
 export default function CartView({
@@ -13,6 +14,8 @@ export default function CartView({
 }) {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [selectedVoucher, setSelectedVoucher] = useState(null);
+  const [addressValidation, setAddressValidation] = useState(null);
+  const [validating, setValidating] = useState(false);
 
   /*const total = (items) => { 
     return items.reduce((sum, i) => {
@@ -55,19 +58,47 @@ export default function CartView({
 
       <label>
       Adresa za dostavu:
-          <select required={true}
-              value={selectedAddress && selectedAddress.id || ""}
-              onChange={(e) => setSelectedAddress(addresses?.find(v => v.id === e.target.value) || null)}
-          >
-              <option value="">Izaberi adresu</option>
+      <select
+        required={true}
+        value={selectedAddress?.id || ""}
+        onChange={async (e) => {
+          const addr = addresses?.find(v => v.id === e.target.value) || null;
+          setSelectedAddress(addr);
+          const payload = {
+            address : `${addr.streetAndNumber}, ${addr.city}`,
+            restaurantCity: draftOrder.restaurant.address.city
+          };
+
+          if (addr) {
+            setValidating(true);
+            try {
+              const result = await validateAddress(payload);
+              setAddressValidation(result);
+            } catch (err) {
+              setAddressValidation({ isValid: false});
+            } finally {
+              setValidating(false);
+            }
+          } else {
+            setAddressValidation(null);
+          }
+        }}
+        
+      >
+         <option value="">Izaberi adresu</option>
               {addresses.map(addr => (
               <option key={addr.id} value={addr.id}>
                   {addr.streetAndNumber}, {addr.city}
               </option>
               ))}
-          </select>
+      </select>
+      {validating && <span>Validacija adrese...</span>}
+      {addressValidation && !addressValidation.isValid && (
+        <span style={{ color: "red" }}>
+          {addressValidation.message}
+        </span>
+      )}
       </label>
-
       {/* Vaučeri */}
       <label>
         Vaučer:
@@ -100,10 +131,16 @@ export default function CartView({
 
       
 
-      <button onClick={(e) => {
-        if (!draftOrder || (draftOrder.items.length < 1)) return;
-        handleSubmitCases()
-        }}className="order-btn">
+      <button
+        disabled={
+          !addressValidation?.isValid || validating || !selectedAddress
+        }
+        onClick={(e) => {
+          if (!draftOrder || draftOrder.items.length < 1) return;
+          handleSubmitCases();
+        }}
+        className="order-btn"
+      >
         Pošalji porudžbinu
       </button>
     </div>
