@@ -11,7 +11,7 @@ export default function CartContainer() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [refreshKey, setRefreshKey] = useState(0);
-  const userId = JSON.parse(sessionStorage.getItem('myProfile')) && JSON.parse(sessionStorage.getItem('myProfile'))?.user?.id;
+  const userId = JSON.parse(sessionStorage.getItem('myProfile')) && JSON.parse(sessionStorage.getItem('myProfile')).id;
   const navigate = useNavigate();
 
   const handleRemoveFromCart = async (id) => {
@@ -81,7 +81,6 @@ export default function CartContainer() {
     try {
       setLoading(true);
       const response = await updateUserData(data, id);
-
       setRefreshKey((prev) => prev + 1);
       setError('');
       alert('Porudzbina je zavrsena');

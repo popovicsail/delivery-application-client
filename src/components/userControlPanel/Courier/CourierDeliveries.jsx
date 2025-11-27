@@ -8,30 +8,43 @@ export default function CourierDeliveries({ active, courierId }) {
   const [refreshKey, setRefreshKey] = useState(0);
 
   const myProfile = JSON.parse(sessionStorage.getItem("myProfile"));
-  const userId = myProfile?.user.courierId;
+  const userId = myProfile?.courierId;
+
+  // mapa statusa za lepši ispis
+  const statusLabels = {
+    Draft: "Draft",
+    NaCekanju: "Na čekanju",
+    Prihvacena: "Prihvaćena",
+    Odbijena: "Odbijena",
+    CekaSePreuzimanje: "Čeka se preuzimanje",
+    Preuzeto: "Preuzeto",
+    DostavaUToku: "Dostava u toku",
+    Zavrsena: "Završena",
+    Loading: "Učitavanje...",
+  };
 
   // povuci dostave sa pollingom na 5s
-useEffect(() => {
-  let interval;
+  useEffect(() => {
+    let interval;
 
-  if (active === "active" && userId) {
-    const fetchOrders = async () => {
-      try {
-        const data = await orderService.getByCourier(userId);
-        setOrders(data.item1);
-      } catch (err) {
-        console.error("Greška pri dohvatanju dostava:", err);
-      }
+    if (active === "active" && userId) {
+      const fetchOrders = async () => {
+        try {
+          const data = await orderService.getByCourier(userId);
+          setOrders(data.items);
+        } catch (err) {
+          console.error("Greška pri dohvatanju dostava:", err);
+        }
+      };
+
+      fetchOrders(); // odmah povuci jednom
+      interval = setInterval(fetchOrders, 5000); // ponavljaj na 5 sekundi
+    }
+
+    return () => {
+      if (interval) clearInterval(interval);
     };
-
-    fetchOrders(); // odmah povuci jednom
-    interval = setInterval(fetchOrders, 5000); // ponavljaj na 5 sekundi
-  }
-
-  return () => {
-    if (interval) clearInterval(interval); // očisti interval kad se tab zatvori ili promeni
-  };
-}, [active, userId, refreshKey]);
+  }, [active, userId, refreshKey]);
 
   // akcije
   const pickUpDelivery = async (id) => {
@@ -90,7 +103,7 @@ useEffect(() => {
                 <tr key={o.orderId}>
                   <td>{o.restaurant.name}</td>
                   <td>{o.deliveryAddress}</td>
-                  <td>{o.status}</td>
+                  <td>{statusLabels[o.status] ?? o.status}</td>
                   <td>{o.totalPrice} RSD</td>
                   <td>
                     <button
@@ -116,7 +129,7 @@ useEffect(() => {
                   {selectedOrder.restaurant.address.city}
                 </p>
                 <p><strong>Adresa kupca:</strong> {selectedOrder.deliveryAddress}</p>
-                <p><strong>Status:</strong> {selectedOrder.status}</p>
+                <p><strong>Status:</strong> {statusLabels[selectedOrder.status] ?? selectedOrder.status}</p>
                 <p><strong>Ukupno:</strong> {selectedOrder.totalPrice} RSD</p>
 
                 <h4>Stavke:</h4>

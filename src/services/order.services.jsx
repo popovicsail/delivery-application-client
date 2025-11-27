@@ -31,8 +31,10 @@ export const updateOrderStatus = async (orderId, newStatus, prepTime) => {
   };
   
 
-export const getByCustomer = async (customerId) => {
-    const response = await api.get(`orders/customer/${customerId}/deliveries-history`);
+export const getByCustomer = async (customerId, page = 1, pageSize = 10) => {
+    const params = { page, pageSize };
+
+    const response = await api.get(`orders/customer/${customerId}/deliveries-history`,{ params });
     return response.data;
 }
 

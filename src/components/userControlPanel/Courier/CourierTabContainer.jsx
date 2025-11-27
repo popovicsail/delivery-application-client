@@ -9,7 +9,7 @@ export default function CourierTabContainer({ active, profile }) {
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(true);
   const myProfile = JSON.parse(sessionStorage.getItem("myProfile"));
-  const roles = myProfile?.user.roles || [];
+  const roles = myProfile?.roles || [];
 
   useEffect(() => {
     if (!roles.includes("Courier")) return;

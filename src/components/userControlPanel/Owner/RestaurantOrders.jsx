@@ -6,11 +6,24 @@ export default function OwnerOrders({ active }) {
   const [restaurants, setRestaurants] = useState([]);
   const [selectedRestaurant, setSelectedRestaurant] = useState("");
   const [orders, setOrders] = useState([]);
-  const [selectedOrderId, setSelectedOrderId] = useState(null); // pristup 2: samo ID
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [showPrepTimeModal, setShowPrepTimeModal] = useState(false);
   const [prepTime, setPrepTime] = useState(20);
   const [refreshKey, setRefreshKey] = useState(0);
-  const [showCompleted, setShowCompleted] = useState(false); // filter toggle
+  const [showCompleted, setShowCompleted] = useState(false);
+
+  // mapa statusa za lepši ispis
+  const statusLabels = {
+    Draft: "Draft",
+    NaCekanju: "Na čekanju",
+    Prihvacena: "Prihvaćena",
+    Odbijena: "Odbijena",
+    CekaSePreuzimanje: "Čeka se preuzimanje",
+    Preuzeto: "Preuzeto",
+    DostavaUToku: "Dostava u toku",
+    Zavrsena: "Završena",
+    Loading: "Učitavanje...",
+  };
 
   // Fetch restaurants
   useEffect(() => {
@@ -26,7 +39,7 @@ export default function OwnerOrders({ active }) {
     }
   }, [active]);
 
-  // Fetch orders for selected restaurant + auto refresh every 10s
+  // Fetch orders for selected restaurant + auto refresh
   useEffect(() => {
     let interval;
     if (selectedRestaurant) {
@@ -39,7 +52,7 @@ export default function OwnerOrders({ active }) {
         }
       };
 
-      fetchOrders(); // initial
+      fetchOrders();
       interval = setInterval(fetchOrders, 5000);
     } else {
       setOrders([]);
@@ -50,14 +63,13 @@ export default function OwnerOrders({ active }) {
     };
   }, [selectedRestaurant, refreshKey]);
 
-  // Selected order from the same list the table uses
   const filteredOrders = showCompleted
     ? orders
     : orders.filter(o => o.status !== "Zavrsena");
 
   const selectedOrder = filteredOrders.find(o => o.orderId === selectedOrderId);
 
-  // Actions (use orderId consistently)
+  // Actions
   const acceptOrder = async (orderId) => {
     try {
       await orderService.updateOrderStatus(orderId, 2, prepTime);
@@ -135,7 +147,7 @@ export default function OwnerOrders({ active }) {
                         <tr key={o.orderId}>
                           <td>{o.customerName}</td>
                           <td>{o.deliveryAddress}</td>
-                          <td>{o.status}</td>
+                          <td>{statusLabels[o.status] ?? o.status}</td>
                           <td>{o.totalPrice} RSD</td>
                           <td>
                             <button onClick={() => setSelectedOrderId(o.orderId)}>
@@ -155,7 +167,7 @@ export default function OwnerOrders({ active }) {
               <h3>Detalji porudžbine</h3>
               <p><strong>Kupac:</strong> {selectedOrder.customerName}</p>
               <p><strong>Adresa:</strong> {selectedOrder.deliveryAddress}</p>
-              <p><strong>Status:</strong> {selectedOrder.status}</p>
+              <p><strong>Status:</strong> {statusLabels[selectedOrder.status] ?? selectedOrder.status}</p>
               <p><strong>Ukupno:</strong> {selectedOrder.totalPrice} RSD</p>
               <p><strong>Vreme pripreme:</strong> {selectedOrder.timeToPrepare} min</p>
 

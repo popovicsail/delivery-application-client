@@ -94,6 +94,13 @@ export async function updateAddress(id, payload) {
   return response.data;
 }
 
+export async function validateAddress(payload) {
+  const response = await api.post("/address/validate", payload, {
+    headers: { "Content-Type": "application/json" },
+  });
+  return response.data;
+}
+
 export async function deleteAddress(id) {
   const response = await api.delete(`/Customers/my-addresses/${id}`);
   return response.data;
