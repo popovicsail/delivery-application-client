@@ -173,7 +173,7 @@ export default function CartContainer() {
     return (
       <div className="cart">
         <h3>Korpa je prazna</h3>
-        <button onClick={(e) => navigate("/dishesSearch")}>Nazad na kupovinu</button>
+        <button onClick={(e) => navigate("/dishes/search")}>Nazad na kupovinu</button>
       </div>
     )
   }

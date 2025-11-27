@@ -23,7 +23,7 @@ const RestaurantForm = () => {
       const response = await createRestaurant(newRestaurant);
       setError('');
       alert('Uspesno ste dodali restoran');
-      navigate('/restaurantsAdmin');
+      navigate('/admin/restaurants');
     } catch (error) {
       if (error.response) {
         if (error.response.status === 400) {

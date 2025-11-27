@@ -16,8 +16,24 @@ export interface Dish {
 }*/
 
 export const dishService = {
-  getAll: async () => {
-    const response = await api.get("/dishes");
+  getAll: async (filters, sort) => {
+    const params = new URLSearchParams();
+    
+    if (filters) {
+      if (filters.allergicOnAlso) {
+        filters.allergicOnAlso = filters.allergicOnAlso.toString();
+        if (filters.allergicOnAlso) params.append("AllergicOnAlso", filters.allergicOnAlso);
+      }
+      if (filters.name) params.append("Name", filters.name);
+      if (filters.type) params.append("Type", filters.type);
+      if (filters.minPrice) params.append("MinPrice", filters.minPrice);
+      if (filters.maxPrice) params.append("MaxPrice", filters.maxPrice);
+      if (filters.restaurantId) params.append("RestaurantId", filters.restaurantId);
+    }
+    if (sort) {
+      params.append("sort", sort);
+    }
+    const response = await api.get(`/dishes/filtered?${params.toString()}`);
     return response.data;
   },
 

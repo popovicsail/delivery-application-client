@@ -1,11 +1,9 @@
 import React, { useState, useEffect, use } from "react";
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
-import DishForm from "./DishForm.jsx";
-import DishGroupForm from "./DishGroupForm.jsx";
-import { dishService } from "../../services/dishes.services.jsx";
-import { getMenuPermissionAsync } from "../../services/user.services.jsx";
-import { createOrder } from "../../services/order.services.jsx";
-import DishCard from "../../components/DishCard.jsx";
+import { dishService } from "../services/dishes.services.jsx";
+import { createOrder } from "../services/order.services.jsx";
+import DishCard from "../components/dishes/DishCard.jsx";
+import OfferCard from "../components/offers/OfferCard.jsx";
 
 const MenuPage = () => {
   const location = useLocation();
@@ -14,15 +12,17 @@ const MenuPage = () => {
   const [restaurantId, setRestaurantId] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [refreshKey, setRefreshKey] = useState(0);
-  const [selectedDish, setSelectedDish] = useState(null);
   const [dishes, setDishes] = useState([]);
-  const [isFormOpen, setIsFormOpen] = useState(false);
-  const [isOwnerHere, setIsOwnerHere] = useState(false);
-  const [isCustomer, setIsCustomer] = useState(false)
-  const [isDishGroupOpen, setIsDishGroupOpen] = useState(false);
+  const [offers, setOffers] = useState([]);
+  const [firstOfferIndex, setFirstOfferIndex] = useState(0);
+  const [isCustomer, setIsCustomer] = useState(false);
   const [pickedId, setPickedId] = useState('');
   const [order, setOrder] = useState([]);
+  const [offerAddedNotify, setOfferAddedNotify] = useState({
+    ind: 0,
+    quantity: 0
+  });
+  const [notifyWindowOpen, setNotifyWindowOpen] = useState(false);
   const navigate = useNavigate();
   
   const myAllergens = JSON.parse(sessionStorage.getItem('myAllergens'))
@@ -38,7 +38,7 @@ const MenuPage = () => {
   }
 
   const addDishToOrder = (dishObj) => {
-    if(order.reduce((has, dish) => has || dish.id === dishObj.id, false)) return;
+    if(order.some((dish) => dish.id === dishObj.id)) return;
     setOrder((prev) => [...prev, dishObj]);
   };
 
@@ -47,6 +47,23 @@ const MenuPage = () => {
       prev.map((dish) => (dish.id === dishId ? { ...dish, ...updatedData } : dish))
     );
   };
+
+  const addOfferToOrder = (offerObj) => {
+    const existingItem = order.find(item => item.id === offerObj.id);
+    const newQuantity = existingItem ? existingItem.quantity + 1 : 1;
+    if(existingItem) {
+      setOrder((prev) =>
+        prev.map((item) => (item.id === offerObj.id ? { ...item, quantity: item.quantity + 1 } : item))
+      );
+    } else {
+      setOrder((prev) => [...prev, { ...offerObj, quantity: 1 }]);
+    }
+
+    setOfferAddedNotify(prev => ({
+      ind: prev.ind + 1,
+      quantity: newQuantity,
+    }));
+  }
 
   const updateGroupsInOrder = (dishId, groupId, option, checked, groupType) => {
     setOrder(prevOrder =>
@@ -113,6 +130,11 @@ const MenuPage = () => {
     const filtered = order.filter((o) => o.isOrdered);
     const unstamped = filtered.map((o) => ({...o, id: o.id.replace('_', '')}));
     const payload = {restaurantId: restaurantId, items: unstamped};
+    if (unstamped.length == 0) {
+      alert('Niste izabrali nista da bi dodali u korpu!');
+      return;
+    }
+
     try {
       setLoading(true);
       const response = await createOrder(payload);
@@ -145,9 +167,11 @@ const MenuPage = () => {
 
   const fetchMenu = async () => {
     try {
+      setLoading(true);
       const data = await dishService.getMenuByid(menuId);
       setRestaurantId(data.restaurantId);
-      setDishes(data.dishes);
+      setDishes(data.dishes || []);
+      setOffers(data.offers || []);
     } catch (error) {
       if (error.response) {
         if (error.response.status === 404) {
@@ -168,38 +192,20 @@ const MenuPage = () => {
     }
   };
 
-  const fetchRestaurant = async () => {
-    const permit = JSON.parse(sessionStorage.getItem("permitRequest"));
-    if (!permit || permit != true) return;
-    try {
-      const response = await getMenuPermissionAsync(menuId);
-      setIsOwnerHere(response == true);
-    } catch (error) {
-      if (error.response) {
-        if (error.response.status === 404) {
-          setError("Jelo sa ovim id-em ne postoji ili pogresna ruta.");
-        } else if (error.response.status === 401) {
-          setError("Ova ruta je rezervisana samo za vlasnike restorana.");
-        } else if (error.response.status === 500) {
-          setError("Greska na serveru. Pokusajte kasnije.");
-        } else {
-          setError(`Greska: ${error.response.status}`);
-        }
-      } else if (error.request) {
-        setError("Nema odgovora sa servera.");
-      } else {
-        setError("Doslo je do greske.");
-      }
-      console.error("Greška pri slanju zahteva za permisije:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
     fetchMenu();
-    fetchRestaurant();
-  }, [refreshKey]);
+  }, [menuId]);
+
+  useEffect(() => {
+    if (!offerAddedNotify || offerAddedNotify.ind == 0) return;
+    setNotifyWindowOpen(true);
+
+    const t = setTimeout(() => {
+      setNotifyWindowOpen(false);
+    }, 1500);
+
+    return () => clearTimeout(t);
+  }, [offerAddedNotify]);
 
   const grouped = dishes.reduce((a, dish) => {
     if (!a[dish.type]) a[dish.type] = [];
@@ -207,119 +213,30 @@ const MenuPage = () => {
     return a;
   }, {});
 
-  const handleSave = async (dish) => {
-    const formData = new FormData();
-    formData.append("Name", dish.name);
-    formData.append("Type", dish.type);
-    formData.append("Price", dish.price);
-    formData.append("DiscountAmount", dish.discountAmount);
-    formData.append("DiscountExpireAt", dish.discountExpireAt);
-    formData.append("Description", dish.description);
-    formData.append("MenuId", menuId);
-    if (dish.allergens && dish.allergens.length > 0 ) {
-      dish.allergens.forEach((a, i) => {
-        formData.append(`AllergenIds[${i}]`, a.value);
-      });
-    }
-    if (dish.picture) {
-      formData.append("file", dish.picture[0]);
-    }
-    try {
-      if (dish.id) {
-      formData.append("Id", dish.id);
-      await dishService.update(dish.id, formData);
-      setIsDishGroupOpen(true);
-
-      const data = await dishService.getMenuByid(menuId);
-      fetchMenu();
-      } else {
-        const created = await dishService.create(formData);
-        setDishes((prev) => [...prev, created]);
-        setSelectedDish(created);
-        setIsDishGroupOpen(true);
-      }
-    } catch (error) {
-      if (error.response) {
-        if (error.response.status === 400) {
-          setError('Niste uneli validne podatke.');
-        } else if (error.response.status === 404) {
-          setError("Jelo sa ovim id-em ne postoji ili pogresna ruta.");
-        } else if (error.response.status === 401) {
-          setError("Ova ruta je rezervisana samo za vlasnike restorana.");
-        } else if (error.response.status === 500) {
-          setError("Greska na serveru. Pokusajte kasnije.");
-        } else {
-          setError(`Greska: ${error.response.status}`);
-        }
-      } else if (error.request) {
-        setError("Nema odgovora sa servera.");
-      } else {
-        setError("Doslo je do greske.");
-      }
-      console.error("Greska:", error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const deleteDish = async (id) => {
-    if (!window.confirm("Da li ste sigurni da zelite da uklonite jelo?")) {
-      return;
-    }
-    try {
-      setLoading(true);
-      await dishService.delete(id);
-      setDishes((prev) => prev.filter((d) => d.id !== id));
-      setError("");
-      alert("Uspesno ste uklonili jelo");
-    } catch (error) {
-      if (error.response) {
-        if (error.response.status === 404) {
-          setError("Ne postoji jelo sa ovim id-em.");
-        } else if (error.response.status === 500) {
-          setError("Greska na serveru. Pokusajte kasnije.");
-        } else {
-          setError(`Greska: ${error.response.status}`);
-        }
-      } else if (error.request) {
-        setError("Nema odgovora sa servera.");
-      } else {
-        setError("Doslo je do greske.");
-      }
-      console.error("Greska:", error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    return () => {
-      sessionStorage.removeItem('permitRequest');
-    };
-  }, []);
-
   if (loading) return <div id="loadingSpinner" className="spinner"></div>;
   if (error) return <p style={{ color: 'red' }}>{error}</p>;
   return (
-    <div style={{ padding: "20px" }}>
-      <h1 style={{ fontSize: "28px", marginBottom: "0", fontStyle: 'italic' }}>Glavni Menu</h1>
-      
-      {isOwnerHere && (
-        <button 
-          onClick={() => { setSelectedDish(null); setIsFormOpen(true);}}
-          style={{
-            marginBottom: "20px",
-            padding: "8px 14px",
-            borderRadius: "6px",
-            border: "none",
-            backgroundColor: "#4CAF50",
-            color: "white",
-            cursor: "pointer",
-            fontWeight: "bold",
-            transition: "background 0.3s", }}>
-          + Dodaj jelo
-        </button>
-      )}
+    <div style={{ padding: "1rem 3rem" }}>
+      <h1 style={{ fontSize: "28px", marginBottom: "0", fontStyle: 'italic', textAlign: 'center' }}>Glavni Menu</h1>
+
+      <div className="offers-container">
+        <h2>🔥 Aktuelne Ponude 🔥</h2>
+
+        {offers.length == 0 ? <p>Nema aktuelnih ponuda.</p> : <div className="offers-row">
+          <div className={`menu-offer-slide-btn-container ${firstOfferIndex == 0 ? "hidden" : ""}`}>
+            <button type="button" className="slide-btn left-slider" onClick={() => setFirstOfferIndex((prev) => prev - 4)}>&lt;</button>
+          </div>
+          
+          {offers.filter((o) => o.offerDishes?.length > 0).map((offer, i) => 
+            ((i >= firstOfferIndex && (i <= firstOfferIndex + 3))
+            && <OfferCard key={offer.id} offer={offer} isInMenu={true} isOwnerHere={false} isCustomer={isCustomer} addToOrder={addOfferToOrder}/>
+          ))}
+          <div className={`menu-offer-slide-btn-container 
+            ${firstOfferIndex >= (offers ? offers.filter((o) => o.offerDishes?.length > 0).length - 4 : firstOfferIndex) ? "hidden" : ""}`}>
+            <button type="button" className="slide-btn right-slider" onClick={() => setFirstOfferIndex((prev) => prev + 4)}>&gt;</button>
+          </div>
+        </div>}
+      </div>
 
       {Object.keys(grouped).map((type) => (
         <div className="dish-type-row" key={type} style={{ marginBottom: "30px" }}>
@@ -327,9 +244,8 @@ const MenuPage = () => {
           <div className="dishes-row">
             {grouped[type].map((dish) => (
               <div className="dish-n-order-wrapper" key={dish.id}>
-                <DishCard  dish={dish} isInMenu={true} isOwnerHere={isOwnerHere} isCustomer={isCustomer} 
-                deleteDish={deleteDish} setSelectedDish={setSelectedDish} setIsFormOpen={setIsFormOpen} 
-                clickForOrder={handleClickForOrder} highlighted={highlightDishId == dish.id}></DishCard>
+                <DishCard  dish={dish} isInMenu={true} isOwnerHere={false} isCustomer={isCustomer} 
+                  clickForOrder={handleClickForOrder} highlighted={highlightDishId == dish.id}></DishCard>
                 <div className={(isCustomer && pickedId == dish.id) ? "dish-order-window" : "hidden"} key={pickedId == dish.id ? `${dish.id}-open` : `${dish.id}-closed`}>
                   <section className="section-row" style={{justifyContent: 'flex-start', width: 'fit-content'}}>
                     <label>Broj porcija:</label>
@@ -387,22 +303,13 @@ const MenuPage = () => {
           </div>
         </div>
       ))}
-      <button className={!isCustomer ? "hidden" : "menu-order-btn buttons edit-btn"} 
-      onClick={e => saveOrder()}>Poruči{(order && order.filter(o => o.isOrdered).length > 0) && `(${order.filter(o => o.isOrdered).length})`}</button>
+      <button className={!isCustomer ? "hidden" : "menu-order-btn buttons edit-btn"} onClick={e => saveOrder()}>
+          Poruči{(order && order.filter(o => o.isOrdered).length > 0) && `(${order.filter(o => o.isOrdered).length})`}
+      </button>
 
-      {isFormOpen && (
-        <DishForm
-          dish={selectedDish}
-          onClose={() => setIsFormOpen(false)}
-          onSave={handleSave}
-        />
-      )}
-      {isDishGroupOpen && (
-      <DishGroupForm
-        dish={selectedDish}
-        onClose={(freshDish) => {setIsDishGroupOpen(false); setRefreshKey(refreshKey + 1)}}
-      />
-    )}
+      <div className={`offer-added-notify ${notifyWindowOpen ? "" : "hidden"}`}>
+        <p>{offerAddedNotify.quantity}</p>
+      </div>
     </div>
   );
 };

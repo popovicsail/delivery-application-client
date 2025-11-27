@@ -71,7 +71,7 @@ const RestaurantsAdmin = () => {
   };
 
   const handleEdit = (id) => {
-    navigate("/restaurantForm/" + id)
+    navigate("/admin/restaurants/" + id + "/edit")
   }
 
   useEffect(() => {
@@ -87,7 +87,7 @@ const RestaurantsAdmin = () => {
     <div id="restaurants-admin-container">
       <h3>Administrativni prikaz restorana</h3>
       <div>
-      <button id="to-create-restaurant" className="buttons create-btn" type="button" onClick={(e) => navigate("/createRestaurant")}>Kreiraj restoran</button>
+      <button id="to-create-restaurant" className="buttons create-btn" type="button" onClick={(e) => navigate("/admin/restaurants/create")}>Kreiraj restoran</button>
 
       <table>
         <thead>

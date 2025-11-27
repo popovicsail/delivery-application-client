@@ -64,7 +64,7 @@ const Header = () => {
       <nav>
         <ul className="nav-list">
           <li id={current === "/" ? "current" : ""}><Link to="/">Početna</Link></li>
-          <li id={current === "/restaurantsSearch" ? "current" : ""}><Link to="/restaurantsSearch">Pretraga Restorana</Link></li>
+          <li id={current === "/restaurants/search" ? "current" : ""}><Link to="/restaurants/search">Pretraga Restorana</Link></li>
 
           {!isAuthenticated ? (
             <>
@@ -73,16 +73,16 @@ const Header = () => {
             </>
           ) : (
             <>
-              <li id={current === "/dishesSearch" ? "current" : ""}><Link to="/dishesSearch">Pretraga Jela</Link></li>
+              <li id={current === "/dishes/search" ? "current" : ""}><Link to="/dishes/search">Pretraga Jela</Link></li>
               {roles.includes("Administrator") && (
                 <>
                   <li id={current === "/admin" ? "current" : ""}><Link to="/admin">Admin Panel</Link></li>
-                  <li id={current === "/restaurantsAdmin" ? "current" : ""}><Link to="/restaurantsAdmin">Restorani</Link></li>
+                  <li id={current === "/admin/restaurants" ? "current" : ""}><Link to="/admin/restaurants">Restorani</Link></li>
                 </>
               )}
 
               {roles.includes("Owner") && (
-                <li id={current === "/restaurantsOwner" ? "current" : ""}><Link to="/restaurantsOwner">Moji Restorani</Link></li>
+                <li id={current === "/owner" ? "current" : ""}><Link to="/owner">Moji Restorani</Link></li>
               )}
               
               <li>

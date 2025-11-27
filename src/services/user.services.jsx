@@ -102,8 +102,8 @@ export async function deleteAddress(id) {
 
 //PERMITS
 
-export async function getMenuPermissionAsync(menuId) {
-  const response = await api.get(`/Owners/permit/menu/${menuId}`);
+export async function getRestaurantPermissionAsync(restaurantId) {
+  const response = await api.get(`/owners/permit/restaurant/${restaurantId}`);
   return response.data;
 }
 

@@ -96,7 +96,7 @@ const RestaurantCard = ({ restaurant, handleDelete, isForOwner, handleCardClick 
         </section>
         <p className="card-desc">{restaurant.description}</p>
         {isForOwner && <section className="section-row button-group">
-            <button onClick={() => navigate("/restaurantForm/" + restaurant.id)}>Izmeni</button>
+            <button onClick={() => navigate("/owner/restaurants/" + restaurant.id)}>Pristupi</button>
             <button onClick={() => handleDelete(restaurant.id)}>Ukloni</button>
         </section>}
     </div>
