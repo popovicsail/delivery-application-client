@@ -51,6 +51,7 @@ export default function DeliveryTracking({ onCompleted }) {
     try {
       const customerOrder = await RatingService.getCustomerOrder(orderId);
       localStorage.setItem("courierId", customerOrder.courierId);
+      localStorage.setItem("restaurantId", customerOrder.restaurant.id);
       setCustomerOrder(customerOrder);
 
       const newStatus = customerOrder?.status ?? "Loading";
