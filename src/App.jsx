@@ -25,6 +25,7 @@ import RestaurantOverview from "./pages/RestaurantOverview.jsx";
 import RestaurantWrapper from "./pages/Owner/RestaurantWrapper.jsx";
 import RestaurantForm from "./pages/Owner/RestaurantForm.jsx";
 import RestaurantOfferManage from "./pages/Owner/RestaurantOfferManage.jsx";
+import Statistics from "./pages/Statistics.jsx";
 
 const App = () => {
   return(
@@ -47,6 +48,7 @@ const App = () => {
         <Route path="/restaurants/:restaurantId/overview" element = {<RestaurantOverview />}/>
         <Route path="/restaurants/search" element = {<RestaurantsSearch />}/>
         <Route path="/dishes/search" element = {<DishesSearch />}/>
+        <Route path="/dish/:dishId/stats" element = {<Statistics />}/>
         <Route path="/cart" element={<CartContainer/>}/>
         <Route path="/menuId/:menuId" element ={<MenuPage />} />
         <Route path="/survey" element ={<FeedbackSurvey />} />

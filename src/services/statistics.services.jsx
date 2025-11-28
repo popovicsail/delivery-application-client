@@ -15,9 +15,9 @@ export const getRestaurantCanceledStats = async (id, from, to) => {
     return response.data;
 };
 
-export const getDishStats = async(restaurantId, dishId, from, to) => {
+export const getDishStats = async(dishId, from, to) => {
     const response = await api.get(
-        `Orders/restaurant/${restaurantId}/dishes/${dishId}/revenue?from=${from}&to=${to}`
+        `Orders/dishes/${dishId}/revenue?from=${from}&to=${to}`
     );
     return response.data;
 }

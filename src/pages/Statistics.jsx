@@ -15,6 +15,7 @@ import { Line } from "react-chartjs-2";
 import "../styles/main.scss";
 import { getRestaurantStats, getDishStats, getRestaurantCanceledStats } from "../services/statistics.services";
 import StatShortSummary from "../components/StatShortSummary";
+import { useParams } from "react-router-dom";
 
 ChartJS.register(
   CategoryScale,
@@ -27,13 +28,14 @@ ChartJS.register(
   Legend
 );
 
-const Statistics = ({restaurantId, isRestaurant = true, dishId}) => {
+const Statistics = ({restaurantId}) => {
     const [stats, setStats] = useState({})
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [customDate, setCustomDate] = useState(false);
     const myProfile = JSON.parse(sessionStorage.getItem("myProfile"));
-    const roles = myProfile ? myProfile.user.roles : [];                 //IZBRISATI .USER
+    const roles = myProfile ? myProfile.roles : [];
+    const { dishId } = useParams();
      const {
         register,
         setValue,
@@ -85,12 +87,12 @@ const Statistics = ({restaurantId, isRestaurant = true, dishId}) => {
         const finalStartDate = new Date(data.startDate).toISOString();
         const finalEndDate = new Date(data.endDate).toISOString();
 
-        if(isRestaurant){
+        if(restaurantId){
             if(roles.some((x)=>x.includes("Administrator"))){
                 try {
                     setLoading(true);
                     const stats = await getRestaurantCanceledStats(
-                        "e503a651-da5f-4746-9af5-4cc442b84f7e",   //ZAMENITI SA RESTAURANT ID KADA SE IMPLEMENTIRA
+                        restaurantId,
                         finalStartDate,
                         finalEndDate
                     );
@@ -106,7 +108,7 @@ const Statistics = ({restaurantId, isRestaurant = true, dishId}) => {
                 try {
                     setLoading(true);
                     const stats = await getRestaurantStats(
-                        "e503a651-da5f-4746-9af5-4cc442b84f7e",   //ZAMENITI SA RESTAURANT ID KADA SE IMPLEMENTIRA
+                        restaurantId,
                         finalStartDate,
                         finalEndDate
                     );
@@ -122,7 +124,7 @@ const Statistics = ({restaurantId, isRestaurant = true, dishId}) => {
                 try {
                     setLoading(true);
                     const stats = await getRestaurantCanceledStats(
-                        "e503a651-da5f-4746-9af5-4cc442b84f7e",   //ZAMENITI SA RESTAURANT ID KADA SE IMPLEMENTIRA
+                        restaurantId,
                         finalStartDate,
                         finalEndDate
                     );
@@ -138,8 +140,7 @@ const Statistics = ({restaurantId, isRestaurant = true, dishId}) => {
             try {
                 setLoading(true);
                 const stats = await getDishStats(
-                    "e503a651-da5f-4746-9af5-4cc442b84f7e",     //ZAMENITI SA RESTAURANT ID KADA SE IMPLEMENTIRA
-                    "53c3e5b4-cf09-4365-a5f8-242f5aef9405",     //ZAMENITI SA DISH ID KADA SE IMPLEMENTIRA
+                    dishId,
                     finalStartDate, 
                     finalEndDate
                 );
@@ -158,7 +159,7 @@ const Statistics = ({restaurantId, isRestaurant = true, dishId}) => {
         if (!stats.daily || stats.daily.length === 0)
             return { labels: [], datasets: [] };
 
-        const valueKey = isRestaurant ? (watch("statType") === "1" ? "revenue" : "count") : "revenue";
+        const valueKey = restaurantId ? (watch("statType") === "1" ? "revenue" : "count") : "revenue";
 
         const sorted = [...stats.daily].sort(
             (a, b) => new Date(a.date) - new Date(b.date)
@@ -168,7 +169,7 @@ const Statistics = ({restaurantId, isRestaurant = true, dishId}) => {
             labels: sorted.map((x) => new Date(x.date).toLocaleDateString("sr-RS")),
             datasets: [
                 {
-                    label: isRestaurant
+                    label: restaurantId
                         ? (watch("statType") === "1"
                             ? "Zarada (RSD)"
                             : "Otkazane porudžbine")
@@ -204,10 +205,10 @@ const Statistics = ({restaurantId, isRestaurant = true, dishId}) => {
 
     return (
         <div className="survey-container">
-            <h2>Statistika restorana</h2>
+            {/* <h2>Statistika restorana</h2> */}
 
             <form onSubmit={handleSubmit(onSubmit)} className="admin-controls">
-                {isRestaurant && !roles.some(x => x.includes("Administrator")) && (
+                {restaurantId && !roles.some(x => x.includes("Administrator")) && (
                     <div className="form-field">
                         <select
                             {...register("statType", { required: "Morate izabrati statistiku." })}
