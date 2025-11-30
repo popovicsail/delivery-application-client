@@ -80,8 +80,10 @@ export async function getMyAddresses() {
   return Array.isArray(response.data) ? response.data : [];
 }
 
-export async function addAddress(addressData) {
-  const response = await api.post("/Customers/my-addresses", addressData);
+export async function addAddress(latitude, longitude) {
+  const response = await api.post(
+    `/Customers/my-addresses?latitude=${latitude}&longitude=${longitude}`
+  );
   return response.data;
 }
 
