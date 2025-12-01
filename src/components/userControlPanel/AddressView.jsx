@@ -1,33 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
-import L from "leaflet";
-import markerIconPng from "leaflet/dist/images/marker-icon.png";
-import markerShadowPng from "leaflet/dist/images/marker-shadow.png";
 import * as userService from "../../services/user.services";
-import SearchControl from "./SearchControl";
+import MapModal from "../../components/widgets/MapWidget/MapModal.jsx"; // ✅ import modala
+import "../widgets/MapWidget/mapModal.scss";
 import "../../styles/userControlPanel.scss";
-
-// ✅ Custom marker ikona
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconUrl: markerIconPng,
-  shadowUrl: markerShadowPng,
-});
-
-const LocationPicker = ({ onLocationSelected }) => {
-  const [position, setPosition] = useState(null);
-
-  useMapEvents({
-    click(e) {
-      const { lat, lng } = e.latlng;
-      setPosition([lat, lng]);
-      onLocationSelected({ latitude: lat, longitude: lng });
-    },
-  });
-
-  return position ? <Marker position={position}></Marker> : null;
-};
 
 export default function AddressTab({ active }) {
   const [currentAddress, setCurrentAddress] = useState({ addresses: [] });
@@ -38,6 +13,7 @@ export default function AddressTab({ active }) {
   const [editingAddress, setEditingAddress] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showMapModal, setShowMapModal] = useState(false); // ✅ state za modal
 
   const refreshAddresses = async () => {
     try {
@@ -142,18 +118,9 @@ export default function AddressTab({ active }) {
         {!editingAddress && (
           <>
             <label>Dodaj adresu klikom na mapu</label>
-            <MapContainer
-              className="map-container"
-              center={[45.2671, 19.8335]}
-              zoom={13}
-            >
-              <TileLayer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                attribution="&copy; OpenStreetMap contributors"
-              />
-              <LocationPicker onLocationSelected={(coords) => setNewAddress({ ...newAddress, ...coords })} />
-              <SearchControl onLocationSelected={(coords) => setNewAddress({ ...newAddress, ...coords })} />
-            </MapContainer>
+            <button type="button" className="buttons-form" onClick={() => setShowMapModal(true)}>
+              Otvori mapu
+            </button>
 
             {newAddress.latitude && newAddress.longitude && (
               <form className="address-form" onSubmit={handleAddAddress}>
@@ -206,6 +173,15 @@ export default function AddressTab({ active }) {
         {error && <p style={{ color: "red" }}>{error}</p>}
         {loading && <div id="loadingSpinner" className="spinner"></div>}
       </div>
+
+      {/* ✅ Modal za mapu */}
+      <MapModal
+        isOpen={showMapModal}
+        onClose={() => setShowMapModal(false)}
+        onLocationSelected={(coords) => {
+          setNewAddress({ ...newAddress, ...coords });
+        }}
+      />
     </section>
   );
 }

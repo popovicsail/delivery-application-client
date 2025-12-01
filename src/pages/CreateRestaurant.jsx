@@ -3,40 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { createRestaurant } from "../services/restaurant.services.jsx";
 import { getAllOwners } from "../services/user.services.jsx";
-import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
-import L from "leaflet";
-import markerIconPng from "leaflet/dist/images/marker-icon.png";
-import markerShadowPng from "leaflet/dist/images/marker-shadow.png";
-import SearchControl from "../components/userControlPanel/SearchControl.jsx";
-import "../styles/restaurantForm.scss";
-
-// ✅ Custom marker ikona
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconUrl: markerIconPng,
-  shadowUrl: markerShadowPng,
-});
-
-const LocationPicker = ({ onLocationSelected }) => {
-  const [position, setPosition] = useState(null);
-
-  useMapEvents({
-    click(e) {
-      const { lat, lng } = e.latlng;
-      setPosition([lat, lng]);
-      onLocationSelected({ latitude: lat, longitude: lng });
-    },
-  });
-
-  return position ? <Marker position={position}></Marker> : null;
-};
+import "../styles/main.scss";
+import "../components/widgets/MapWidget/mapModal.scss";
+import MapModal from "../components/widgets/MapWidget/MapModal.jsx"; // ✅ import modala
 
 const RestaurantForm = () => {
   const [owners, setOwners] = useState([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [location, setLocation] = useState({ latitude: null, longitude: null });
+  const [showMapModal, setShowMapModal] = useState(false); // ✅ state za modal
 
   const { register, handleSubmit, formState } = useForm({
     defaultValues: {
@@ -135,18 +111,9 @@ const RestaurantForm = () => {
         {formState.errors.ownerId && <p style={{ color: 'red', margin: 0 }}>{formState.errors.ownerId.message}</p>}
 
         <label>Lokacija restorana</label>
-        <MapContainer
-          className="map-container"
-          center={[45.2671, 19.8335]}
-          zoom={13}
-        >
-          <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution="&copy; OpenStreetMap contributors"
-          />
-          <LocationPicker onLocationSelected={setLocation} />
-          <SearchControl className=".leaflet-control-geosearch" onLocationSelected={setLocation} />
-        </MapContainer>
+        <button type="button" className="buttons-form" onClick={() => setShowMapModal(true)}>
+          Odaberi lokaciju na mapi
+        </button>
 
         {location.latitude && location.longitude && (
           <p className="address-preview">
@@ -158,6 +125,15 @@ const RestaurantForm = () => {
         {error && <p style={{ color: 'red' }}>{error}</p>}
         <button className="buttons-form" type="submit">Kreiraj</button>
       </form>
+
+      {/* ✅ Modal za mapu */}
+      <MapModal
+        isOpen={showMapModal}
+        onClose={() => setShowMapModal(false)}
+        onLocationSelected={(coords) => {
+          setLocation(coords);
+        }}
+      />
     </div>
   );
 };
