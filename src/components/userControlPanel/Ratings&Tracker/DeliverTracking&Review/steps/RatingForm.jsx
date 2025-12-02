@@ -16,17 +16,17 @@ export default function RatingForm({ orderId, targetId, targetType, onSuccess })
 
     const formData = new FormData();
     formData.append("orderId", orderId);
-    formData.append("customerId", localStorage.getItem("customerId"));
     formData.append("targetType", targetType);
     formData.append("score", score);
     formData.append("comment", comment);
 
-    if (targetType === "restaurant" && image) {
-      formData.append("image", image);
+    if (targetType === "restaurant") {
       formData.append("targetId", localStorage.getItem("restaurantId"));
+      if (image) {
+        formData.append("image", image);
+      }
     }
     if (targetType === "courier") {
-      formData.append("image", image);
       formData.append("targetId", localStorage.getItem("courierId"));
     }
 

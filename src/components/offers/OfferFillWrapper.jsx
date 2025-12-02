@@ -73,7 +73,7 @@ const OfferFillWrapper = ({offer, setItems, items}) => {
   }
   
   const changeItemQuantity = (dishId, newQuantity, dish) => {
-    if(!newQuantity || newQuantity == NaN || newQuantity < 1){
+    if(!newQuantity || isNaN(newQuantity) || newQuantity < 1){
       removeItem(dishId);
       return;
     }

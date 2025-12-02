@@ -142,7 +142,7 @@ const RestaurantMenuOwner = ({restaurantId}) => {
   return (
     <div className="restaurant-menu-owner-container">
       <div className="restaurant-header">
-        <h1>Menu Restorana - Vlasnik</h1>
+        <h1>Menu Restorana</h1>
 
         <div className="owner-restaurant-create-btn-wrapper">
           <button className="buttons create-btn" onClick={() => { setSelectedDish(null); setIsFormOpen(true);}}

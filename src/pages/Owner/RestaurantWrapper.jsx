@@ -119,7 +119,7 @@ const RestaurantWrapper = () => {
       </div>
 
       <div className="owner-content-container">
-        {activeTab == "overview" && (<RestaurantOverview />)}
+        {activeTab == "overview" && (<RestaurantOverview isOwner={true}/>)}
         {activeTab == "menu" && (<RestaurantMenuOwner restaurantId={restaurantId}/>)}
         {activeTab == "offers" && (<RestaurantOffers restaurantId={restaurantId}/>)}
         {activeTab == "workers" && (<RestaurantWorkers restaurantId={restaurantId}/>)}

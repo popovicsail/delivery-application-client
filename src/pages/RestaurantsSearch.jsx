@@ -95,7 +95,7 @@ const RestaurantsSearch = () => {
     try {
       setLoading(true);
       const menu = await dishService.getRestaurantMenu(id);
-      navigate(`/menuId/${menu.id}`);
+      navigate(`/menu/${menu.id}`);
     } catch (error) {
       if (error.response) {
         if (error.response.status === 404) {
