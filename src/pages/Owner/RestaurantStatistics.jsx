@@ -6,7 +6,7 @@ const RestaurantStatistics = ({restaurantId}) => {
   return (
     <div className="owner-statistics-container">
       <div className="restaurant-header">
-        <h1>Statistika Vlasnika</h1>
+        <h1>Statistika Restorana</h1>
       </div>
        <Statistics 
           restaurantId={restaurantId}

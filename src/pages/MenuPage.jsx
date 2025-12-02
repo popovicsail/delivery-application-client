@@ -216,8 +216,13 @@ const MenuPage = () => {
   if (loading) return <div id="loadingSpinner" className="spinner"></div>;
   if (error) return <p style={{ color: 'red' }}>{error}</p>;
   return (
-    <div style={{ padding: "1rem 3rem" }}>
-      <h1 style={{ fontSize: "28px", marginBottom: "0", fontStyle: 'italic', textAlign: 'center' }}>Glavni Menu</h1>
+    <div style={{ padding: "1rem 3rem", position: 'relative' }}>
+      <h1 style={{ marginBottom: "0", fontStyle: 'italic', textAlign: 'center', color: '#694d27'}}>
+        <span style={{padding: '0.5rem 12rem', backgroundColor: '#d3b996ff', borderBottomLeftRadius: '60px', borderBottomRightRadius: '60px'}}>
+        Glavni Menu</span>
+      </h1>
+
+      <button className="to-restaurant-btn" onClick={(e) => navigate(`/restaurants/${restaurantId}/overview`)}>Poseti stranicu restorana</button>
 
       <div className="offers-container">
         <h2>🔥 Aktuelne Ponude 🔥</h2>

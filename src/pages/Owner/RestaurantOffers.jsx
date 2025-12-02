@@ -80,7 +80,7 @@ const RestaurantOffers = ({restaurantId}) => {
   return (
     <div id="restaurant-offers-container" style={{margin: '0'}}>
       <div className="restaurant-header">
-        <h1>Ponude Restorana - Vlasnik</h1>
+        <h1>Ponude Restorana</h1>
 
         <div className="owner-restaurant-create-btn-wrapper">
           <button className="buttons create-btn add-offer-btn" 
