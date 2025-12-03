@@ -81,7 +81,7 @@ export default function CartContainer() {
     try {
       setLoading(true);
       const response = await updateUserData(data, id);
-      setRefreshKey((prev) => prev + 1);
+      navigate('/controlPanel', {state: "prati-dostavu"});
       setError('');
       alert('Porudzbina je zavrsena');
     } catch (error) {

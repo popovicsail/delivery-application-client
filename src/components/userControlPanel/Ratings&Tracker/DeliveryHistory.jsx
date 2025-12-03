@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { 
     getByCustomer, 
-    getByCourier 
+    getByCourier ,
+    getBillPdf
 } from "../../../services/order.services.jsx";
 
 export default function DeliveryHistory({ active }) {
@@ -41,6 +42,32 @@ export default function DeliveryHistory({ active }) {
     }
   };
   
+  const handleBillPdf = async (orderId) => {
+    try {
+      const blob = await getBillPdf(orderId);
+
+      const url = window.URL.createObjectURL(new Blob([blob]));
+
+      const link = document.createElement('a');
+      link.href = url;
+      
+      link.setAttribute('download', `racun-${orderId}.pdf`); 
+
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+
+      window.URL.revokeObjectURL(url);
+
+    } catch (error) {
+      console.error("Greška pri preuzimanju računa:", error);
+      if (error.response && error.response.status === 404) {
+          alert("Račun za ovu porudžbinu još nije generisan.");
+      } else {
+          alert("Došlo je do greške prilikom preuzimanja računa.");
+      }
+    }
+  }
 
   useEffect(() => {
     if (active === "active") fetchHistory();
@@ -75,6 +102,7 @@ export default function DeliveryHistory({ active }) {
               <th>Status</th>
               <th>Datum</th>
               <th>Ukupno</th>
+              <th>Preuzmi Račun</th>
             </tr>
           </thead>
           <tbody>
@@ -85,6 +113,7 @@ export default function DeliveryHistory({ active }) {
                 <td>{o.status}</td>
                 <td>{new Date(o.createdAt).toLocaleString()}</td>
                 <td>{o.totalPrice} RSD</td>
+                <td><button onClick={() => handleBillPdf(o.orderId)}>Račun</button></td>
               </tr>
             ))}
           </tbody>
