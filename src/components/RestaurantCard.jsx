@@ -16,7 +16,6 @@ L.Icon.Default.mergeOptions({
 
 const RestaurantCard = ({ restaurant, handleDelete, isForOwner, handleCardClick }) => {
   const navigate = useNavigate();
-  const [showMap, setShowMap] = useState(false);
 
   function getWeekendTitle(workSchedule) {
     if (workSchedule.saturday && workSchedule.sunday) return 'Vikendom';
@@ -87,37 +86,6 @@ const RestaurantCard = ({ restaurant, handleDelete, isForOwner, handleCardClick 
         <p className="phone">☎️Telefon: {restaurant.phoneNumber}</p>
       </section>
       <p className="card-desc">{restaurant.description}</p>
-
-      {/* ✅ Dugme za prikaz mape */}
-      <button
-        onClick={(e) => {
-          e.stopPropagation(); // sprečava da klik ode do kartice
-          setShowMap(!showMap);
-        }}
-        className="buttons-form"
-      >
-        {showMap ? "Sakrij lokaciju" : "Prikaži lokaciju"}
-      </button>
-
-      {showMap && restaurant.address.latitude && restaurant.address.longitude ? (
-        <div className="leaflet-container" onClick={(e) => e.stopPropagation()}>
-          <MapContainer
-            center={[restaurant.address.latitude, restaurant.address.longitude]}
-            zoom={15}
-            style={{ height: "300px", width: "100%", marginTop: "1rem" }}
-          >
-            <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              attribution="&copy; OpenStreetMap contributors"
-            />
-            <Marker position={[restaurant.address.latitude, restaurant.address.longitude]}>
-              <Popup>{restaurant.name}</Popup>
-            </Marker>
-          </MapContainer>
-        </div>
-      ) : showMap && (
-        <p style={{ color: "gray" }}>Lokacija nije dostupna...</p>
-      )}
 
       {isForOwner && (
         <section className="section-row button-group">
