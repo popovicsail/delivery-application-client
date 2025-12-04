@@ -95,7 +95,7 @@ const RestaurantsSearch = () => {
     try {
       setLoading(true);
       const menu = await dishService.getRestaurantMenu(id);
-      navigate(`/menuId/${menu.id}`);
+      navigate(`/menu/${menu.id}`);
     } catch (error) {
       if (error.response) {
         if (error.response.status === 404) {
@@ -157,7 +157,7 @@ const RestaurantsSearch = () => {
       </div>
       <div id="cards-container">
         {restaurants.map((r) => (
-          <RestaurantCard key={r.id} isForOwner={false} restaurant={r} handleCardClick={handleCardClick}></RestaurantCard>
+          <RestaurantCard key={r.id} isForOwner={false} restaurant={r} handleCardClick={handleCardClick} isSuspended={r.isSuspended}></RestaurantCard>
         ))}
         <div id="buttons-row">
           <div id="buttons-box">

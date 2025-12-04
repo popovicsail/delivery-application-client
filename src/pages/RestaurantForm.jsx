@@ -88,7 +88,7 @@ const RestaurantForm = () => {
 
   const onMenuClick = () => {
     sessionStorage.setItem('permitRequest', true);
-    navigate("/menuId/" + menuId)
+    navigate("/menu/" + menuId)
   }
 
   useEffect(() => {

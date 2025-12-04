@@ -15,7 +15,7 @@ const DishCard = ({ dish, highlighted, isInMenu, isOwnerHere, isCustomer, delete
       itemType: 'DISH',
       isOrdered: false,
       dishOptionGroups: []
-    }) : !isInMenu ? navigate(`/menuId/${dish.menuId}`, { state: { highlightDishId: dish.id } }) : {})} 
+    }) : !isInMenu ? navigate(`/menu/${dish.menuId}`, { state: { highlightDishId: dish.id } }) : {})} 
     className={`dish-card ${(!isInMenu || isCustomer) ? "dish-card-hover" : ""}`} id={highlighted ? "highlighted-dish" : ""}>
       <div className="dish-info">
         <div className="dish-info-wrapper">

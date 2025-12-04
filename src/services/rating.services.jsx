@@ -2,7 +2,7 @@ import api from "./api.jsx";
 
 // Ocene za restoran sa paginacijom i filterima
 export async function getRestaurantRatings(restaurantId, page = 1, pageSize = 5, from = null, to = null) {
-  const response = await api.get(`/api/ratings/restaurant/${restaurantId}`, {
+  const response = await api.get(`/ratings/restaurant/${restaurantId}`, {
     params: { page, pageSize, from, to }
   });
   return response.data; // očekuje { ratings, totalCount }
@@ -10,7 +10,7 @@ export async function getRestaurantRatings(restaurantId, page = 1, pageSize = 5,
 
 // Ocene za kurira
 export async function getCourierRatings(courierId, page = 1, pageSize = 5, from = null, to = null) {
-  const response = await api.get(`/api/ratings/courier/${courierId}`, {
+  const response = await api.get(`/ratings/courier/${courierId}`, {
     params: { page, pageSize, from, to }
   });
   return response.data;
@@ -18,7 +18,7 @@ export async function getCourierRatings(courierId, page = 1, pageSize = 5, from 
 
 // Prosečna ocena
 export async function getAverageRating(targetId, targetType) {
-  const response = await api.get(`/api/ratings/average/${targetType}/${targetId}`);
+  const response = await api.get(`/ratings/average/${targetType}/${targetId}`);
   return response.data; // očekuje { averageScore }
 }
 
@@ -32,5 +32,5 @@ export async function createRating(formData) {
 
 export async function getCustomerOrder(orderId) {
   const response = await api.get(`/Orders/${orderId}`)
-  return response.data
+  return response.data;
 }
