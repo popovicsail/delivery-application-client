@@ -14,7 +14,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: markerShadowPng,
 });
 
-const RestaurantCard = ({ restaurant, handleDelete, isForOwner, handleCardClick }) => {
+const RestaurantCard = ({ restaurant, handleDelete, isForOwner, handleCardClick, isSuspended }) => {
   const navigate = useNavigate();
 
   function getWeekendTitle(workSchedule) {
@@ -79,7 +79,7 @@ const RestaurantCard = ({ restaurant, handleDelete, isForOwner, handleCardClick 
         </section>
       </section>
       <h3 className="restaurant-name">
-        {restaurant.name}{!isOpenFunction(restaurant.baseWorkSched) && <span style={{ color: "darkred" }}> - Closed</span>}
+        {restaurant.name}{!isOpenFunction(restaurant.baseWorkSched) || isSuspended && <span style={{ color: "darkred" }}> - Closed</span>}
       </h3>
       <section className="section-row r-card-contact-row" style={{ textDecoration: "underline" }}>
         <p className="address">📍Adresa: {restaurant.address.streetAndNumber + ", " + restaurant.address.city}</p>
