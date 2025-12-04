@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import "../styles/main.scss";
 
-const RestaurantCard = ({ restaurant, handleDelete, isForOwner, handleCardClick }) => {
+const RestaurantCard = ({ restaurant, handleDelete, isForOwner, handleCardClick, isSuspended }) => {
   const navigate = useNavigate();
 
   function getWeekendTitle(workSchedule) {
@@ -89,7 +89,7 @@ const RestaurantCard = ({ restaurant, handleDelete, isForOwner, handleCardClick 
                 <p>{getWeekendTime(restaurant.baseWorkSched)}</p>
             </section>
         </section>
-        <h3 className="restaurant-name">{restaurant.name}{!isOpenFunction(restaurant.baseWorkSched) && <span style={{color: "darkred"}}> - Closed</span>}</h3>
+        <h3 className="restaurant-name">{restaurant.name}{!isOpenFunction(restaurant.baseWorkSched) || isSuspended && <span style={{color: "darkred"}}> - Closed</span>}</h3>
         <section className="section-row r-card-contact-row" style={{textDecoration: "underline"}}>
             <p className="address">📍Adresa: {restaurant.address.streetAndNumber + ", " + restaurant.address.city}</p>
             <p className="phone">☎️Telefon: {restaurant.phoneNumber}</p>
