@@ -74,6 +74,10 @@ const RestaurantsAdmin = () => {
     navigate("/admin/restaurants/" + id + "/edit")
   }
 
+  const handleStats = (id) => {
+    navigate('/statistics', { state: {restaurantId: id}});
+  }
+
   useEffect(() => {
     loadRestaurants();
   }, [refreshKey]);
@@ -100,6 +104,7 @@ const RestaurantsAdmin = () => {
             <th>Vlasnik</th>
             <th style={{border: 0}}></th>
             <th style={{border: 0}}></th>
+            <th style={{border: 0}}></th>
           </tr>
         </thead>
         <tbody>
@@ -113,6 +118,7 @@ const RestaurantsAdmin = () => {
               <td>{r.owner.firstName + " " + r.owner.lastName}</td>
               <td><button className="delete-btn buttons" onClick={() => handleDelete(r.id, r.name)}>Delete</button></td>
               <td><button className="edit-btn buttons" onClick={() => handleEdit(r.id)}>Edit</button></td>
+              <td><button className="create-btn buttons" onClick={()=> handleStats(r.id)}>Statistika</button></td>
             </tr>
           ))}
         </tbody>

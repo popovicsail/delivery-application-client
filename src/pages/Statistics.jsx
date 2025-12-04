@@ -13,9 +13,9 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import "../styles/main.scss";
-import { getRestaurantStats, getDishStats, getRestaurantCanceledStats } from "../services/statistics.services";
+import { getRestaurantStats, getDishStats, getRestaurantCanceledStats, getReportPdf } from "../services/statistics.services";
 import StatShortSummary from "../components/StatShortSummary";
-import { useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 ChartJS.register(
   CategoryScale,
@@ -28,14 +28,15 @@ ChartJS.register(
   Legend
 );
 
-const Statistics = ({restaurantId}) => {
+const Statistics = ({restaurantId: propRestaurantId, dishId}) => {
     const [stats, setStats] = useState({})
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [customDate, setCustomDate] = useState(false);
     const myProfile = JSON.parse(sessionStorage.getItem("myProfile"));
     const roles = myProfile ? myProfile.roles : [];
-    const { dishId } = useParams();
+    const location = useLocation();
+    const restaurantId = propRestaurantId || location.state?.restaurantId;
      const {
         register,
         setValue,
@@ -173,7 +174,7 @@ const Statistics = ({restaurantId}) => {
                         ? (watch("statType") === "1"
                             ? "Zarada (RSD)"
                             : "Otkazane porudžbine")
-                        : "Broj porudžbina za jelo",
+                        : "Zarada porudžbina za jelo",
 
                     data: sorted.map((x) => x[valueKey]),
 
@@ -202,10 +203,20 @@ const Statistics = ({restaurantId}) => {
         }
     };
 
+    const getPdf = async () => {
+    try {
+        await getReportPdf(restaurantId);
+    } catch (error) {
+        console.error("Download failed:", error);
+    }
+};
+
 
     return (
         <div className="survey-container">
-            {/* <h2>Statistika restorana</h2> */}
+
+        {roles.some(x=>x.includes("Administrator")) && 
+            <h3>Statistika otkazanih porudžbina</h3>}
 
             <form onSubmit={handleSubmit(onSubmit)} className="admin-controls">
                 {restaurantId && !roles.some(x => x.includes("Administrator")) && (
@@ -259,6 +270,9 @@ const Statistics = ({restaurantId}) => {
                 )}
 
                 <button type="submit">Prikaži</button>
+                {roles.some(x=> x.includes("Owner")) && restaurantId &&
+                    <button type="button" className="pdf-btn" onClick={() => getPdf()}>Preuzmite PDF Izveštaj</button>
+                    }
             </form>
 
 

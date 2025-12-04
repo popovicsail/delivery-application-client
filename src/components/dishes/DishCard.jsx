@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import "../../styles/main.scss";
 import statsIco from "../../props/bar-chart.png";
 
-const DishCard = ({ dish, highlighted, isInMenu, isOwnerHere, isCustomer, deleteDish, setSelectedDish, setIsFormOpen, clickForOrder }) => {
+const DishCard = ({ dish, highlighted, isInMenu, isOwnerHere, isCustomer, deleteDish, setSelectedDish, setIsFormOpen, clickForOrder, onStatsClick }) => {
   const navigate = useNavigate();
   const myAllergens = JSON.parse(sessionStorage.getItem('myAllergens'))
 
@@ -43,7 +43,10 @@ const DishCard = ({ dish, highlighted, isInMenu, isOwnerHere, isCustomer, delete
           )}
           {isOwnerHere && (
             <div className="dish-stats-button">
-              <img src={statsIco} onClick={() => navigate(`/dish/${dish.id}/stats`)} />
+              <img src={statsIco}onClick={(e) => {
+                e.stopPropagation(); 
+                if (onStatsClick) onStatsClick(dish.id); 
+                }} />
             </div>
           )}
 
