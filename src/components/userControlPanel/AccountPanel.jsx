@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import ProfileView from "./ProfileView";
 import EditUserForm from "./EditUserForm";
 import AllergensContainer from "./AllergensContainer";
@@ -9,6 +9,8 @@ import VoucherList from "../customerComponents/VoucherList";
 import RestaurantOrders from "./Owner/RestaurantOrders.jsx";
 import DeliveryHistory from "./Ratings&Tracker/DeliveryHistory.jsx";
 import OrderFlow from "./Ratings&Tracker/DeliverTracking&Review/OrderFlow.jsx";
+import { useLocation } from 'react-router-dom';
+
 export default function AccountPanel({
   activeTab,
   setActiveTab,
@@ -32,7 +34,17 @@ export default function AccountPanel({
   vouchers,
   isCustomer,
 }) {
+  const location = useLocation();
+  
+  useEffect(() => {
+    if (location.state && location.state !== activeTab) {
+      setActiveTab(location.state);
+    }
+  }, [location.state]);
+
   const isActive = (tab) => (activeTab === tab ? "active" : "");
+
+
 
   return (
     <div className={`account-panel ${isAdmin ? "admin" : ""}`}>
