@@ -25,7 +25,21 @@ export default function FeedbackSurvey() {
         const data = await feedbackService.getAllQuestions();
         const userFeedbackData = await feedbackService.getAllFeedbacks();
         setQuestions(data);
-        setAnswers(userFeedbackData);
+
+        let initialAnswers = data.map(q => ({
+          questionId: q.id,
+          rating: 0,
+          comment: ""
+        }));
+
+        if (Array.isArray(userFeedbackData) && userFeedbackData.length > 0) {
+          initialAnswers = initialAnswers.map(a => {
+            const existing = userFeedbackData.find(f => f.questionId === a.questionId);
+            return existing ? { ...a, ...existing } : a;
+          });
+        }
+
+        setAnswers(initialAnswers);
 
       } catch (err) {
         console.error("Error while loading questions/answers:", err);
