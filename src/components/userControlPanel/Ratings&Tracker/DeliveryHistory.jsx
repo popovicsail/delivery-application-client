@@ -120,7 +120,7 @@ export default function DeliveryHistory({ active }) {
         </table>
       )}
 
-      <div className="pagination">
+      <div className="Pagination">
         {page > 1 && <button onClick={() => setPage(page - 1)}>Prethodna</button>}
         {page * pageSize < totalCount && <button onClick={() => setPage(page + 1)}>Sledeća</button>}
       </div>
