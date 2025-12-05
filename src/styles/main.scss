@@ -34,6 +34,33 @@ $primary-card-font-color: #3a2e1f;
   border: none;
 }
 
+@mixin home-paragraph {
+  margin: 0;
+  font-size: 1.3rem;
+  line-height: 2rem;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.6);
+}
+
+@keyframes slideLeftOut {
+  from { transform: translateX(0); opacity: 1; }
+  to   { transform: translateX(-120%); opacity: 0; }
+}
+
+@keyframes slideLeftIn {
+  from { transform: translateX(120%); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideRightOut {
+  from { transform: translateX(0); opacity: 1; }
+  to   { transform: translateX(120%); opacity: 0; }
+}
+
+@keyframes slideRightIn {
+  from { transform: translateX(-120%); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+
 
 html, body, #root {
   height: 100%;
@@ -133,7 +160,7 @@ button {
 
 .to-restaurant-btn {
   position: absolute;
-  top: 5%;
+  top: 1%;
   left: 6%;
   padding: 0.5rem 2rem;
   background-color: #bb7c41;
@@ -185,18 +212,18 @@ button {
 
 .offer-added-notify {
   position: fixed;
-  bottom: 3%;
-  right: 12%;
+  bottom: 6%;
+  right: 15%;
   height: fit-content;
   border-radius: 6px;
   overflow: hidden;
   transition: 0.2s all;
 
   p {
-    padding: 10px 15px;
+    padding: 10px 12px;
     margin: 0;
     font-weight: bold;
-    background-color: #2188379c;
+    background-color: #218837cb;
     color: white;
   }
 }
@@ -299,6 +326,34 @@ button {
   width: 1.9rem;
   border-radius: 6px;
   background-color: #554734;
+}
+
+.right-slider {
+  clip-path: polygon(20% 0, 50% 0, 100% 50%, 50% 100%, 20% 100%, 65% 50%);
+  transform: translateX(-10px);
+  font-size: 2rem;
+  padding: 5rem 2rem;
+  padding-bottom: 5.2rem;
+  background-color: rgba(58, 43, 29, 0.486);
+  border: none;
+  &:hover {
+    cursor: pointer;
+    opacity: 0.6;
+  }
+}
+
+.left-slider {
+  clip-path: polygon(50% 0, 80% 0, 35% 50%, 80% 100%, 50% 100%, 0 50%);
+  transform: translateX(10px);
+  font-size: 2rem;
+  padding: 5rem 2rem;
+  padding-bottom: 5.2rem;
+  background-color: rgba(58, 43, 29, 0.486);
+  border: none;
+  &:hover {
+    cursor: pointer;
+    opacity: 0.6;
+  }
 }
 
 #to-create-restaurant {
@@ -515,10 +570,211 @@ button {
 }
 
 
+//=========HOME==========
+
+#home-container {
+  padding: 0.5rem 2rem;
+  .intro-block {
+    width: 80%;
+    height: 30vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .wrapper {
+      background-color:#f0d4b5;
+      color: #363636;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 2px 6px 6px 0 rgba(0, 0, 0, 0.219);
+      p {
+       @include home-paragraph;
+      } 
+    }
+  }
+
+  .for-customer-block {
+    >.wrapper {
+      width: 75%;
+      display: flex;
+      justify-content: end;
+      >.wrapper {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: end;
+        width: fit-content;
+        background-color:#c5b47a;
+        color: #363636;
+        padding: 2rem;
+        border-radius: 16px;
+        box-shadow: 2px 6px 6px 0 rgba(0, 0, 0, 0.219);
+      }
+      .for-customer-p-one {
+        @include home-paragraph;
+        font-size: 1.8rem;
+      }
+  
+      .for-customer-p-two {
+        @include home-paragraph;
+      }
+    }
+
+    .for-customer-restaurants-block {
+      margin-top: 7vh;
+      display: flex;
+      justify-content: space-around;
+      padding-bottom: 5rem;
+      .most-often-block,  .most-recent-block{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color:#ebe0d3;
+        padding: 1.5rem;
+        padding-top: 1.5rem;
+        border-radius: 16px;
+        color: #614f3d;
+        h3 {
+          font-size: 1.6rem;
+          margin: 0;
+        }
+
+        .most-often-row, .most-recent-row {
+          display: flex;
+          justify-content: center;
+          gap: 2rem;
+          overflow: hidden;
+          padding: 2rem 0;
+          .restaurant-card {
+            flex-grow: 1;
+            max-width: 23vw;
+          }
+          .slide-left-out { animation: slideLeftOut 0.4s forwards; }
+          .slide-left-in  { animation: slideLeftIn 0.6s forwards; }
+          .slide-right-out { animation: slideRightOut 0.4s forwards; }
+          .slide-right-in { animation: slideRightIn 0.6s forwards; }
+          .wrapper {
+            display: flex;
+            align-items: center;
+            margin: 0;
+            
+            button {
+  
+            }
+            
+          }
+        }
+
+        p {
+
+        }
+      }
+
+      .most-recent-block {
+        h3 {
+
+        }
+
+        .most-often-row {
+          button {
+
+          }
+        }
+
+        p {
+
+        }
+      }
+    }
+  }
+
+  .p-wrapper {
+    margin-bottom: 3rem;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    .top-rated-p, .most-discounts-p {
+      @include home-paragraph;
+      width: fit-content;
+      margin: 0 5rem;
+      padding: 1.5rem;
+      border-radius: 16px;
+      background-color:#c0d2d8;
+      color: #525252;
+      box-shadow: 2px 6px 6px 0 rgba(0, 0, 0, 0.219);
+    }
+
+    .most-discounts-p {
+      margin: 0 5rem;
+      background-color: #e0b29f;
+      color: #525252;
+    }
+  }
+
+  .top-rated-block {
+    width: fit-content;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 5vh;
+    padding: 3rem;
+    background-color:#ebe0d3;
+    border-radius: 16px;
+
+    .restaurants-wrapper {
+      display: flex;
+      gap: 3rem;
+      .restaurant-card {
+        flex-grow: 1;
+        max-width: 23vw;
+      }
+    }
+    >p {
+      text-align: center;
+      font-size: 1.3rem;
+      color: #363636;
+    }
+  }
+
+
+  .most-discounts-block {
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    margin: 5vh auto;
+    padding: 3rem;
+    background-color:#ebe0d3;
+    border-radius: 16px;
+
+    .p-wrapper {
+      justify-content: end;
+      width: fit-content;
+    }
+
+    .restaurants-wrapper {
+      display: flex;
+      gap: 3rem;
+      .restaurant-card {
+        flex-grow: 1;
+        max-width: 23vw;
+      }
+    }
+    >p {
+      text-align: center;
+      font-size: 1.3rem;
+      color: #363636;
+    }
+  }
+}
+
+
 //ADMIN FORMA
 .formaDodaj,.form-section,.formaLogin,.adminUserCreate {
-  border-radius: 5px;
   @include container-column;
+  border-radius: 5px;
   
   input,select {
     width: 500px;
@@ -1060,6 +1316,7 @@ table {
   transform: translateY(-6px);
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.116), 0 6px 20px 0 rgba(0, 0, 0, 0.075);
   }
+  
   h4 {
     color: #70593b;
   }

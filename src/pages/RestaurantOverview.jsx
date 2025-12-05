@@ -107,20 +107,15 @@ const RestaurantOverview = ({isOwner}) => {
   }, []);
 
   function getWeekendTitle(workSchedule) {
-    if (!workSchedule) return "";
-    if (workSchedule.saturday && workSchedule.sunday) {
-      return 'Vikendom';
-    } else if (workSchedule.saturday && !workSchedule.sunday) {
-      return 'Subotom';
-    } else if (!workSchedule.saturday && workSchedule.sunday) {
-      return 'Nedeljom';
-    } else {
-      return 'Vikendom';
-    }
+    if (!workSchedule) return;
+    if (workSchedule.saturday && workSchedule.sunday) return 'Vikendom';
+    if (workSchedule.saturday && !workSchedule.sunday) return 'Subotom';
+    if (!workSchedule.saturday && workSchedule.sunday) return 'Nedeljom';
+    return 'Vikendom';
   }
 
   function getWeekendTime(workSchedule) {
-    if (!workSchedule) return "";
+    if (!workSchedule) return;
     if (workSchedule.saturday || workSchedule.sunday) {
       return (workSchedule.weekendStart.slice(0, 5) + ' - ' + workSchedule.weekendEnd.slice(0, 5) + 'h');
     } else {
@@ -175,24 +170,24 @@ const RestaurantOverview = ({isOwner}) => {
                 <div className="restaurant-overview-top-reviews">
                   <div className="restaurant-overview-review-card">
                     <div className="restaurant-overview-review-top-row">
-                      <p>Od: <strong>{(ratings.length > 0) && ratings[0] ? ratings[0].user?.firstName + ratings[0].user?.lastName : '-'}</strong></p>
+                      <p>Od: <strong>{(ratings.length > 0) && ratings[0] ? ratings[0].user?.firstName + " " + ratings[0].user?.lastName : '-'}</strong></p>
                       <p>Ocena: <strong>{(ratings.length > 0) && ratings[0] ? ratings[0].score : '-'}</strong></p>
                     </div>
-                    <p>{(ratings.length > 0) && ratings[0] ? ratings[0].comment : '-'}</p>
+                    <p>{(ratings.length > 0) && ratings[0] && ratings[0].comment?.length > 0 ? ratings[0].comment : '-'}</p>
                   </div>
                   <div className="restaurant-overview-review-card">
                     <div className="restaurant-overview-review-top-row">
-                      <p>Od: <strong>{(ratings.length > 1) && ratings[1] ? ratings[1].user?.firstName + ratings[1].user?.lastName : '-'}</strong></p>
+                      <p>Od: <strong>{(ratings.length > 1) && ratings[1] ? ratings[1].user?.firstName + " " + ratings[1].user?.lastName : '-'}</strong></p>
                       <p>Ocena: <strong>{(ratings.length > 1) && ratings[1] ? ratings[1].score : '-'}</strong></p>
                     </div>
-                    <p>{(ratings.length > 0) && ratings[1] ? ratings[1].comment : '-'}</p>
+                    <p>{(ratings.length > 0) && ratings[1] && ratings[0].comment?.length > 0 ? ratings[1].comment : '-'}</p>
                   </div>
                   <div className="restaurant-overview-review-card">
                     <div className="restaurant-overview-review-top-row">
-                      <p>Od: <strong>{(ratings.length > 2) && ratings[2] ? ratings[2].user?.firstName + ratings[2].user?.lastName : '-'}</strong></p>
+                      <p>Od: <strong>{(ratings.length > 2) && ratings[2] ? ratings[2].user?.firstName + " " + ratings[2].user?.lastName : '-'}</strong></p>
                       <p>Ocena: <strong>{(ratings.length > 2) && ratings[2] ? ratings[2].score : '-'}</strong></p>
                     </div>
-                    <p>{(ratings.length > 2) && ratings[2] ? ratings[2].comment : '-'}</p>
+                    <p>{(ratings.length > 2) && ratings[2] && ratings[0].comment?.length > 0 ? ratings[2].comment : '-'}</p>
                   </div>
                 </div>
               </div>

@@ -74,7 +74,7 @@ export const LoginForm = () => {
 
       setLoading(false);
       alert(`Dobrodošao, ${user.userName}!`);
-      navigate("/home");
+      navigate("/");
       window.location.reload();
 
     } catch (error) {

@@ -14,11 +14,12 @@ L.Icon.Default.mergeOptions({
   shadowUrl: markerShadowPng,
 });
 
-const RestaurantCard = ({ restaurant, handleDelete, isForOwner, handleCardClick }) => {
+const RestaurantCard = ({ restaurant, handleDelete, isForOwner, handleCardClick, animationClass, onAnimationEnd }) => {
   const navigate = useNavigate();
   const [showMap, setShowMap] = useState(false);
 
   function getWeekendTitle(workSchedule) {
+    if (!workSchedule) return;
     if (workSchedule.saturday && workSchedule.sunday) return 'Vikendom';
     if (workSchedule.saturday && !workSchedule.sunday) return 'Subotom';
     if (!workSchedule.saturday && workSchedule.sunday) return 'Nedeljom';
@@ -26,6 +27,7 @@ const RestaurantCard = ({ restaurant, handleDelete, isForOwner, handleCardClick 
   }
 
   function getWeekendTime(workSchedule) {
+    if (!workSchedule) return;
     if (workSchedule.saturday || workSchedule.sunday) {
       return (workSchedule.weekendStart.slice(0, 5) + ' - ' + workSchedule.weekendEnd.slice(0, 5) + 'h');
     } else {
@@ -64,8 +66,11 @@ const RestaurantCard = ({ restaurant, handleDelete, isForOwner, handleCardClick 
 
   return (
     <div
-      onClick={e => (!isForOwner && handleCardClick(restaurant.id))}
-      className={!isForOwner ? "restaurant-card restaurant-card-search-specific" : "restaurant-card"}
+      onClick={e => (!isForOwner && handleCardClick(restaurant.id))} onAnimationEnd={onAnimationEnd}
+      className={`restaurant-card ${!isForOwner ? "restaurant-card-search-specific" : ""} ${animationClass || ""}`}
+      style={{
+        pointerEvents: animationClass ? "none" : "auto"
+      }}
     >
       <section className="section-row">
         <img
