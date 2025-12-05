@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Outlet, useNavigate } from 'react-router-dom';
-import { getRestaurants, deleteRestaurant } from "../services/restaurant.services.jsx"
+import { getRestaurants, deleteRestaurant, changeSuspendStatus } from "../services/restaurant.services.jsx"
 import "../styles/main.scss";
 
 const RestaurantsAdmin = () => {
@@ -70,8 +70,48 @@ const RestaurantsAdmin = () => {
       }
   };
 
+  const handleChangeSuspendStatus = async (restaurantId, suspendStatus) => {
+    if (!window.confirm(`Are you sure you want to continue?`)) {
+      return;
+    }   
+    try {
+      setLoading(true);
+      let payload = {
+        IsSuspended: suspendStatus
+      }
+      const response = await changeSuspendStatus(restaurantId, payload)
+      setError('');
+      setRefreshKey((prev) => prev + 1);
+      alert(`Uspesno ste promenili status suspenzije restorana.`)
+    }
+    catch (error) {
+         if (error.response) {
+          if (error.response.status === 404) {
+            setError('Nije pronadjen nijedan restoran.');
+          } else if (error.response.status === 401) {
+            setError('Ova stranica je rezervisana samo za administratore.');
+            } else if (error.response.status === 500) {
+            setError('Greska na serveru. Pokusajte kasnije.');
+          } else {
+            setError(`Greska: ${error.response.status}`);
+          }
+        } else if (error.request) {
+          setError('Nema odgovora sa servera.');
+        } else {
+          setError('Doslo je do greske.');
+        }
+        console.error('Greska:', error.message);
+      } finally {
+        setLoading(false);
+      }
+  }
+
   const handleEdit = (id) => {
     navigate("/admin/restaurants/" + id + "/edit")
+  }
+
+  const handleStats = (id) => {
+    navigate('/statistics', { state: {restaurantId: id}});
   }
 
   useEffect(() => {
@@ -100,6 +140,8 @@ const RestaurantsAdmin = () => {
             <th>Vlasnik</th>
             <th style={{border: 0}}></th>
             <th style={{border: 0}}></th>
+            <th style={{border: 0}}></th>
+            <th style={{border: 0}}></th>
           </tr>
         </thead>
         <tbody>
@@ -113,6 +155,9 @@ const RestaurantsAdmin = () => {
               <td>{r.owner.firstName + " " + r.owner.lastName}</td>
               <td><button className="delete-btn buttons" onClick={() => handleDelete(r.id, r.name)}>Delete</button></td>
               <td><button className="edit-btn buttons" onClick={() => handleEdit(r.id)}>Edit</button></td>
+              <td><button className="create-btn buttons" onClick={()=> handleStats(r.id)}>Statistika</button></td>
+              {r.isSuspended ? <td><button className="change-suspend-status-btn buttons" onClick={() => handleChangeSuspendStatus(r.id, false)}>Unsuspend</button></td>
+                : <td><button className="change-suspend-status-btn buttons" onClick={() => handleChangeSuspendStatus(r.id, true)}>Suspend</button></td>}
             </tr>
           ))}
         </tbody>

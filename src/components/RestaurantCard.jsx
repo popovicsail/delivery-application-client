@@ -14,9 +14,8 @@ L.Icon.Default.mergeOptions({
   shadowUrl: markerShadowPng,
 });
 
-const RestaurantCard = ({ restaurant, handleDelete, isForOwner, handleCardClick, animationClass, onAnimationEnd }) => {
+const RestaurantCard = ({ restaurant, handleDelete, isForOwner, handleCardClick, animationClass, onAnimationEnd, isSuspended }) => {
   const navigate = useNavigate();
-  const [showMap, setShowMap] = useState(false);
 
   function getWeekendTitle(workSchedule) {
     if (!workSchedule) return;
@@ -85,44 +84,13 @@ const RestaurantCard = ({ restaurant, handleDelete, isForOwner, handleCardClick,
         </section>
       </section>
       <h3 className="restaurant-name">
-        {restaurant.name}{!isOpenFunction(restaurant.baseWorkSched) && <span style={{ color: "darkred" }}> - Closed</span>}
+        {restaurant.name}{!isOpenFunction(restaurant.baseWorkSched) || isSuspended && <span style={{ color: "darkred" }}> - Closed</span>}
       </h3>
       <section className="section-row r-card-contact-row" style={{ textDecoration: "underline" }}>
         <p className="address">📍Adresa: {restaurant.address.streetAndNumber + ", " + restaurant.address.city}</p>
         <p className="phone">☎️Telefon: {restaurant.phoneNumber}</p>
       </section>
       <p className="card-desc">{restaurant.description}</p>
-
-      {/* ✅ Dugme za prikaz mape */}
-      <button
-        onClick={(e) => {
-          e.stopPropagation(); // sprečava da klik ode do kartice
-          setShowMap(!showMap);
-        }}
-        className="buttons-form"
-      >
-        {showMap ? "Sakrij lokaciju" : "Prikaži lokaciju"}
-      </button>
-
-      {showMap && restaurant.address.latitude && restaurant.address.longitude ? (
-        <div className="leaflet-container" onClick={(e) => e.stopPropagation()}>
-          <MapContainer
-            center={[restaurant.address.latitude, restaurant.address.longitude]}
-            zoom={15}
-            style={{ height: "300px", width: "100%", marginTop: "1rem" }}
-          >
-            <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              attribution="&copy; OpenStreetMap contributors"
-            />
-            <Marker position={[restaurant.address.latitude, restaurant.address.longitude]}>
-              <Popup>{restaurant.name}</Popup>
-            </Marker>
-          </MapContainer>
-        </div>
-      ) : showMap && (
-        <p style={{ color: "gray" }}>Lokacija nije dostupna...</p>
-      )}
 
       {isForOwner && (
         <section className="section-row button-group">

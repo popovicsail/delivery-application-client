@@ -195,7 +195,17 @@ const RestaurantOverview = ({isOwner}) => {
           </div>
 
           <div className="restaurant-map-block">
-            <div className="restaurant-map"></div>
+            <div className="restaurant-map">
+              <iframe
+                title="restaurant-location-map"
+                src={`https://www.google.com/maps?q=${encodeURIComponent(restaurant?.address?.streetAndNumber + ', ' + restaurant?.address?.city)}&output=embed`}
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen=""
+                loading="lazy"
+              ></iframe>
+            </div>
           </div>
         </div>
 

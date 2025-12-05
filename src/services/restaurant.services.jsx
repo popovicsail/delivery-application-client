@@ -112,3 +112,9 @@ export const getOneWorker = async (id) => {
 
     return response.data;
 }
+
+export const changeSuspendStatus = async (restaurantId, payload) => {
+    const response = await api.put(`restaurants/${restaurantId}/suspend-restaurant`, payload)
+
+    return response.data;
+}
