@@ -10,6 +10,11 @@ export default function OwnerOrders({ active }) {
   const [showPrepTimeModal, setShowPrepTimeModal] = useState(false);
   const [prepTime, setPrepTime] = useState(20);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
+  const [page, setPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const pageSize = 10;
   const [showCompleted, setShowCompleted] = useState(false);
 
   // mapa statusa za lepši ispis
@@ -45,8 +50,15 @@ export default function OwnerOrders({ active }) {
     if (selectedRestaurant) {
       const fetchOrders = async () => {
         try {
-          const data = await orderService.getByRestaurant(selectedRestaurant);
-          setOrders(data);
+          const data = await orderService.getByRestaurant(
+            selectedRestaurant,
+            from || null,
+            to || null,
+            page,
+            pageSize
+          );
+          setOrders(data.items || []);
+          setTotalCount(data.totalCount || 0);
         } catch (err) {
           console.error("Greška pri dohvatanju porudžbina:", err);
         }
@@ -61,19 +73,29 @@ export default function OwnerOrders({ active }) {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [selectedRestaurant, refreshKey]);
+  }, [selectedRestaurant, refreshKey, page, from, to]);
 
-  const filteredOrders = showCompleted
-    ? orders
-    : orders.filter(o => o.status !== "Zavrsena");
+  // filtriranje
+  const filteredOrders = orders.filter((o) => {
+    const orderDate = new Date(o.createdAt);
 
-  const selectedOrder = filteredOrders.find(o => o.orderId === selectedOrderId);
+    if (!showCompleted) {
+      return o.status !== "Zavrsena" && o.status !== "Odbijena";
+    }
+
+    if (from && orderDate < new Date(from)) return false;
+    if (to && orderDate > new Date(to)) return false;
+
+    return true;
+  });
+
+  const selectedOrder = filteredOrders.find((o) => o.orderId === selectedOrderId);
 
   // Actions
   const acceptOrder = async (orderId) => {
     try {
       await orderService.updateOrderStatus(orderId, "Prihvacena", prepTime);
-      setRefreshKey(prev => prev + 1);
+      setRefreshKey((prev) => prev + 1);
     } catch (error) {
       console.error("Greška pri ažuriranju statusa:", error);
     }
@@ -82,7 +104,7 @@ export default function OwnerOrders({ active }) {
   const refuseOrder = async (orderId) => {
     try {
       await orderService.updateOrderStatus(orderId, "Odbijena");
-      setRefreshKey(prev => prev + 1);
+      setRefreshKey((prev) => prev + 1);
     } catch (error) {
       console.error("Greška pri ažuriranju statusa:", error);
     }
@@ -91,11 +113,40 @@ export default function OwnerOrders({ active }) {
   const markAsReadyForPickup = async (orderId) => {
     try {
       await orderService.updateOrderStatus(orderId, "CekaSePreuzimanje");
-      setRefreshKey(prev => prev + 1);
+      setRefreshKey((prev) => prev + 1);
     } catch (error) {
       console.error("Greška pri ažuriranju statusa:", error);
     }
   };
+
+  // Pagination helpers
+  const totalPages = Math.ceil(totalCount / pageSize);
+
+  const getPageNumbers = () => {
+    if (totalPages <= 3) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+  
+    if (page === 1) {
+      return [1, 2, 3];
+    }
+  
+    if (page === 2) {
+      return [1, 2, 3];
+    }
+  
+    if (page === totalPages) {
+      return [totalPages - 2, totalPages - 1, totalPages];
+    }
+  
+    if (page === totalPages - 1) {
+      return [totalPages - 2, totalPages - 1, totalPages];
+    }
+  
+    // u svim ostalim slučajevima izabrana stranica je u sredini
+    return [page - 1, page, page + 1];
+  };
+  
 
   return (
     <div className={`tab-content ${active}`}>
@@ -113,28 +164,62 @@ export default function OwnerOrders({ active }) {
                   onChange={(e) => setSelectedRestaurant(e.target.value)}
                 >
                   <option value="">-- Odaberite restoran --</option>
-                  {restaurants.map(r => (
-                    <option key={r.id} value={r.id}>{r.name}</option>
+                  {restaurants.map((r) => (
+                    <option key={r.id} value={r.id}>
+                      {r.name}
+                    </option>
                   ))}
                 </select>
               </div>
 
               {selectedRestaurant && (
                 <>
+                  {/* Checkbox */}
                   <div className="filter-toggle">
                     <label>
                       <input
                         type="checkbox"
                         checked={showCompleted}
-                        onChange={() => setShowCompleted(prev => !prev)}
+                        onChange={() => setShowCompleted((prev) => !prev)}
                       />
-                      Prikaži i završene porudžbine
+                      Prikaži i završene / odbijene porudžbine
                     </label>
                   </div>
+
+                  {/* Filteri se prikazuju samo ako je checkbox uključen */}
+                  {showCompleted && (
+                    <div className="filters">
+                      <label>
+                        Od:
+                        <input
+                          type="date"
+                          value={from}
+                          onChange={(e) => setFrom(e.target.value)}
+                        />
+                      </label>
+                      <label>
+                        Do:
+                        <input
+                          type="date"
+                          value={to}
+                          onChange={(e) => setTo(e.target.value)}
+                        />
+                      </label>
+                      <button
+                        onClick={() => {
+                          setPage(1);
+                          setRefreshKey((prev) => prev + 1);
+                        }}
+                      >
+                        Pretraži
+                      </button>
+                    </div>
+                  )}
 
                   <table className="orders-table">
                     <thead>
                       <tr>
+                        <th>Datum</th>
                         <th>Kupac</th>
                         <th>Adresa</th>
                         <th>Status</th>
@@ -143,8 +228,9 @@ export default function OwnerOrders({ active }) {
                       </tr>
                     </thead>
                     <tbody>
-                      {filteredOrders.map(o => (
+                      {filteredOrders.map((o) => (
                         <tr key={o.orderId}>
+                          <td>{new Date(o.createdAt).toLocaleString()}</td>
                           <td>{o.customerName}</td>
                           <td>{o.deliveryAddress}</td>
                           <td>{statusLabels[o.status] ?? o.status}</td>
@@ -158,10 +244,26 @@ export default function OwnerOrders({ active }) {
                       ))}
                     </tbody>
                   </table>
+
+                  {/* Paginacija */}
+                  {showCompleted && (
+                    <div className="pagination">
+                      {getPageNumbers().map((num) => (
+                        <button
+                          key={num}
+                          onClick={() => setPage(num)}
+                          className={num === page ? "active" : ""}
+                        >
+                          {num}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
                 </>
               )}
             </>
-          ) : (
+          ): (
             <>
               <button className="button" onClick={() => setSelectedOrderId(null)}>← Nazad</button>
               <h3>Detalji porudžbine</h3>
@@ -173,11 +275,17 @@ export default function OwnerOrders({ active }) {
 
               <h4>Stavke:</h4>
               <ul>
-                {selectedOrder.items.map(item => (
-                  <li key={item.id}>
-                    {item.name} x {item.quantity} = {item.price} RSD
-                  </li>
-                ))}
+                {selectedOrder.items.map(item => {
+                  const itemTotal = (item.dishPrice + item.optionsPrice) 
+                                    * item.quantity 
+                                    * (1 - item.discountRate);
+
+                  return (
+                    <li key={item.id}>
+                      {item.name} x {item.quantity} = {itemTotal} RSD
+                    </li>
+                  );
+                })}
               </ul>
 
               {showPrepTimeModal && (
