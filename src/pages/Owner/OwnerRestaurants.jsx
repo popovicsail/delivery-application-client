@@ -9,67 +9,67 @@ const OwnerRestaurants = () => {
   const [loading, setLoading] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
 
-    const loadRestaurants = async () => {
-      try {
-        setLoading(true);
-        const data = await getMyRestaurants();
-        setRestaurants(data || []);
-        setError('');
-      } catch (error) {
-         if (error.response) {
-          if (error.response.status === 404) {
-            setError('Vlasnik sa ovim id-em ne postoji ili ova ruta ne postoji.');
-          } else if (error.response.status === 401) {
-            setError('Ova stranica je rezervisana samo za vlasnike restorana.');
-            } else if (error.response.status === 500) {
-            setError('Greska na serveru. Pokusajte kasnije.');
-          } else {
-            setError(`Greska: ${error.response.status}`);
-          }
-        } else if (error.request) {
-          setError('Nema odgovora sa servera.');
-        } else {
-          setError('Doslo je do greske.');
-        }
-        console.error('Greska:', error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-  
-    const handleDelete = async (id) => {
-      if (!window.confirm("Da li ste sigurni da zelite da uklonite restoran?")) {
-        return;
-      }
-      try {
-        setLoading(true);
-        const response = await deleteRestaurant(id);
-        setError('');
-        setRefreshKey((prev) => prev + 1);
-        alert('Uspesno ste uklonili restoran');
-      } catch (error) {
+  const loadRestaurants = async () => {
+    try {
+      setLoading(true);
+      const data = await getMyRestaurants();
+      setRestaurants(data || []);
+      setError('');
+    } catch (error) {
         if (error.response) {
-          if (error.response.status === 404) {
-            setError('Ne postoji restoran sa ovim id-em.');
+        if (error.response.status === 404) {
+          setError('Vlasnik sa ovim id-em ne postoji ili ova ruta ne postoji.');
+        } else if (error.response.status === 401) {
+          setError('Ova stranica je rezervisana samo za vlasnike restorana.');
           } else if (error.response.status === 500) {
-            setError('Greska na serveru. Pokusajte kasnije.');
-          } else {
-            setError(`Greska: ${error.response.status}`);
-          }
-        } else if (error.request) {
-          setError('Nema odgovora sa servera.');
+          setError('Greska na serveru. Pokusajte kasnije.');
         } else {
-          setError('Doslo je do greske.');
+          setError(`Greska: ${error.response.status}`);
         }
-        console.error('Greska:', error.message);
-      } finally {
-        setLoading(false);
+      } else if (error.request) {
+        setError('Nema odgovora sa servera.');
+      } else {
+        setError('Doslo je do greske.');
       }
-    };
+      console.error('Greska:', error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
   
-    useEffect(() => {
-      loadRestaurants();
-    }, [refreshKey]);
+  const handleDelete = async (id) => {
+    if (!window.confirm("Da li ste sigurni da zelite da uklonite restoran?")) {
+      return;
+    }
+    try {
+      setLoading(true);
+      const response = await deleteRestaurant(id);
+      setError('');
+      setRefreshKey((prev) => prev + 1);
+      alert('Uspesno ste uklonili restoran');
+    } catch (error) {
+      if (error.response) {
+        if (error.response.status === 404) {
+          setError('Ne postoji restoran sa ovim id-em.');
+        } else if (error.response.status === 500) {
+          setError('Greska na serveru. Pokusajte kasnije.');
+        } else {
+          setError(`Greska: ${error.response.status}`);
+        }
+      } else if (error.request) {
+        setError('Nema odgovora sa servera.');
+      } else {
+        setError('Doslo je do greske.');
+      }
+      console.error('Greska:', error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadRestaurants();
+  }, [refreshKey]);
 
 
   if (loading) return <div id="loadingSpinner" className="spinner"></div>;

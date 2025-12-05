@@ -2,13 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import "../../styles/offers.scss";
 
-const OfferCard = ({ offer, isInMenu, isOwnerHere, isCustomer, onDelete, addToOrder }) => {
+const OfferCard = ({ offer, isInMenu, isOwnerHere, isCustomer, onDelete, addToOrder, className = "" }) => {
   const navigate = useNavigate();
   const myAllergens = JSON.parse(sessionStorage.getItem('myAllergens'))
 
   return (
-    <div className={`offer-card ${(!isInMenu || isCustomer) ? "offer-card-hover" : ""}`}
-      onClick={e => (isInMenu && isCustomer 
+    <div className={`offer-card ${className} ${(!isInMenu || isCustomer) ? "offer-card-hover" : ""}`}
+      onClick={e => (isInMenu && isCustomer
       && addToOrder({
         id: offer.id,
         itemType: 'OFFER',
