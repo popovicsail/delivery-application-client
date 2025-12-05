@@ -1,9 +1,13 @@
 import api from "./api.jsx"
 
 
-export const getByRestaurant = async (restaurantId) => {
-    const response = await api.get(`orders/restaurant/${restaurantId}`);
-    return response.data;
+export const getByRestaurant = async (restaurantId, from, to, page = 1, pageSize = 10) => {
+  const params = { page, pageSize };
+  if (from) params.from = new Date(from).toISOString(); // "2025-11-18T00:00:00.000Z"
+  if (to) params.to = new Date(to).toISOString();
+  
+  const response = await api.get(`orders/restaurant/${restaurantId}`, { params });
+  return response.data; // { items, totalCount }
 }
 
 export const getMyDraft = async () => {
