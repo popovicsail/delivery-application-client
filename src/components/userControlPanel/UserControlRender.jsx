@@ -16,10 +16,11 @@ export default function ProfilePage() {
   const [vouchers, setVouchers] = useState(null);
 
   sessionStorage.setItem('roles', user);
-  const isCustomer = user?.roles?.some(r => r.toLowerCase().includes("customer"));
-  const isCourier = user?.roles?.some(r => r.toLowerCase().includes("courier"));
-  const isAdmin = user?.roles?.some(r => r.toLowerCase().includes("administrator"));
-  const isOwner = user?.roles?.some(r => r.toLowerCase().includes("owner"));
+  const xRoles = JSON.parse(sessionStorage.getItem('myProfile')).roles;
+  const isCustomer = xRoles?.some(r => r.toLowerCase().includes("customer"));
+  const isCourier = xRoles?.some(r => r.toLowerCase().includes("courier"));
+  const isAdmin = xRoles?.some(r => r.toLowerCase().includes("administrator"));
+  const isOwner = xRoles?.some(r => r.toLowerCase().includes("owner"));
 
   useEffect(() => {
     (async () => {

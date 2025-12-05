@@ -32,8 +32,17 @@ const RestaurantMenuOwner = ({restaurantId}) => {
     formData.append("Name", dish.name);
     formData.append("Type", dish.type);
     formData.append("Price", dish.price);
-    formData.append("DiscountAmount", dish.discountAmount);
-    formData.append("DiscountExpireAt", dish.discountExpireAt);
+    if (!dish.discountAmount) {
+      formData.append("DiscountAmount", 0);
+    }
+    else {
+      formData.append("DiscountAmount", dish.discountAmount);
+    }
+    const val = dish.discountExpireAt;
+    if (val != null && val !== "" && val !== "null") {
+      const toSend = val instanceof Date ? val.toISOString() : val;
+      formData.append("DiscountExpireAt", toSend);
+    }
     formData.append("Description", dish.description);
     formData.append("MenuId", menuId);
     if (dish.allergens && dish.allergens.length > 0 ) {
