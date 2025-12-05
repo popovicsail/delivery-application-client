@@ -53,6 +53,30 @@ export const createRestaurant = async (data) => {
     return response.data;
 }
 
+export const getTopRated = async () => {
+    const response = await api.get("restaurants/top-rated");
+    
+    return response.data;
+}
+
+export const getMostDiscounts = async () => {
+    const response = await api.get("restaurants/most-discounts");
+    
+    return response.data;
+}
+
+export const getMostOftenOrderedFromByCustomer = async () => {
+    const response = await api.get("restaurants/customer/most-often-ordered-from");
+    
+    return response.data;
+}
+
+export const getMostRecentOrderedFromByCustomer = async () => {
+    const response = await api.get("restaurants/customer/most-recent-ordered-from");
+    
+    return response.data;
+}
+
 export const getMyWorkers = async (id) => {
     const response = await api.get("restaurants/" + id + "/workers");
 
@@ -85,6 +109,12 @@ export const unsuspendWorker = async (id) => {
 
 export const getOneWorker = async (id) => {
     const response = await api.get("workers/" + id);
+
+    return response.data;
+}
+
+export const changeSuspendStatus = async (restaurantId, payload) => {
+    const response = await api.put(`restaurants/${restaurantId}/suspend-restaurant`, payload)
 
     return response.data;
 }

@@ -175,6 +175,10 @@
     flex-shrink: 0;
     height: 42px;
     align-self: flex-start;
+    
+    &:hover {
+      background-color: color.adjust(#b96d34, $lightness: -8%);
+    }
   }
 
   .error {

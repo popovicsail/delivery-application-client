@@ -62,3 +62,11 @@ export const deleteOrder = async (id) => {
     const response = await api.delete(`orders/${id}`);
     return response.data;
 }
+
+export const getBillPdf = async (orderId) => {
+  const response = await api.get(`/orders/${orderId}/get-bill-pdf`, {
+    responseType: 'blob',
+  });
+  
+  return response.data;
+}

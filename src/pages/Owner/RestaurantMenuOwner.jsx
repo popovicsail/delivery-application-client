@@ -4,6 +4,7 @@ import { dishService } from "../../services/dishes.services.jsx"
 import DishCard from "../../components/dishes/DishCard.jsx";
 import DishForm from "../../components/dishes/DishForm.jsx";
 import DishGroupForm from "../../components/dishes/DishGroupForm.jsx";
+import Statistics from "../Statistics.jsx";
 
 const RestaurantMenuOwner = ({restaurantId}) => {
   const [error, setError] = useState('');
@@ -14,6 +15,9 @@ const RestaurantMenuOwner = ({restaurantId}) => {
   const [isDishGroupOpen, setIsDishGroupOpen] = useState(false);
   const [dishes, setDishes] = useState([]);
   const [menuId, setMenuId] = useState(null);
+  const [isStats, setIsStats] = useState(false);
+  const [dishId, setDishId] = useState(null);
+  const [dishName, setDishName] = useState("");
 
   const grouped = dishes.reduce((a, dish) => {
     if (!a[dish.type]) a[dish.type] = [];
@@ -137,36 +141,54 @@ const RestaurantMenuOwner = ({restaurantId}) => {
     fetchMenu();
   }, [refreshKey]);
 
+  const handleStatsClick = (dishId, dishName) => {
+    console.log("Kliknuto na dish:", dishId);
+    setDishId(dishId);
+    setDishName(dishName);
+    setIsStats(true);
+  };
+
   if (loading) return <div id="loadingSpinner" className="spinner"></div>;
   if (error) return <p style={{ color: 'red' }}>{error}</p>;
   return (
     <div className="restaurant-menu-owner-container">
       <div className="restaurant-header">
-        <h1>Menu Restorana</h1>
+        <h1>{!isStats ? "Menu Restorana - Vlasnik" : `Statistika Jela - ${dishName}`}</h1>
 
-        <div className="owner-restaurant-create-btn-wrapper">
+        {!isStats && <div className="owner-restaurant-create-btn-wrapper">
           <button className="buttons create-btn" onClick={() => { setSelectedDish(null); setIsFormOpen(true);}}
             style={{padding: '0.4rem 0.8rem'}}>
             + Dodaj jelo
           </button>
         </div>
+      }
       </div>
 
-
-      {Object.keys(grouped).map((type) => (
-        <div className="dish-type-row" key={type} style={{ marginBottom: "30px" }}>
-          <h2>{type}</h2>
-          <div className="dishes-row">
-            {grouped[type].map((dish) => (
-              <div className="dish-n-order-wrapper" key={dish.id}>
-                <DishCard  dish={dish} setSelectedDish={setSelectedDish} isInMenu={true} isOwnerHere={true} 
-                  isCustomer={false} deleteDish={deleteDish} setIsFormOpen={setIsFormOpen} />
-              </div>
-            ))}
+      {!isStats && 
+      <>
+        {Object.keys(grouped).map((type) => (
+          <div className="dish-type-row" key={type} style={{ marginBottom: "30px" }}>
+            <h2>{type}</h2>
+            <div className="dishes-row">
+              {grouped[type].map((dish) => (
+                <div className="dish-n-order-wrapper" key={dish.id}>
+                  <DishCard  dish={dish} setSelectedDish={setSelectedDish} isInMenu={true} isOwnerHere={true} 
+                    isCustomer={false} deleteDish={deleteDish} setIsFormOpen={setIsFormOpen} onStatsClick={() => {handleStatsClick(dish.id, dish.name)}}/>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </> }
+      
 
+      {isStats &&
+        <div style={{display: "flex"}}>
+          <button className="back-arrow-btn" onClick={() => setIsStats(false)}>{"< Povratak nazad"}</button>
+          <Statistics dishId={dishId}/>
+        </div>
+      }
+      
       {isFormOpen && (
         <DishForm dish={selectedDish} onClose={() => setIsFormOpen(false)} onSave={handleSave}/>
       )}

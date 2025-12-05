@@ -134,8 +134,7 @@ const RestaurantForm = ({setActiveTab}) => {
 
   return (
     <div className="restaurants-form-container">
-      <form onSubmit={handleSubmit(onSubmit)} style={roles.includes("Owner") && {transform: 'translateX(-8rem)', marginTop: '7rem'}}>
-
+      <form onSubmit={handleSubmit(onSubmit)} style={roles.includes("Owner") ? { transform: "translateX(-8rem)", marginTop: "7rem" } : {}}>
         <h3>Forma za izmenu restorana</h3>
 
         <section style={{ display: 'flex' , gap: '1rem'}}>

@@ -21,3 +21,22 @@ export const getDishStats = async(dishId, from, to) => {
     );
     return response.data;
 }
+
+export const getReportPdf = async (restaurantId) => {
+    try {
+        const response = await api.get(
+            `Orders/get-report-pdf?restaurantId=${restaurantId}`,
+            { responseType: 'blob' }
+        );
+
+        const blob = new Blob([response.data], { type: 'application/pdf' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `report-${restaurantId}.pdf`;
+        link.click();
+        return true;
+    } catch (error) {
+        console.error("Error downloading PDF report:", error);
+        return false;
+    }
+};

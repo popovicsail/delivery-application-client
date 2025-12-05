@@ -15,6 +15,11 @@ const MenuPage = () => {
   const [dishes, setDishes] = useState([]);
   const [offers, setOffers] = useState([]);
   const [firstOfferIndex, setFirstOfferIndex] = useState(0);
+  const [offset, setOffset] = useState(0);
+  const [enterDirection, setEnterDirection] = useState(null);
+  const [disableTransition, setDisableTransition] = useState(false);
+  const [isEntering, setIsEntering] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
   const [isCustomer, setIsCustomer] = useState(false);
   const [pickedId, setPickedId] = useState('');
   const [order, setOrder] = useState([]);
@@ -213,10 +218,63 @@ const MenuPage = () => {
     return a;
   }, {});
 
+  const slideLeft = () => {
+    if (isAnimating) return;
+    setEnterDirection("right");
+    setIsAnimating(true);
+    setOffset(-20.5);
+  };
+
+  const slideRight = () => {
+    if (isAnimating) return;
+    setEnterDirection("left");
+    setIsAnimating(true);
+    setOffset(20.5);
+  };
+
+  /*const onAnimationEnd = (updateListFn) => {
+    setOffset(0);
+    setIsAnimating(false);
+    updateListFn();
+  };*/
+
+  const onAnimationEnd = () => {
+    setDisableTransition(true);
+    setOffset(0);
+    setIsAnimating(false);
+
+    setOffers(prev => {
+      let next;
+      if (enterDirection === "left") {
+        next = [prev[prev.length - 1], ...prev.slice(0, -1)];
+      } else {
+        next = [...prev.slice(1), prev[0]];
+      }
+
+      return next;
+    });
+
+    setIsEntering(true);
+    setTimeout(() => setIsEntering(false), 350); //Must match css transform duration
+
+    // 2) Re-enable transitions the next frame
+    requestAnimationFrame(() => {
+        setDisableTransition(false);
+    });
+  };
+
+  const reorderOffers = () => {
+    if (offset === -20.5) {
+      setOffers(prev => [...prev.slice(1), prev[0]]);
+    } else if (offset === 20.5) {
+      setOffers(prev => [prev[prev.length - 1], ...prev.slice(0, -1)]);
+    }
+  };
+
   if (loading) return <div id="loadingSpinner" className="spinner"></div>;
   if (error) return <p style={{ color: 'red' }}>{error}</p>;
   return (
-    <div style={{ padding: "1rem 3rem", position: 'relative' }}>
+    <div style={{ padding: "1rem 2rem", position: 'relative' }}>
       <h1 style={{ marginBottom: "0", fontStyle: 'italic', textAlign: 'center', color: '#694d27'}}>
         <span style={{padding: '0.5rem 12rem', backgroundColor: '#d3b996ff', borderBottomLeftRadius: '60px', borderBottomRightRadius: '60px'}}>
         Glavni Menu</span>
@@ -227,18 +285,42 @@ const MenuPage = () => {
       <div className="offers-container">
         <h2>🔥 Aktuelne Ponude 🔥</h2>
 
-        {offers.length == 0 ? <p>Nema aktuelnih ponuda.</p> : <div className="offers-row">
-          <div className={`menu-offer-slide-btn-container ${firstOfferIndex == 0 ? "hidden" : ""}`}>
-            <button type="button" className="slide-btn left-slider" onClick={() => setFirstOfferIndex((prev) => prev - 4)}>&lt;</button>
+        {offers.length == 0 ? <p>Nema aktuelnih ponuda.</p> : 
+        <div className="offers-whole-row">
+          <div className={`menu-offer-slide-btn-container ${offers?.filter((o) => o.offerDishes?.length > 0).length > 4 ? "" : "hidden"}`}>
+            <button type="button" className="slide-btn left-slider" onClick={() => slideLeft()}>&lt;</button>
           </div>
-          
-          {offers.filter((o) => o.offerDishes?.length > 0).map((offer, i) => 
-            ((i >= firstOfferIndex && (i <= firstOfferIndex + 3))
-            && <OfferCard key={offer.id} offer={offer} isInMenu={true} isOwnerHere={false} isCustomer={isCustomer} addToOrder={addOfferToOrder}/>
-          ))}
-          <div className={`menu-offer-slide-btn-container 
-            ${firstOfferIndex >= (offers ? offers.filter((o) => o.offerDishes?.length > 0).length - 4 : firstOfferIndex) ? "hidden" : ""}`}>
-            <button type="button" className="slide-btn right-slider" onClick={() => setFirstOfferIndex((prev) => prev + 4)}>&gt;</button>
+          <div className="offers-row-wrapper">
+            <div className="offers-row"
+            style={{
+              transform: `translateX(${offset}vw)`,
+              transition: isAnimating ? "transform 0.6s ease, opacity 0.7s ease" : "none",
+              pointerEvents: isAnimating ? "none" : "auto"
+            }}
+              onTransitionEnd={(e) => {
+                if (e.target !== e.currentTarget) return;
+                if (e.propertyName === "transform") {
+                  onAnimationEnd();
+                }
+              }}
+            >
+              {offers.filter((o) => o.offerDishes?.length > 0).map((offer, i) => {
+                const visible = i >= firstOfferIndex && i <= firstOfferIndex + 3;
+                if (!visible) return null;
+                const isNewCard = isEntering && (enterDirection == 'left' ? i === firstOfferIndex : i === firstOfferIndex + 3);
+
+                return (
+                  <OfferCard
+                    key={offer.id} offer={offer} isInMenu={true}
+                    className={isNewCard ? `offer-card-enter-${enterDirection}` : ""}
+                    isOwnerHere={false} isCustomer={isCustomer} addToOrder={addOfferToOrder}
+                  />
+                );
+              })}
+            </div>
+          </div>
+          <div className={`menu-offer-slide-btn-container ${offers?.filter((o) => o.offerDishes?.length > 0).length > 4 ? "" : "hidden"}`}>
+            <button type="button" className="slide-btn right-slider" onClick={() => slideRight()}>&gt;</button>
           </div>
         </div>}
       </div>

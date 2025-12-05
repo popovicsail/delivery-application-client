@@ -42,7 +42,7 @@ const Header = () => {
 
   return (
     <header className="header">
-      <h1>Dobrodošli — Gozba na Klik</h1>
+      <h1>Gozba na Klik</h1>
 
       {isAuthenticated && (
         <Link to="/controlPanel" className="header-profile-box">
