@@ -31,7 +31,11 @@ export default function CourierDeliveries({ active, courierId }) {
       const fetchOrders = async () => {
         try {
           const data = await orderService.getByCourier(userId);
-          setOrders(data.items);
+          const filteredOrders = data.items.filter(
+            (o) => o.status !== "Odbijena" && o.status !== "Zavrsena"
+          );
+
+          setOrders(filteredOrders);
         } catch (err) {
           console.error("Greška pri dohvatanju dostava:", err);
         }
@@ -133,13 +137,19 @@ export default function CourierDeliveries({ active, courierId }) {
                 <p><strong>Ukupno:</strong> {selectedOrder.totalPrice} RSD</p>
 
                 <h4>Stavke:</h4>
-                <ul>
-                  {selectedOrder.items.map((item) => (
+              <ul>
+                {selectedOrder.items.map(item => {
+                  const itemTotal = (item.dishPrice + item.optionsPrice) 
+                                    * item.quantity 
+                                    * (1 - item.discountRate);
+
+                  return (
                     <li key={item.id}>
-                      {item.name} x {item.quantity} = {item.price} RSD
+                      {item.name} x {item.quantity} = {itemTotal} RSD
                     </li>
-                  ))}
-                </ul>
+                  );
+                })}
+              </ul>
 
                 <div className="modal-actions">
                   {selectedOrder.status === "CekaSePreuzimanje" && (

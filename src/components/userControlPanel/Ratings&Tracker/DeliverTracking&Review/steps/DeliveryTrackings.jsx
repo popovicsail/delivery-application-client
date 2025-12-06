@@ -175,12 +175,18 @@ export default function DeliveryTracking({ onCompleted }) {
         <div className="order-items">
           <h5>🍽️ Artikli u porudžbini:</h5>
           <ul>
-            {items.map((item, idx) => (
-              <li key={idx}>
-                {item.name} × {item.quantity} — {customerOrder.totalPrice} RSD
-              </li>
-            ))}
-          </ul>
+                {items.map(item => {
+                  const itemTotal = (item.dishPrice + item.optionsPrice) 
+                                    * item.quantity 
+                                    * (1 - item.discountRate);
+
+                  return (
+                    <li key={item.id}>
+                      {item.name} x {item.quantity} = {itemTotal} RSD
+                    </li>
+                  );
+                })}
+              </ul>
         </div>
       )}
 
