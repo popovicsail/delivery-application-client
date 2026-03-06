@@ -375,7 +375,7 @@ const MenuPage = () => {
                   <button onClick={() => {
                     const isAllergic = dish.allergens.some((a) => (myAllergens && myAllergens.includes(a.id)))
                     if (isAllergic) {
-                      window.alert(`Vi ste alergicni na ovaj proizvod, da li ste sigurni da zelite da ga dodate?`);
+                      window.alert(`Vi ste alergicni na ovaj proizvod!`);
                       return;
                     }
                     else {

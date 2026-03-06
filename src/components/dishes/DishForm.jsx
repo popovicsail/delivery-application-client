@@ -11,7 +11,7 @@ const DishForm = ({ dish, onClose, onSave }) => {
   const discount = watch('discountAmount');
   if (dish && dish.discountRate && dish.discountRate > 0) {
     dish.discountAmount = dish.discountRate * 100;
-  } else if (!dish?.discountRate) {
+  } else if (dish && !dish?.discountRate) {
     dish.discountRate = 0;
   }
 

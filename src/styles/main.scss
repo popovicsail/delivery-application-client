@@ -1433,6 +1433,7 @@ table {
 
 #filter-container {
   margin-top: 9vh;
+  margin-right: 1rem;
   max-width: 14vw;
 
   #filter-box {
@@ -1499,8 +1500,8 @@ table {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 3rem 4rem;
-  margin: 4rem;
+  gap: 3rem 2.5rem;
+  margin: 3rem 0;
   width: 100%;
   .restaurant-card {
     flex-grow: 1;

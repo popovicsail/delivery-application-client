@@ -164,7 +164,7 @@ const RestaurantOverview = ({isOwner}) => {
               <div className="restaurant-content-reviews-block">
                 <h3>Ocene kupaca</h3>
                 <div className="restaurant-content-avg-rating-wrapper">
-                  <p>Prosecna ocena: <strong>{restaurant?.avgRating || 'Nema'}</strong></p>
+                  <p>Prosecna ocena: <strong>{restaurant?.avgRating?.toFixed(1) || 'Nema'}</strong></p>
                 </div>
 
                 <div className="restaurant-overview-top-reviews">
